@@ -1,0 +1,44 @@
+miniWiki 0.2 (c)2005 Stepan Roh
+-------------------------------
+
+miniWiki is simple Wiki written in PHP which uses MySQL as its storage.
+
+Requirements
+------------
+
+Web server (e.g. Apache HTTP server)
+PHP 4.3.x or newer (may work on older 4.x versions)
+MySQL 4.0.x or newer (may work on older 3.x versions)
+
+Installation
+------------
+
+Unpack distribution archive somewhere under your web server's document
+directory and execute MySQL script miniwiki.sql (or miniwiki_empty.sql for
+installation without initial content).
+
+Upgrade from 0.1
+----------------
+
+Unpack distribution archive over the previous version. Because directory
+structure changed, remove all PHP, CSS and JS files in the root directory
+with the exception of index.php and userdefs.php.
+Finally backup your database and execute MySQL script upgrade_from_0_1.sql. 
+
+Setup
+-----
+
+Change variables in userdefs.php to your settings (set database settings to
+those used when miniwiki.sql script was executed).
+
+Execution
+---------
+
+Point your web browser to index.php. You'll be either presented with main
+documentation page (if miniwiki.sql was used) or with error message (if
+miniwiki_empty.sql was used). In either case log in as user admin with
+password admin and enjoy the Wiki.
+
+						Stepan Roh <src@post.cz>
+
+$Id$

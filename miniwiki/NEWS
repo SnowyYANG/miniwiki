@@ -1,0 +1,20 @@
+Changes from 0.1 to 0.2:
+
+- new directory structure
+- compatibility with MySQL-4.1.x
+- directive #TITLE
+- simple forms support
+- horizontal rule Wiki markup ('---')
+- Table of Contents and #NOTOC directive
+- page inclusion
+- Wiki functions support
+- Wiki variables
+- user_info Wiki function
+- configurable anonymous access
+- configurable non-admin edits
+- allow fragments in internal links
+- edit preview
+- file uploads
+- allow linking to specific revision
+- ... and more
+

@@ -183,6 +183,9 @@
       }
       return '';
     }
+    if ($name == 'version') {
+      return MW_VERSION;
+    }
     return null;
   }
 

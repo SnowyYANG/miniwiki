@@ -5,6 +5,8 @@
 
   # main entrance page
 
+  ini_set('include_path', ini_get('include_path').':.');
+
   include('settings.php');
   include('debug.php');
   include('error.php');

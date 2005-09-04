@@ -485,9 +485,9 @@
     
   }
 
-  # returns last modified value retruned as YEAR/MONTH/DAY HOUR:MIN:SEC
+  # returns last modified value as UNIX timestamp (see mktime())
   # val: last modified value (as loaded from database)
-  function format_last_modified($val) {
+  function last_modified_as_timestamp($val) {
     # detect whether we have MySQL's "INTERNAL" or "ISO" (or similar) timestamp format - default changed in MySQL 4.1.x
     if (strlen($val) == 14) {
       $year = substr($val, 0, 4);
@@ -504,8 +504,15 @@
       $min = substr($val, 14, 2);
       $sec = substr($val, 17, 2);
     }
+    return mktime($hour, $min, $sec, $month, $day, $year);
+  }
+
+  # returns last modified value retruned as YEAR/MONTH/DAY HOUR:MIN:SEC
+  # val: last modified value (as loaded from database)
+  function format_last_modified($val) {
+    $ts = last_modified_as_timestamp($val);
     # TODO configurable
-    return $year.'/'.$month.'/'.$day.' '.$hour.':'.$min.':'.$sec;
+    return strftime("%Y/%m/%d %H:%M:%S", $ts);
   }
   
   # returns current date and time as last modified value

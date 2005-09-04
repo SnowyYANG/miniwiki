@@ -123,6 +123,10 @@
   define("MW_DEFAULT_MIME_TYPE", "application/octet-stream");
   # image link page prefix (will render image directly)
   define("MW_LINK_NAME_PREFIX_IMAGE", "Image:");
+  # default stylesheet upload name
+  define("MW_DEFAULT_STYLESHEET_NAME", "default.css");
+  # default javascript functions upload name
+  define("MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME", "functions.js");
 
   # assign user-visible texts to action names
   $mw_texts[MW_ACTION_VIEW] = $mw_texts[MWT_ACTION_VIEW];

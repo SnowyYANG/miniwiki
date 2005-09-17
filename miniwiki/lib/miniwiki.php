@@ -203,11 +203,37 @@
     return new MW_Auth();
   }
 
+  # returns filtered page name
+  # _ is replaced with space
+  # " # $ * + < > = @ [ ] \ ^ ` { } | ~ are removed
+  # name: page name
+  function filter_page_name($name) {
+    $name = str_replace('_', ' ', $name);
+    return str_replace(array('"', '#' ,"$" ,'*', '+' ,'<' ,'>' ,'=' ,'@' ,'[' ,']' ,'\\', '^', '`', '{', '}' ,'|', '~'), '', $name);
+  }
+
+  # returns encoded page name
+  # space is replaced with _
+  # rawurlencode must still be used if this should be part of URL
+  # name: page name
+  function encode_page_name($name) {
+    return str_replace(' ', '_', $name);
+  }
+
+  # returns encoded page name
+  # + and _ are replaced with space
+  # rawurldecode must still be used if this comes from URL
+  # name: page name
+  function decode_page_name($name) {
+    return str_replace(array('+', '_'), ' ', $name);
+  }
+
   # returns instance of MW_Page
   # db: MW_Database
   # name: page name
   # revision: wanted revision
   function new_page($db, $name, $revision) {
+    $name = filter_page_name($name);
     if ($name == MW_PAGE_NAME_USERS) {
       return new MW_Special_Users_Page($db);
     } elseif ($name == MW_PAGE_NAME_PAGES) {
@@ -228,6 +254,7 @@
   # db: MW_Database
   # user: user name (not user page name)
   function new_user_page($db, $user) {
+    $user = filter_page_name($user);
     return new MW_Special_User_Page($db, MW_PAGE_NAME_PREFIX_USER.$user, MW_REVISION_HEAD);
   }
 
@@ -236,6 +263,7 @@
   # name: upload name (not upload page name)
   # revision: wanted revision
   function new_upload_page($db, $name, $revision) {
+    $name = filter_page_name($name);
     return new MW_Special_Upload_Page($db, MW_PAGE_NAME_PREFIX_UPLOAD.$name, $revision);
   }
 
@@ -301,6 +329,7 @@
       } elseif (isset($req_array[MW_REQVAR_PAGE_NAME])) {
         $this->page_name = $req_array[MW_REQVAR_PAGE_NAME];
       }
+      $this->page_name = filter_page_name(decode_page_name($this->page_name));
       $this->action = (isset($req_array[MW_REQVAR_ACTION]) ? $req_array[MW_REQVAR_ACTION] : MW_DEFAULT_ACTION);
       $this->revision = (isset($req_array[MW_REQVAR_REVISION]) ? $req_array[MW_REQVAR_REVISION] : MW_REVISION_HEAD);
       $this->content = (isset($req_array[MW_REQVAR_CONTENT]) ? $req_array[MW_REQVAR_CONTENT] : NULL);
@@ -616,7 +645,7 @@
       if (func_num_args() > 1) {
         $rev = func_get_arg(1);
       }
-      $ret = $_SERVER['SCRIPT_NAME'] . '/' . rawurlencode($this->name);
+      $ret = $_SERVER['SCRIPT_NAME'] . '/' . rawurlencode(encode_page_name($this->name));
       $in_query = false;
       if ($action != MW_DEFAULT_ACTION) {
         $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . rawurlencode($action);

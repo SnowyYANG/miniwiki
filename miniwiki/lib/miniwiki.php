@@ -228,6 +228,14 @@
     return str_replace(array('+', '_'), ' ', $name);
   }
 
+  # returns urlencoded page name
+  # does not encode forward slash as %2F
+  # see encode_page_name for more
+  # name: page name
+  function urlencode_page_name($name) {
+    return str_replace(array('%2F', '%2f'), '/', rawurlencode(encode_page_name($name)));
+  }
+
   # returns instance of MW_Page
   # db: MW_Database
   # name: page name
@@ -645,7 +653,7 @@
       if (func_num_args() > 1) {
         $rev = func_get_arg(1);
       }
-      $ret = $_SERVER['SCRIPT_NAME'] . '/' . rawurlencode(encode_page_name($this->name));
+      $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode_page_name($this->name);
       $in_query = false;
       if ($action != MW_DEFAULT_ACTION) {
         $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . rawurlencode($action);

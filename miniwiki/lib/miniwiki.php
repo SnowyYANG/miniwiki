@@ -118,7 +118,9 @@
   # upload page prefix
   define("MW_PAGE_NAME_PREFIX_UPLOAD", "Upload:");
   # data page prefix (raw uploaded file)
-  define("MW_PAGE_NAME_PREFIX_DATA", "Data:");
+  define("MW_PAGE_NAME_PREFIX_DATA", "data/");
+  # data page prefix (raw uploaded file) from miniWiki 0.2
+  define("MW_PAGE_NAME_PREFIX_DATA_0_2", "Data:");
   # default MIME type for uploaded files
   define("MW_DEFAULT_MIME_TYPE", "application/octet-stream");
   # image link page prefix (will render image directly)
@@ -248,11 +250,14 @@
       return new MW_Special_Pages_Page($db);
     } elseif ($name == MW_PAGE_NAME_UPLOADS) {
       return new MW_Special_Uploads_Page($db);
-    } elseif (preg_match('/^'.MW_PAGE_NAME_PREFIX_USER.'/', $name)) {
+    } elseif (strpos($name, MW_PAGE_NAME_PREFIX_USER) === 0) {
       return new MW_Special_User_Page($db, $name, $revision);
-    } elseif (preg_match('/^'.MW_PAGE_NAME_PREFIX_UPLOAD.'/', $name)) {
+    } elseif (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
       return new MW_Special_Upload_Page($db, $name, $revision);
-    } elseif (preg_match('/^'.MW_PAGE_NAME_PREFIX_DATA.'/', $name)) {
+    } elseif (strpos($name, MW_PAGE_NAME_PREFIX_DATA) === 0) {
+      return new MW_Special_Upload_Page($db, $name, $revision);
+    } elseif (strpos($name, MW_PAGE_NAME_PREFIX_DATA_0_2) === 0) {
+      $name = str_replace(MW_PAGE_NAME_PREFIX_DATA_0_2, MW_PAGE_NAME_PREFIX_DATA, $name);
       return new MW_Special_Upload_Page($db, $name, $revision);
     }
     return new MW_DB_Page($db, $name, $revision);

@@ -18,7 +18,7 @@
   define("MW_VERSION", "0.2");
 
   # main page name
-  define("MW_PAGE_NAME_MAIN", "MainPage");
+  define("MW_PAGE_NAME_MAIN", "Main Page");
   # default page name (if none requested)
   define("MW_DEFAULT_PAGE_NAME", MW_PAGE_NAME_MAIN);
   # view page action (renders Wiki page)

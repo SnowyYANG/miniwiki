@@ -5,7 +5,24 @@
 
   # functions accessible from Wiki pages by using {{&...}} syntax
 
+  register_wiki_function('echo', 'wiki_fn_echo');
+  register_wiki_function('include', 'wiki_fn_include');
   register_wiki_function('user_info', 'wiki_fn_user_info');
+
+  # joins arguments and returns them
+  function wiki_fn_echo($args, $renderer_state) {
+    return join('', $args);
+  }
+
+  # returns raw content of page specified by first argument
+  function wiki_fn_include($args, $renderer_state) {
+    $inc_page_name = $args[0];
+    $inc_page = new_page($renderer_state->renderer->db, $inc_page_name, MW_REVISION_HEAD);
+    if ($inc_page->load()) {
+      return str_replace("\r", '', $inc_page->raw_content);
+    }
+    return '[['.$inc_page_name .']]';
+  }
 
   # returns user information
   function wiki_fn_user_info() {

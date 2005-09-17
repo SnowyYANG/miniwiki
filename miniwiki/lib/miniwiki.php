@@ -170,11 +170,12 @@
   }
   # call wiki function
   # name: wiki function name
-  # arg: wiki function argument
-  function call_wiki_function($name, $arg) {
+  # args: wiki function argument
+  # renderer_state: MW_Renderer_State
+  function call_wiki_function($name, $args, $renderer_state) {
     global $wiki_functions;
     if (isset ($wiki_functions[$name])) {
-      return call_user_func($wiki_functions[$name], $arg);
+      return call_user_func($wiki_functions[$name], $args, $renderer_state);
     }
     return null;
   }
@@ -1559,31 +1560,26 @@
     # [private] callback for preg_replace_callback in process_includes()
     function process_includes_cb($matches) {
       debug('MW_Page.process_includes_cb(matches='.join(', ', $matches).')');
-      $inc_page_name = $matches[1];
-      if ($inc_page_name[0] == '&') {
-        $wiki_func_array = preg_split('/\s+/', substr($inc_page_name, 1), 2);
-        $wiki_func = $wiki_func_array[0];
-        $wiki_func_arg = null;
-        if (count($wiki_func_array) > 1) {
-          $wiki_func_arg = $wiki_func_array[1];
-        }
-        $wiki_func_ret = call_wiki_function($wiki_func, $wiki_func_arg);
-        if (!($wiki_func_ret === null)) {
-          return $wiki_func_ret;
-        }
-      } elseif ($inc_page_name[0] == '$') {
-        $wiki_var = substr($inc_page_name, 1);
-        $wiki_var_ret = get_wiki_variable($wiki_var);
-        if (!($wiki_var_ret === null)) {
-          return $wiki_var_ret;
-        }
-      } else {
-        $inc_page = new_page($this->renderer->db, $inc_page_name, MW_REVISION_HEAD);
-        if ($inc_page->load()) {
-          return str_replace("\r", '', $inc_page->raw_content);
-        }
+      $inc_command = $matches[1];
+      if ($inc_command[0] == '$') {
+        # {{$var}} -> {{&echo|$var}}
+        $inc_command = '&echo|' . $inc_command;
+      } elseif ($inc_command[0] != '&') {
+        # {{page}} -> {{&include|page}}
+        $inc_command = '&include|' . $inc_command;
+      } elseif (!(strpos($inc_command, '|') === false)) {
+        # backwards compatible {{&func arg}} -> {{&func|arg}}
+        $inc_command = preg_replace('/\s+/', '|', $inc_command, 1);
       }
-      return '[['.$inc_page_name.']]';
+      $inc_command = substr($inc_command, 1);
+      $wiki_func_args = explode('|', $inc_command);
+      $wiki_func = array_shift($wiki_func_args);
+      $wiki_func_args = preg_replace('/(^|\s)\$(\S+)/e', '"$1".get_wiki_variable("$2")', $wiki_func_args);
+      $wiki_func_ret = call_wiki_function($wiki_func, $wiki_func_args, $this);
+      if (!($wiki_func_ret === null)) {
+        return $wiki_func_ret;
+      }
+      return $matches[1];
     }
     
     # [private] process includes {{...}}

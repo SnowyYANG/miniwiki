@@ -1620,7 +1620,7 @@
       } elseif ($inc_command[0] != '&') {
         # {{page}} -> {{&include|page}}
         $inc_command = '&include|' . $inc_command;
-      } elseif (!(strpos($inc_command, '|') === false)) {
+      } elseif ((strpos($inc_command, '|') === false)) {
         # backwards compatible {{&func arg}} -> {{&func|arg}}
         $inc_command = preg_replace('/\s+/', '|', $inc_command, 1);
       }

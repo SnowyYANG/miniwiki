@@ -180,20 +180,19 @@
     return null;
   }
 
-  # returns value of wiki variable
-  # name: wiki variable name
-  function get_wiki_variable($name) {
+  # returns new MW_Variables with prefilled global values
+  function new_global_wiki_variables() {
     global $auth;
-    if ($name == 'user') {
-      if ($auth->is_logged) {
-        return $auth->user;
-      }
-      return '';
-    }
-    if ($name == 'version') {
-      return MW_VERSION;
-    }
-    return null;
+    $vars = new MW_Variables(null);
+    $vars->set('version', MW_VERSION);
+    $vars->set('user', ($auth->is_logged ? $auth->user : ''));
+    return $vars;
+  }
+
+  # returns new MW_Variables
+  # supervars: super MW_Variables to use
+  function new_wiki_variables($supervars) {
+    return new MW_Variables($supervars);
   }
 
   # returns instance of MW_Request
@@ -1194,7 +1193,43 @@
 
   }
 
-  # [private] internal Wiki renderer state
+  # wiki variables
+  class MW_Variables {
+    # [read-only] attributes
+    # variables array
+    var $variables;
+    # super MW_Variables
+    var $supervars;
+    
+    # constructor (do not call)
+    # supervars: super MW_Variables to use
+    function MW_Variables($supervars) {
+      $this->variables = array();
+      $this->supervars = $supervars;
+    }
+  
+    # returns value of given variable
+    # name: variable name
+    function get($name) {
+      if (isset($this->variables[$name])) {
+        return $this->variables[$name];
+      }
+      if (isset($this->supervars)) {
+        return $this->supervars->get($name);
+      }
+      return null;
+    }
+  
+    # sets value of given variable
+    # name: variable name
+    # value: variable value
+    function set($name, $value) {
+      $this->variables[$name] = $value;
+    }
+  
+  }
+
+  # internal Wiki renderer state
   class MW_Renderer_State {
     # [read-only] attributes
     # MW_Renderer
@@ -1210,15 +1245,19 @@
     var $headings;
     # headings counter (current number)
     var $headings_counter;
+    # current MW_Variables
+    var $wiki_variables;
     
     # constructor (do not call)
     # renderer: MW_Renderer
     # raw: raw text to render
-    function MW_Renderer_State($renderer, $raw) {
+    # super_wiki_variables: super MW_Variables to use
+    function MW_Renderer_State($renderer, $raw, $super_wiki_variables) {
       $this->renderer = $renderer;
       $this->raw = $raw;
       $this->headings = array();
       $this->headings_counter = '';
+      $this->wiki_variables = new_wiki_variables($super_wiki_variables);
     }
     
     # [private] add heading into headings array
@@ -1574,7 +1613,7 @@
       $inc_command = substr($inc_command, 1);
       $wiki_func_args = explode('|', $inc_command);
       $wiki_func = array_shift($wiki_func_args);
-      $wiki_func_args = preg_replace('/(^|\s)\$(\S+)/e', '"$1".get_wiki_variable("$2")', $wiki_func_args);
+      $wiki_func_args = preg_replace('/(^|\s)\$(\S+)/e', '"$1".$this->wiki_variables->get("$2")', $wiki_func_args);
       $wiki_func_ret = call_wiki_function($wiki_func, $wiki_func_args, $this);
       if (!($wiki_func_ret === null)) {
         return $wiki_func_ret;
@@ -1674,7 +1713,7 @@
     # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
     # raw: raw text (empty message is output if raw text is empty)
     function render($raw) {
-      $state = new MW_Renderer_State($this, $raw);
+      $state = new MW_Renderer_State($this, $raw, new_global_wiki_variables());
       $state->render();
     }
     

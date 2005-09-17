@@ -6,6 +6,7 @@
   # functions accessible from Wiki pages by using {{&...}} syntax
 
   register_wiki_function('echo', 'wiki_fn_echo');
+  register_wiki_function('set', 'wiki_fn_set');
   register_wiki_function('include', 'wiki_fn_include');
   register_wiki_function('push_vars', 'wiki_fn_push_vars');
   register_wiki_function('pop_vars', 'wiki_fn_pop_vars');
@@ -16,12 +17,20 @@
     return join('', $args);
   }
 
+  # set wiki variable specified by first argument to value specified by second argument
+  function wiki_fn_set($args, $renderer_state) {
+    $name = $args[0];
+    $value = $args[1];
+    $renderer_state->wiki_variables->set($name, $value);
+    return '';
+  }
+
   # returns raw content of page specified by first argument
   function wiki_fn_include($args, $renderer_state) {
     $inc_page_name = $args[0];
     $inc_page = new_page($renderer_state->renderer->db, $inc_page_name, MW_REVISION_HEAD);
     if ($inc_page->load()) {
-      return '{{&push_vars}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
+      return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .'}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
     }
     return '[['.$inc_page_name .']]';
   }

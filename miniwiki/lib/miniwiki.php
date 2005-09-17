@@ -958,7 +958,7 @@
     
     function render() {
       global $renderer;
-      $renderer->render($this->raw_content);
+      $renderer->render($this, $this->raw_content);
     }
     
     function get_all_revisions() {
@@ -1157,7 +1157,7 @@
         $text = str_replace('%FILENAME%', $this->upload_name, $text);
         $text = str_replace('%MIMETYPE%', $this->mime_type, $text);
         $text = str_replace('%LENGTH%', $this->raw_content_length, $text);
-        $renderer->render($text);
+        $renderer->render($this, $text);
       }
     }
 
@@ -1252,12 +1252,16 @@
     # renderer: MW_Renderer
     # raw: raw text to render
     # super_wiki_variables: super MW_Variables to use
-    function MW_Renderer_State($renderer, $raw, $super_wiki_variables) {
+    function MW_Renderer_State($renderer, $page, $raw, $super_wiki_variables) {
       $this->renderer = $renderer;
       $this->raw = $raw;
       $this->headings = array();
       $this->headings_counter = '';
       $this->wiki_variables = new_wiki_variables($super_wiki_variables);
+      if (!($page === null)) {
+        $this->wiki_variables->set('page', $page->name);
+        $this->wiki_variables->set('curpage', $page->name);
+      }
     }
 
     # push new wiki_variables on top of existing ones
@@ -1725,9 +1729,10 @@
     # render Wiki markup to output
     # raw text is split into blocks (separated by empty lines) and then rendered,
     # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
+    # page: MW_Page (may be null)
     # raw: raw text (empty message is output if raw text is empty)
-    function render($raw) {
-      $state = new MW_Renderer_State($this, $raw, new_global_wiki_variables());
+    function render($page, $raw) {
+      $state = new MW_Renderer_State($this, $page, $raw, new_global_wiki_variables());
       $state->render();
     }
     

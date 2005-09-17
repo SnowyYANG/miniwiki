@@ -7,6 +7,8 @@
 
   register_wiki_function('echo', 'wiki_fn_echo');
   register_wiki_function('include', 'wiki_fn_include');
+  register_wiki_function('push_vars', 'wiki_fn_push_vars');
+  register_wiki_function('pop_vars', 'wiki_fn_pop_vars');
   register_wiki_function('user_info', 'wiki_fn_user_info');
 
   # joins arguments and returns them
@@ -19,9 +21,21 @@
     $inc_page_name = $args[0];
     $inc_page = new_page($renderer_state->renderer->db, $inc_page_name, MW_REVISION_HEAD);
     if ($inc_page->load()) {
-      return str_replace("\r", '', $inc_page->raw_content);
+      return '{{&push_vars}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
     }
     return '[['.$inc_page_name .']]';
+  }
+
+  # push new wiki variables on the stack
+  function wiki_fn_push_vars($args, $renderer_state) {
+    $renderer_state->push_variables();
+    return '';
+  }
+
+  # remove last pushed wiki variables from the stack
+  function wiki_fn_pop_vars($args, $renderer_state) {
+    $renderer_state->pop_variables();
+    return '';
   }
 
   # returns user information

@@ -1259,6 +1259,20 @@
       $this->headings_counter = '';
       $this->wiki_variables = new_wiki_variables($super_wiki_variables);
     }
+
+    # push new wiki_variables on top of existing ones
+    function push_variables() {
+      $this->wiki_variables = new_wiki_variables($this->wiki_variables);
+    }
+
+    # pop wiki_variables and restore their super ones
+    function pop_variables() {
+      # we are on original variables which have globals as super
+      if ($this->wiki_variables->supervars->supervars === null) {
+        return;
+      }
+      $this->wiki_variables = $this->wiki_variables->supervars;
+    }
     
     # [private] add heading into headings array
     # level: heading level

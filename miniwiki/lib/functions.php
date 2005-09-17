@@ -19,10 +19,13 @@
   }
 
   # set wiki variable specified by first argument to value specified by second argument
+  # multiple variables may be specified
   function wiki_fn_set($args, $renderer_state) {
-    $name = array_shift($args);
-    $value = array_shift($args);
-    $renderer_state->wiki_variables->set($name, $value);
+    while (count($args) > 0) {
+      $name = array_shift($args);
+      $value = array_shift($args);
+      $renderer_state->wiki_variables->set($name, $value);
+    }
     return '';
   }
 
@@ -39,9 +42,13 @@
   # returns raw content of page specified by first argument
   function wiki_fn_include($args, $renderer_state) {
     $inc_page_name = array_shift($args);
+    $inc_args_str = '';
+    if (count($args) > 0) {
+      $inc_args_str = '|' . join('|', $args);
+    }
     $inc_page = new_page($renderer_state->renderer->db, $inc_page_name, MW_REVISION_HEAD);
     if ($inc_page->load()) {
-      return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .'}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
+      return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .$inc_args_str .'}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
     }
     return '[['.$inc_page_name .']]';
   }

@@ -288,7 +288,19 @@
       if (get_magic_quotes_gpc()) {
         $req_array = array_map("stripslashes", $req_array);
       }
-      $this->page_name = (isset($req_array[MW_REQVAR_PAGE_NAME]) ? $req_array[MW_REQVAR_PAGE_NAME] : MW_DEFAULT_PAGE_NAME);
+      $path_info = '';
+      if (isset($_SERVER['FILEPATH_INFO'])) {
+        $path_info = $_SERVER['FILEPATH_INFO'];
+      } elseif (isset($_SERVER['PATH_INFO'])) {
+        $path_info = $_SERVER['PATH_INFO'];
+      }
+      $this->page_name = MW_DEFAULT_PAGE_NAME;
+      if (strlen(trim($path_info)) > 0) {
+        $path_info = preg_replace('/^\/+/', '', $path_info);
+        $this->page_name = $path_info;
+      } elseif (isset($req_array[MW_REQVAR_PAGE_NAME])) {
+        $this->page_name = $req_array[MW_REQVAR_PAGE_NAME];
+      }
       $this->action = (isset($req_array[MW_REQVAR_ACTION]) ? $req_array[MW_REQVAR_ACTION] : MW_DEFAULT_ACTION);
       $this->revision = (isset($req_array[MW_REQVAR_REVISION]) ? $req_array[MW_REQVAR_REVISION] : MW_REVISION_HEAD);
       $this->content = (isset($req_array[MW_REQVAR_CONTENT]) ? $req_array[MW_REQVAR_CONTENT] : NULL);
@@ -604,9 +616,17 @@
       if (func_num_args() > 1) {
         $rev = func_get_arg(1);
       }
-      return $_SERVER['PHP_SELF'] . '?' . MW_REQVAR_PAGE_NAME . '=' . urlencode($this->name) .
-        (($action == MW_DEFAULT_ACTION) ? '' : '&' . MW_REQVAR_ACTION . '=' . urlencode($action)) .
-        (($rev == MW_REVISION_HEAD) ? '' : '&' . MW_REQVAR_REVISION . '=' . urlencode($rev));
+      $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode($this->name);
+      $in_query = false;
+      if ($action != MW_DEFAULT_ACTION) {
+        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . urlencode($action);
+        $in_query = true;
+      }
+      if ($rev != MW_REVISION_HEAD) {
+        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_REVISION . '=' . urlencode($rev);
+        $in_query = true;
+      }
+      return $ret;
     }
     
     # [override, returns empty array] returns array of MW_Page instances representing all revisions including current one

@@ -28,7 +28,7 @@
 <?php
   } else {
 ?>
-  <link rel="stylesheet" type="text/css" href="data/<?echo MW_DEFAULT_STYLESHEET_NAME ?>"/>
+  <link rel="stylesheet" type="text/css" href="<?echo $_SERVER['SCRIPT_NAME'].'/../data/'.MW_DEFAULT_STYLESHEET_NAME ?>"/>
 <?php
   }
 ?>
@@ -40,7 +40,7 @@
 <?php
   } else {
 ?>
-  <script type="text/javascript" src="data/<?echo MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME ?>"></script>
+  <script type="text/javascript" src="<?echo $_SERVER['SCRIPT_NAME'].'/../data/'.MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME ?>"></script>
 <?php
   }
 ?>

@@ -616,14 +616,14 @@
       if (func_num_args() > 1) {
         $rev = func_get_arg(1);
       }
-      $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode($this->name);
+      $ret = $_SERVER['SCRIPT_NAME'] . '/' . rawurlencode($this->name);
       $in_query = false;
       if ($action != MW_DEFAULT_ACTION) {
-        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . urlencode($action);
+        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . rawurlencode($action);
         $in_query = true;
       }
       if ($rev != MW_REVISION_HEAD) {
-        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_REVISION . '=' . urlencode($rev);
+        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_REVISION . '=' . rawurlencode($rev);
         $in_query = true;
       }
       return $ret;

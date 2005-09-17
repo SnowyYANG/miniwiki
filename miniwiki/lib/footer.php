@@ -35,7 +35,7 @@
   if ($auth->is_logged) {
     $login_action = MW_ACTION_RELOGIN;
     $login_msg = $mw_texts[MWT_LOGGED_AS]." ".htmlspecialchars($auth->user, ENT_NOQUOTES);
-    $login_param = '&'.MW_REQVAR_OLD_USER.'='.urlencode($auth->user);
+    $login_param = '&'.MW_REQVAR_OLD_USER.'='.rawurlencode($auth->user);
   } else {
     $login_action = MW_ACTION_LOGIN;
     $login_msg = $mw_texts[MWT_ACTION_LOGIN];

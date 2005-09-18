@@ -129,6 +129,10 @@
   define("MW_DEFAULT_STYLESHEET_NAME", "default.css");
   # default javascript functions upload name
   define("MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME", "functions.js");
+  # layout page prefix
+  define("MW_PAGE_NAME_PREFIX_LAYOUT", "MW:Layout:");
+  # foot layout page name
+  define("MW_PAGE_NAME_LAYOUT_FOOTER", MW_PAGE_NAME_PREFIX_LAYOUT . "Footer");
 
   # assign user-visible texts to action names
   $mw_texts[MW_ACTION_VIEW] = $mw_texts[MWT_ACTION_VIEW];
@@ -182,10 +186,12 @@
 
   # returns new MW_Variables with prefilled global values
   function new_global_wiki_variables() {
-    global $auth;
+    global $auth, $req;
     $vars = new MW_Variables(null);
     $vars->set('version', MW_VERSION);
     $vars->set('user', ($auth->is_logged ? $auth->user : ''));
+    $vars->set('main_page', MW_PAGE_NAME_MAIN);
+    $vars->set('req_action', $req->action);
     return $vars;
   }
 
@@ -510,7 +516,7 @@
     function open_query_from_array($query_array) {
       $query = array_shift($query_array);
       $args = $query_array;
-      debug('MW_Database.open_query(query='.$query.')');
+      debug('MW_Database.open_query(query='.$query. ')');
       $this->init();
       $i = 0;
       # this is the only preg_replace() with inline PHP code, but since we do not use backreferences
@@ -1261,6 +1267,9 @@
       if (!($page === null)) {
         $this->wiki_variables->set('page', $page->name);
         $this->wiki_variables->set('curpage', $page->name);
+        $this->wiki_variables->set('revision', $page->revision);
+        $this->wiki_variables->set('last_modified', format_last_modified($page->last_modified));
+        $this->wiki_variables->set('has_content', ($page->has_content ? 'true' : ''));
       }
     }
 
@@ -1375,6 +1384,12 @@
       if (preg_match(",^&lt;/form,", $type)) {
         return $this->process_inline_cb_form_end($matches);
       }
+      if (preg_match("/^&lt;box/", $type)) {
+        return $this->process_inline_cb_box($matches);
+      }
+      if (preg_match(",^&lt;/box,", $type)) {
+        return $this->process_inline_cb_box_end($matches);
+      }
       if (preg_match("/^&lt;/", $type)) {
         return $this->process_inline_cb_br($matches);
       }
@@ -1421,7 +1436,7 @@
     function process_inline_cb_form($matches) {
       $method = $matches[1];
       $action = $matches[2];
-      return '<form method="'.$method.'" action="'.$action.'">';
+      return '<form method="'.$method. '" action="'.$action.'">';
     }
 
     # [private] sub-callback for preg_replace_callback in process_inline()
@@ -1471,11 +1486,26 @@
       }
     }
 
+    # [private] sub-callback for preg_replace_callback in process_inline()
+    function process_inline_cb_box_end($matches) {
+      return '</div>';
+    }
+
+    # [private] sub-callback for preg_replace_callback in process_inline()
+    function process_inline_cb_box($matches) {
+      $name = $matches[1];
+      if ($name[0] == '#') {
+        $name = substr($name, 1);
+        return '<div id="'.$name. '">';
+      }
+      return '<div class="'.$name. '">';
+    }
+
     # [private] returns HTML code for inline Wiki markup:
-    #   '''BOLD''', ''ITALIC'', [[PAGE_NAME:LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br> and forms
+    #   '''BOLD''', ''ITALIC'', [[PAGE_NAME:LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br>, forms, boxes
     # text: text to process
     function process_inline($text) {
-      debug('MW_Page.process_inline(text='.$text.')');
+      debug('MW_Page.process_inline(text='.$text. ')');
       $text = preg_replace_callback(
         array("/'''(.*?)'''/",
               "/''(.*?)''/",
@@ -1487,6 +1517,8 @@
               '/&lt;form\s+(.+?)\s+(.+?)\s*&gt;/',
               '/&lt;form-field\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/',
               ',&lt;/form.*?&gt;,',
+              '/&lt;box\s+(.+?)\s*&gt;/',
+              ',&lt;/box.*?&gt;,',
               ),
         array(&$this, 'process_inline_cb'),
         $text);
@@ -1500,7 +1532,7 @@
       $h_name = $matches[2];
       $h_anchor = $this->make_anchor_name($h_name);
       $this->add_heading($h_level, $h_name, $h_anchor);
-      return '<h'.$h_level.'><a name="'.$h_anchor.'">'.$this->process_inline($h_name).'</a></h'.$h_level.'>';
+      return '<h'.$h_level. '><a name="'.$h_anchor.'">'.$this->process_inline($h_name).'</a></h'.$h_level.'>';
     }
     
     # [private] returns HTML code for heading block (=H1= ... ======H6======)
@@ -1520,7 +1552,7 @@
     # item: item to process
     # depth: depth of previous item in the same list block or 0
     function process_list_item($item, &$depth) {
-      debug('MW_Page.process_list_item(item='.$item.', depth='.$depth.')');
+      debug('MW_Page.process_list_item(item='.$item. ', depth='.$depth. ')');
       $ret = '';
       $i = 0;
       while (($i < strlen($item)) && ($item[$i] == '*')) {
@@ -1556,7 +1588,7 @@
     # list block is composed of list items
     # block: block to process
     function process_list_block($block) {
-      debug('MW_Page.process_list_block(block='.$block.')');
+      debug('MW_Page.process_list_block(block='.$block. ')');
       $ret = '';
       $lines = explode("\n", $block);
       $cur_item = '';
@@ -1582,7 +1614,12 @@
     # block content is inline processed
     # block: block to process
     function process_normal_block($block) {
-      return "<p>".$this->process_inline($block)."</p>\n";
+      $processed = $this->process_inline($block);
+      # prevent div inside paragraph
+      if (!(strpos($processed, '<div') === 0)) {
+        return "<p>".$processed. "</p>\n";
+      }
+      return $processed;
     }
     
     # [private] returns HTML for given block
@@ -1604,7 +1641,7 @@
     # chain is composed of blocks separated by empty lines
     # chain: chain to process
     function process_block_chain($chain) {
-      debug('MW_Page.process_block_chain(chain='.$chain.')');
+      debug('MW_Page.process_block_chain(chain='.$chain. ')');
       $chain = htmlspecialchars($chain, ENT_NOQUOTES);
       $blocks = preg_split('/(^|\n+)[ \t]*(\n+|$)/', $chain, -1, PREG_SPLIT_NO_EMPTY);
       $ret = '';
@@ -1624,7 +1661,7 @@
       } elseif ($inc_command[0] != '&') {
         # {{page}} -> {{&include|page}}
         $inc_command = '&include|' . $inc_command;
-      } elseif ((strpos($inc_command, '|') === false)) {
+      } elseif (strpos($inc_command, '|') === false) {
         # backwards compatible {{&func arg}} -> {{&func|arg}}
         $inc_command = preg_replace('/\s+/', '|', $inc_command, 1);
       }
@@ -1643,7 +1680,7 @@
     # this function only replaces all {{...}} with its contents (NOT processed/rendered)
     # line: line to process
     function process_includes($line) {
-      debug('MW_Page.process_includes(line='.$line.')');
+      debug('MW_Page.process_includes(line='.$line. ')');
       $line = preg_replace_callback(
         '/{{(.*?)}}/',
         array(&$this, 'process_includes_cb'),
@@ -1666,9 +1703,20 @@
       $current_chain = '';
       $notoc = false;
       $output = '';
+      $if_skip_counter = 0;
       # the count() hack is because some our lines are empty which causes while(array_shift) to terminate prematurely
       while (count($lines) > 0) {
         $line = array_shift($lines);
+        if ($if_skip_counter > 0) {
+          if (strpos($line, '#ENDIF') === 0) {
+            $if_skip_counter--;
+          } elseif (strpos($line, '#IF') === 0) {
+            $if_skip_counter++;
+          }
+          if ($if_skip_counter > 0) {
+            continue;
+          }
+        }
         if (!$in_pre && preg_match('/^<pre>/i', $line)) {
           $output .= $this->process_block_chain($current_chain);
           $current_chain = '';
@@ -1685,6 +1733,15 @@
           }
         } elseif (strpos($line, '#NOTOC') === 0) {
           $notoc = true;
+        } elseif (strpos($line, '#IF') === 0) {
+          # for #IFEMPTY
+          $empty_cond = (strpos($line, 'EMPTY') === 3);
+          $tokens = explode(' ', $line, 2);
+          $value = $this->process_includes($tokens[1]);
+          $is_empty = (strlen(trim($value)) == 0);
+          if (!(($empty_cond && $is_empty) || (!$empty_cond && !$is_empty))) {
+            $if_skip_counter++;
+          }
         } elseif (strpos($line, '#') === 0) {
           # omit directives
         } elseif (!(strpos($line, '{{') === false)) {

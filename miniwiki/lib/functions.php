@@ -12,6 +12,10 @@
   register_wiki_function('push_vars', 'wiki_fn_push_vars');
   register_wiki_function('pop_vars', 'wiki_fn_pop_vars');
   register_wiki_function('user_info', 'wiki_fn_user_info');
+  register_wiki_function('action_link', 'wiki_fn_action_link');
+  register_wiki_function('is_eq', 'wiki_fn_is_eq');
+  register_wiki_function('has_action', 'wiki_fn_has_action');
+  register_wiki_function('is_action_permitted', 'wiki_fn_is_action_permitted');
 
   # joins arguments and returns them
   function wiki_fn_echo($args, $renderer_state) {
@@ -82,4 +86,74 @@
     return null;
   }
 
+  # returns URL for given action, revision (set to revision variable if omitted; head means HEAD rvision)
+  # and page (set to page variable if omitted)
+  function wiki_fn_action_link($args, $renderer_state) {
+    $action = array_shift($args);
+    $revision = array_shift($args);
+    if ($revision === null) {
+      $revision = $renderer_state->wiki_variables->get('revision');
+    }
+    $page_name = array_shift($args);
+    if ($page_name === null) {
+      $page_name = $renderer_state->wiki_variables->get('page');
+    }
+    if ($revision == 'head') {
+      $revision = MW_REVISION_HEAD;
+    }
+    $page = new_page($renderer_state->renderer->db, $page_name, $revision);
+    if ($action == MW_ACTION_RELOGIN) {
+      return $page->url_for_action($action).'&'.MW_REQVAR_OLD_USER.'='.$renderer_state->wiki_variables->get('user');
+    }
+    return $page->url_for_action($action);
+  }
+  
+  # returns non-empty string if two values are equal (as strings), empty otherwise
+  function wiki_fn_is_eq($args, $renderer_state) {
+    $val1 = array_shift($args);
+    $val2 = array_shift($args);
+    return ($val1 == $val2) ? 'true' : '';
+  }
+
+  # returns non-empty string if given action is available for revision (set to revision variable if omitted; head means HEAD revision)
+  # and page (set to page variable if omitted) 
+  function wiki_fn_has_action($args, $renderer_state) {
+    $action = array_shift($args);
+    $revision = array_shift($args);
+    if ($revision === null) {
+      $revision = $renderer_state->wiki_variables->get('revision');
+    }
+    $page_name = array_shift($args);
+    if ($page_name === null) {
+      $page_name = $renderer_state->wiki_variables->get('page');
+    }
+    if ($revision == 'head') {
+      $revision = MW_REVISION_HEAD;
+    }
+    $page = new_page($renderer_state->renderer->db, $page_name, $revision);
+    global $auth;
+    return ($page->has_action($action) ? 'true' : '');
+  }
+  
+  # returns non-empty string if current user has permission on given action
+  # for revision (set to revision variable if omitted; head means HEAD revision)
+  # and page (set to page variable if omitted) 
+  function wiki_fn_is_action_permitted($args, $renderer_state) {
+    $action = array_shift($args);
+    $revision = array_shift($args);
+    if ($revision === null) {
+      $revision = $renderer_state->wiki_variables->get('revision');
+    }
+    $page_name = array_shift($args);
+    if ($page_name === null) {
+      $page_name = $renderer_state->wiki_variables->get('page');
+    }
+    if ($revision == 'head') {
+      $revision = MW_REVISION_HEAD;
+    }
+    $page = new_page($renderer_state->renderer->db, $page_name, $revision);
+    global $auth;
+    return ($auth->is_action_permitted($action, $page) ? 'true' : '');
+  }
+  
 ?>

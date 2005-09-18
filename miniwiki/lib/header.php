@@ -1,6 +1,3 @@
-<?echo '<?xml version="1.0" encoding="'.$mw_encoding.'"?>',"\n" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html>
 <?php
   # $Id$
   # (c)2005 Stepan Roh <src@srnet.cz>
@@ -10,12 +7,30 @@
   # mw_encoding: output encoding
   # page: current MW_Page
   # title: override page name
+  # db: curent MW_Database
+  # renderer: current MW_Renderer
 
   if (!isset ($title)) {
     $title = $page->title;
   }
+
+  $layout_header = new_page($db, MW_PAGE_NAME_LAYOUT_HEADER, MW_REVISION_HEAD);
+  if ($layout_header->load()) {
+    $vars = new_global_wiki_variables();
+    $vars->set('title', $title);
+    $info_text = get_info_text();
+    if (count($info_text) > 0) {
+      $vars->set('info_text', implode(' ', $info_text));
+    }
+    $renderer->render($page, $layout_header->raw_content, $vars);
+  } else {
+
   $title = htmlspecialchars($title, ENT_NOQUOTES);
+
 ?>
+<?echo '<?xml version="1.0" encoding="'.$mw_encoding.'"?>',"\n" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
 <head>
   <?echo '<meta http-equiv="Content-Type" content="text/html; charset='.$mw_encoding.'"/>' ?>
   <?echo '<meta name="generator" content="', MW_NAME, '/', MW_VERSION, '"/>' ?>
@@ -51,5 +66,7 @@
   $info_text = get_info_text();
   if (count($info_text) > 0) {
     echo '<div class="info-text">', htmlspecialchars(implode(' ', $info_text), ENT_NOQUOTES), '</div>',"\n";
+  }
+  
   }
 ?>

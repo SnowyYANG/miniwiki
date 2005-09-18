@@ -16,6 +16,7 @@
   register_wiki_function('is_eq', 'wiki_fn_is_eq');
   register_wiki_function('has_action', 'wiki_fn_has_action');
   register_wiki_function('is_action_permitted', 'wiki_fn_is_action_permitted');
+  register_wiki_function('exists', 'wiki_fn_exists');
 
   # joins arguments and returns them
   function wiki_fn_echo($args, $renderer_state) {
@@ -154,6 +155,13 @@
     $page = new_page($renderer_state->renderer->db, $page_name, $revision);
     global $auth;
     return ($auth->is_action_permitted($action, $page) ? 'true' : '');
+  }
+  
+  # returns non-empty string if given page exists
+  function wiki_fn_exists($args, $renderer_state) {
+    $page_name = array_shift($args);
+    $page = new_page($renderer_state->renderer->db, $page_name, MW_REVISION_HEAD);
+    return ($page->exists() ? 'true' : '');
   }
   
 ?>

@@ -9,10 +9,10 @@
   # mw_texts: texts array
   # page: current MW_Page
   # req: current MW_Request
+  # renderer: current MW_Renderer
 
   $layout_footer = new_page($db, MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
   if ($layout_footer->load()) {
-    global $renderer;
     $renderer->render($page, $layout_footer->raw_content);
   } else {
 
@@ -57,9 +57,7 @@
   # current page HEAD actions
   show_actions(array(MW_ACTION_VIEW, MW_ACTION_EDIT, MW_ACTION_DELETE, MW_ACTION_HISTORY), true);
   
-  echo "</div>\n";
+  echo "</div>\n</body>\n</html>";
   
   }
 ?>
-</body>
-</html>

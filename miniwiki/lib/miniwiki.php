@@ -131,8 +131,10 @@
   define("MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME", "functions.js");
   # layout page prefix
   define("MW_PAGE_NAME_PREFIX_LAYOUT", "MW:Layout:");
-  # foot layout page name
+  # footer layout page name
   define("MW_PAGE_NAME_LAYOUT_FOOTER", MW_PAGE_NAME_PREFIX_LAYOUT . "Footer");
+  # header layout page name
+  define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
 
   # assign user-visible texts to action names
   $mw_texts[MW_ACTION_VIEW] = $mw_texts[MWT_ACTION_VIEW];
@@ -192,6 +194,7 @@
     $vars->set('user', ($auth->is_logged ? $auth->user : ''));
     $vars->set('main_page', MW_PAGE_NAME_MAIN);
     $vars->set('req_action', $req->action);
+    $vars->set('self_link_dir', $_SERVER['SCRIPT_NAME'].'/../');
     return $vars;
   }
 
@@ -1688,6 +1691,19 @@
       return $line;
     }
     
+    # [private] process header link
+    # header link may be either raw URL or [[page]]
+    # link: header link value
+    function process_header_link($link) {
+      if (strpos($link, '[[') === 0) {
+        # [[page]]
+        $link = substr($link, 2, strlen($link) - 4);
+        $linked_page = new_page($this->renderer->db, $link, MW_REVISION_HEAD);
+        $link = $linked_page->url_for_action(MW_ACTION_VIEW);
+      }
+      return htmlspecialchars($link, ENT_QUOTES);
+    }
+    
     # render Wiki markup to output
     # raw text is split into blocks (separated by empty lines) and then rendered,
     # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
@@ -1742,6 +1758,43 @@
           if (!(($empty_cond && $is_empty) || (!$empty_cond && !$is_empty))) {
             $if_skip_counter++;
           }
+        } elseif (strpos($line, '#ENDPAGE') === 0) {
+          $output .= $this->process_block_chain($current_chain);
+          $current_chain = '';
+          $output .= "\n</body>\n</html>\n";
+        } elseif (strpos($line, '#PAGE') === 0) {
+          $output .= $this->process_block_chain($current_chain);
+          $current_chain = '';
+          global $mw_encoding;
+          $output .= '<?xml version="1.0" encoding="'.$mw_encoding. '"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>'."\n";
+        } elseif (strpos($line, '#ENDHEADER') === 0) {
+          $output .= $this->process_block_chain($current_chain);
+          $current_chain = '';
+          $output .= "</head>\n<body>\n";
+        } elseif (strpos($line, '#HEADER') === 0) {
+          $output .= $this->process_block_chain($current_chain);
+          $current_chain = '';
+          global $mw_encoding;
+          $output .= '<head>
+  <meta http-equiv="Content-Type" content="text/html; charset='.$mw_encoding. '"/>
+  <meta name="generator" content="'. MW_NAME. '/'. MW_VERSION. '"/>'."\n";
+        } elseif (strpos($line, '#META') === 0) {
+          $output .= $this->process_block_chain($current_chain);
+          $current_chain = '';
+          $tokens = explode(' ', $line);
+          $meta_name = $tokens[1];
+          $meta_value = $this->process_includes($tokens[2]);
+          if ($meta_name == 'title') {
+            $output .= '  <title>'.$meta_value .'</title>'."\n";
+          } elseif ($meta_name == 'stylesheet') {
+            $meta_value = $this->process_header_link($meta_value);
+            $output .= '  <link rel="stylesheet" type="text/css" href="'.$meta_value. '"/>'."\n";
+          } elseif ($meta_name == 'javascript') {
+            $meta_value = $this->process_header_link($meta_value);
+            $output .= '  <script type="text/javascript" src="'.$meta_value .'"></script>'."\n";
+          }
         } elseif (strpos($line, '#') === 0) {
           # omit directives
         } elseif (!(strpos($line, '{{') === false)) {
@@ -1788,8 +1841,16 @@
     # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
     # page: MW_Page (may be null)
     # raw: raw text (empty message is output if raw text is empty)
+    # vars (optional): MW_Variables to be used as global variables
     function render($page, $raw) {
-      $state = new MW_Renderer_State($this, $page, $raw, new_global_wiki_variables());
+      $vars = null;
+      if (func_num_args() > 2) {
+        $vars = func_get_arg(2);
+      }
+      if ($vars === null) {
+        $vars = new_global_wiki_variables();
+      }
+      $state = new MW_Renderer_State($this, $page, $raw, $vars);
       $state->render();
     }
     

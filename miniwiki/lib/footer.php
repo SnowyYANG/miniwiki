@@ -1,4 +1,3 @@
-<div class="footer">
 <?php
   # $Id$
   # (c)2005 Stepan Roh <src@srnet.cz>
@@ -10,6 +9,14 @@
   # mw_texts: texts array
   # page: current MW_Page
   # req: current MW_Request
+
+  $layout_footer = new_page($db, MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
+  if ($layout_footer->load()) {
+    global $renderer;
+    $renderer->render($page, $layout_footer->raw_content);
+  } else {
+
+  echo '<div class="footer">', "\n";
 
   # shows action links (active if current user has permissions, completely missing if current page does not have such action)
   # actions: array of action names
@@ -49,7 +56,10 @@
   }
   # current page HEAD actions
   show_actions(array(MW_ACTION_VIEW, MW_ACTION_EDIT, MW_ACTION_DELETE, MW_ACTION_HISTORY), true);
+  
+  echo "</div>\n";
+  
+  }
 ?>
-</div>
 </body>
 </html>

@@ -67,6 +67,9 @@
         if ($page->load()) {
           include(($action == MW_ACTION_VIEW_SOURCE) ? 'viewsource.php' : 'viewpage.php');
           break;
+        } else if (is_a($page, 'MW_Special_Upload_Page') && $page->is_data_page) {
+          # missing data page should raise 404 Not Found
+          header ("HTTP/1.0 404 Not Found");
         }
         # fallback to edit if page does not exist
         return MW_ACTION_EDIT;

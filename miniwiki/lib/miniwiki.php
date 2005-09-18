@@ -647,7 +647,9 @@
     # [override] update and reload page (revision will change)
     # content: new content
     # message: change message
+    # returns true if content has been set (it was different from old content)
     function update($content, $message) {
+      return false;
     }
     
     # [override] set content for preview
@@ -935,6 +937,10 @@
     }
     
     function update($content, $message) {
+      $this->load();
+      if ($this->has_content && ($this->raw_content == $content)) {
+        return false;
+      }
       global $auth;
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
@@ -954,6 +960,7 @@
         $this->name, $rev, $content, $message, $this->user);
       $this->db->exec_statement('unlock tables');
       $this->load();
+      return true;
     }
 
     function update_for_preview($content) {
@@ -1152,6 +1159,7 @@
         $this->upload_name, $rev, $content, $message, $this->user);
       $this->db->exec_statement('unlock tables');
       $this->load();
+      return true;
     }
 
     function render() {

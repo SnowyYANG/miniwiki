@@ -96,8 +96,8 @@
           $page->update_for_preview($req->content);
           return MW_ACTION_EDIT;
         } else {
-          $page->update($req->content, $req->message);
-          add_info_text($mw_texts[MWT_PAGE_UPDATED]);
+          $changed = $page->update($req->content, $req->message);
+          add_info_text($changed ? $mw_texts[MWT_PAGE_UPDATED] : $mw_texts[MWT_PAGE_NOT_UPDATED]);
           return MW_ACTION_VIEW;
         }
       case MW_ACTION_UPLOAD:

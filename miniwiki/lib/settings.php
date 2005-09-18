@@ -39,6 +39,7 @@
   define("MWT_UPLOAD_BUTTON", 29);
   define("MWT_UPLOAD_MESSAGE", 30);
   define("MWT_FILE_UPLOADED", 31);
+  define("MWT_PAGE_NOT_UPDATED", 32);
   define("MWT_ACTION_UPDATE", MWT_ACTION_EDIT);
   define("MWT_ACTION_RELOGIN", MWT_ACTION_LOGIN);
   define("MWT_ACTION_CHANGE_PASSWORD", MWT_CHANGE_PASSWORD_BUTTON);
@@ -87,6 +88,7 @@ For uploading new version, please, use '''Edit''' link at the bottom.",
     MWT_UPLOAD_BUTTON => "Upload",
     MWT_UPLOAD_MESSAGE => "Upload message: ",
     MWT_FILE_UPLOADED => "File uploaded.",
+    MWT_PAGE_NOT_UPDATED => "No edits. Page was not updated.",
   );
   
   # returns information file name for given user (for use by user_info wiki function)

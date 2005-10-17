@@ -2,7 +2,7 @@
 
 CREATE TABLE pages (
   name varchar(100) NOT NULL default '',
-  revision int(11) NOT NULL default '0',
+  revision int(11) NOT NULL default NULL AUTO_INCREMENT,
   content text,
   last_modified timestamp(14) NOT NULL,
   message varchar(250) default NULL,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 CREATE TABLE uploads (
   name varchar(100) NOT NULL default '',
-  revision int(11) NOT NULL default '0',
+  revision int(11) NOT NULL default NULL AUTO_INCREMENT,
   content mediumblob,
   last_modified timestamp(14) NOT NULL,
   message varchar(250) default NULL,

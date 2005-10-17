@@ -1,3 +1,5 @@
 -- $Id$
 
 UPDATE pages SET name="Main Page" WHERE name="MainPage";
+ALTER TABLE pages MODIFY revision int(11) NOT NULL DEFAULT NULL AUTO_INCREMENT; 
+ALTER TABLE uploads MODIFY revision int(11) NOT NULL DEFAULT NULL AUTO_INCREMENT; 

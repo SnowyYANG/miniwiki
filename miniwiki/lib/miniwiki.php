@@ -944,21 +944,12 @@
       global $auth;
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
-      $this->db->exec_statement('lock tables '.MW_DB_TABLE_PAGES.' write');
-      $rev = 1;
-      $query = $this->db->open_query('select max(revision) from '.MW_DB_TABLE_PAGES.' where '.MW_DB_TABLE_PAGES_COLUMN_NAME.'=?', $this->name);
-      if (($result = $this->db->fetch_query_result($query))) {
-        $rev = $result[0] + 1;
-      }
-      $this->db->close_query($query);
       $this->db->exec_statement('insert into '.MW_DB_TABLE_PAGES.' ('.
         MW_DB_TABLE_PAGES_COLUMN_NAME. ', '.
-        MW_DB_TABLE_PAGES_COLUMN_REVISION. ', '.
         MW_DB_TABLE_PAGES_COLUMN_CONTENT. ', '.
         MW_DB_TABLE_PAGES_COLUMN_MESSAGE. ', '.
-        MW_DB_TABLE_PAGES_COLUMN_USER. ') values (?, ?, ?, ?, ?)',
-        $this->name, $rev, $content, $message, $this->user);
-      $this->db->exec_statement('unlock tables');
+        MW_DB_TABLE_PAGES_COLUMN_USER. ') values (?, ?, ?, ?)',
+        $this->name, $content, $message, $this->user);
       $this->load();
       return true;
     }
@@ -1143,21 +1134,12 @@
       global $auth;
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
-      $this->db->exec_statement('lock tables '.MW_DB_TABLE_UPLOADS.' write');
-      $rev = 1;
-      $query = $this->db->open_query('select max(revision) from '.MW_DB_TABLE_UPLOADS.' where '.MW_DB_TABLE_UPLOADS_COLUMN_NAME.'=?', $this->upload_name);
-      if (($result = $this->db->fetch_query_result($query))) {
-        $rev = $result[0] + 1;
-      }
-      $this->db->close_query($query);
       $this->db->exec_statement('insert into '.MW_DB_TABLE_UPLOADS.' ('.
         MW_DB_TABLE_UPLOADS_COLUMN_NAME. ', '.
-        MW_DB_TABLE_UPLOADS_COLUMN_REVISION. ', '.
         MW_DB_TABLE_UPLOADS_COLUMN_CONTENT. ', '.
         MW_DB_TABLE_UPLOADS_COLUMN_MESSAGE. ', '.
-        MW_DB_TABLE_UPLOADS_COLUMN_USER. ') values (?, ?, ?, ?, ?)',
-        $this->upload_name, $rev, $content, $message, $this->user);
-      $this->db->exec_statement('unlock tables');
+        MW_DB_TABLE_UPLOADS_COLUMN_USER. ') values (?, ?, ?, ?)',
+        $this->upload_name, $content, $message, $this->user);
       $this->load();
       return true;
     }

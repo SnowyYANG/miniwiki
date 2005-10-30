@@ -95,5 +95,9 @@ For uploading new version, please, use '''Edit''' link at the bottom.",
   function get_user_info_file($user) {
     return 'users/'.$user;
   }
+
+  $renderer_class_name = "MW_CoreRenderer";
+  $users_manager_class_name = "MW_CoreUsersManager";
+  $storage_class_name = "MW_MySQL_Storage";
   
 ?>

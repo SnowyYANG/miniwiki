@@ -11,7 +11,7 @@
   # req: current MW_Request
   # renderer: current MW_Renderer
 
-  $layout_footer = new_page($db, MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
+  $layout_footer = new_page(MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
   if ($layout_footer->load()) {
     $renderer->render($page, $layout_footer->raw_content);
   } else {
@@ -35,7 +35,7 @@
   }
 
   # MainPage link
-  $main_page = new_page($db, MW_DEFAULT_PAGE_NAME, MW_REVISION_HEAD);
+  $main_page = new_page(MW_DEFAULT_PAGE_NAME, MW_REVISION_HEAD);
   echo '<a href="', htmlspecialchars($main_page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES), '">', htmlspecialchars($main_page->name, ENT_NOQUOTES), '</a>';
   # login status and actions
   $login_param = '';

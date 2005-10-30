@@ -5,18 +5,32 @@
 
   # main entrance page
 
+  define("MW_DEBUG", false);
+  
+  # error handler
+  function error_handler($errno, $errstr, $errfile, $errline) {
+    echo "<b>OOPS! Something is wrong: $errstr</b><br/>(error code $errno, file $errfile, line $errline)<br/><br/>\n";
+  }
+  set_error_handler("error_handler");
+  
+  # echo debug message (if MW_DEBUG is true)
+  # msg: message to show
+  function debug($msg) {
+    if (MW_DEBUG) {
+      echo '<div class="debug">'.htmlspecialchars('DEBUG: '.$msg, ENT_NOQUOTES),"</div>\n";
+    }
+  }
+  
   ini_set('include_path', ini_get('include_path').':.');
 
   include('settings.php');
-  include('debug.php');
-  include('error.php');
   include('miniwiki.php');
-  include('functions.php');
-  $db = new_database($mw_db_host, $mw_db_user, $mw_db_pass, $mw_db_name);
-  $renderer = new_renderer($db);
+  $storage = new_storage();
+  $users_mgr = new_users_manager();
+  $renderer = new_renderer();
   $req = new_request();
   $auth = new_auth();
-  $page = new_page($db, $req->page_name, $req->revision);
+  $page = new_page($req->page_name, $req->revision);
   if ($auth->is_invalid()) {
     add_info_text($mw_texts[MWT_LOGIN_INVALID]);
   }
@@ -48,17 +62,17 @@
         }
         return MW_ACTION_VIEW;
       case MW_ACTION_CREATE_USER:
-        $user_page = new_user_page($db, $req->user);
+        $user_page = new_user_page($req->user);
         $user_page->create_user();
         add_info_text($mw_texts[MWT_USER_CREATED]);
         return MW_ACTION_VIEW;
       case MW_ACTION_DELETE_USER:
-        $user_page = new_user_page($db, $req->user);
+        $user_page = new_user_page($req->user);
         $user_page->delete_user();
         add_info_text($mw_texts[MWT_USER_DELETED]);
         return MW_ACTION_VIEW;
       case MW_ACTION_CHANGE_PASSWORD:
-        $user_page = new_user_page($db, $req->user);
+        $user_page = new_user_page($req->user);
         $user_page->change_password($req->pass);
         add_info_text($mw_texts[MWT_PASSWORD_CHANGED]);
         return MW_ACTION_VIEW;
@@ -126,5 +140,6 @@
     $action = handle_action($action);
   }
   
-  $db->destroy();
+  $users_mgr->destroy();
+  $storage->destroy();
 ?>

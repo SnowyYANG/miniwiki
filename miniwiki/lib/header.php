@@ -14,7 +14,7 @@
     $title = $page->title;
   }
 
-  $layout_header = new_page($db, MW_PAGE_NAME_LAYOUT_HEADER, MW_REVISION_HEAD);
+  $layout_header = new_page(MW_PAGE_NAME_LAYOUT_HEADER, MW_REVISION_HEAD);
   if ($layout_header->load()) {
     $vars = new_global_wiki_variables();
     $vars->set('title', $title);
@@ -36,7 +36,7 @@
   <?echo '<meta name="generator" content="', MW_NAME, '/', MW_VERSION, '"/>' ?>
   <title><?echo $title ?></title>
 <?php
-  $css_page = new_page($db, MW_PAGE_NAME_PREFIX_DATA.MW_DEFAULT_STYLESHEET_NAME, MW_REVISION_HEAD);
+  $css_page = new_page(MW_PAGE_NAME_PREFIX_DATA.MW_DEFAULT_STYLESHEET_NAME, MW_REVISION_HEAD);
   if ($css_page->exists()) {
 ?>
   <link rel="stylesheet" type="text/css" href="<?echo $css_page->url_for_action(MW_ACTION_VIEW) ?>"/>
@@ -48,7 +48,7 @@
   }
 ?>
 <?php
-  $js_page = new_page($db, MW_PAGE_NAME_PREFIX_DATA.MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME, MW_REVISION_HEAD);
+  $js_page = new_page(MW_PAGE_NAME_PREFIX_DATA.MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME, MW_REVISION_HEAD);
   if ($js_page->exists()) {
 ?>
   <script type="text/javascript" src="<?echo $js_page->url_for_action(MW_ACTION_VIEW) ?>"></script>

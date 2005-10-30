@@ -12,7 +12,7 @@
   $hist_pages = $page->get_all_revisions();
   foreach ($hist_pages as $hist_page) {
     if (isset($hist_page->user)) {
-      $user_page = new_user_page($hist_page->db, $hist_page->user);
+      $user_page = new_user_page($hist_page->user);
     }
     echo '<li><a href="', $hist_page->url_for_action(MW_ACTION_VIEW), '">',
       format_last_modified($hist_page->last_modified), '</a>',

@@ -6,3 +6,4 @@ packaged
 *.kdevses
 local
 templates
+gendoc

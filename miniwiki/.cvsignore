@@ -1,3 +1,6 @@
 *.dump
 packaged
 *.sample
+.project
+*.kdevelop
+*.kdevses

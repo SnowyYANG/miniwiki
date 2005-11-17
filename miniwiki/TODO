@@ -1,0 +1,14 @@
+TODO list:
+
+- recent changes page
+- layout page describing how everything looks (not just header and footer)
+- install/upgrade script (including db scheme change (needs support in
+  storages) and default pages update)
+- per-user access rights (includes moving MW_Auth into extension)
+- Wiki spaces (hierarchical page spaces)
+- convert Special pages to use Wiki markup
+- allow pages to see custom request parameters
+- unified way oh indicating what pages produce (by specifying MIME type of
+  output) and allow rendering into different formats ((X)HTML, PDF, text...)
+
+$Id$

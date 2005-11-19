@@ -8,7 +8,7 @@ TODO list:
 - Wiki spaces (hierarchical page spaces)
 - convert Special pages to use Wiki markup
 - allow pages to see custom request parameters
-- unified way oh indicating what pages produce (by specifying MIME type of
+- unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - import/export of pages and other data (used also by install/upgrade)
 

@@ -5,6 +5,8 @@
 
   # extension Core Special Upload (bundled)
 
+  define("MW_DS_UPLOADS", "uploads");
+  
   class EXT_CoreSpecialUpload extends MW_Extension {
 
     function get_name() {
@@ -21,6 +23,8 @@
 
     function initialize() {
       register_page_handler(new MW_Special_Upload_Page_Handler());
+      $dataspace_def = new MW_DataSpace_Definition(MW_DS_UPLOADS, true, MW_RESOURCE_CONTENT_TYPE_BINARY);
+      register_dataspace($dataspace_def);
       return true;
     }
 

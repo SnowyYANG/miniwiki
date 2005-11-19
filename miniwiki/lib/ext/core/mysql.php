@@ -27,6 +27,8 @@
 
   register_extension(new EXT_CoreMySQLStorage());
 
+  define("MW_RESOURCE_KEY_AUTHOR_COMPATIBLE", "user");
+  
   # database access class
   class MW_MySQL_Storage extends MW_Storage {
     # [private] attributes
@@ -70,14 +72,14 @@
       $this->close_query($query);
       return $ret;
     }
-    
-    function get_resource($dataspace, $name, $revision, $with_data) {
-      # TODO
-      $has_content = ($dataspace != MW_DS_USERS);
-      $is_versioned = ($dataspace != MW_DS_USERS);
+
+    function get_resource_internal($dataspace, $name, $revision, $with_data) {
+      $ds_def = $this->dataspace_defs[$dataspace];
+      $has_content = ($ds_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE);
+      $is_versioned = ($ds_def->is_versioned());
+      # TODO schema update is not yet working
       $has_timestamp = ($dataspace != MW_DS_USERS);
-      $has_password = ($dataspace == MW_DS_USERS);
-      if ($is_versioned) {
+      if (isset($revision) && $is_versioned) {
         if ($revision == MW_REVISION_HEAD) {
           $query = $this->open_query('select max(revision) from '.$dataspace. ' where '.MW_RESOURCE_KEY_NAME.'=?', $name);
           if (($result = $this->fetch_query_result($query))) {
@@ -86,22 +88,30 @@
           $this->close_query($query);
         }
       }
-      $query = $this->open_query('select '.
+      return $this->open_query('select '.
          ($has_content && $with_data ? MW_RESOURCE_KEY_CONTENT.',' : '').
          ($has_content ? 'length('.MW_RESOURCE_KEY_CONTENT.') as '.MW_RESOURCE_KEY_CONTENT_LENGTH.',' : '').
          ($has_timestamp ? MW_RESOURCE_KEY_LAST_MODIFIED.',' : '').
          ($is_versioned ? MW_RESOURCE_KEY_MESSAGE.',' : '').
-         ($is_versioned ? MW_RESOURCE_KEY_AUTHOR.',' : '').
-         ($has_password ? MW_RESOURCE_KEY_PASSWORD.',' : '').
+         ($is_versioned ? MW_RESOURCE_KEY_AUTHOR_COMPATIBLE.',' : '').
+         (!isset($revison) && $is_versioned ? MW_RESOURCE_KEY_REVISION.',' : '').
+         (sizeof($ds_def->get_custom_keys()) > 0 ? implode(array_keys($ds_def->get_custom_keys()), ',').',' : '').
          MW_RESOURCE_KEY_NAME.
          ' from '.$dataspace. ' where '.
-         MW_RESOURCE_KEY_NAME.'=?'.($is_versioned ? ' and '.MW_RESOURCE_KEY_REVISION.'=?' : ''),
+         MW_RESOURCE_KEY_NAME.'=?'.(isset($revision) && $is_versioned ? ' and '.MW_RESOURCE_KEY_REVISION.'=?' : ''),
          $name, $revision);
+    }
+    
+    function get_resource($dataspace, $name, $revision, $with_data) {
+      $query = $this->get_resource_internal($dataspace, $name, $revision, $with_data);
       $res = null;
       if (($result = $this->fetch_query_result($query))) {
         $res = new MW_Resource();
         foreach ($result as $key => $value) {
           if (!is_int($key)) {
+            if ($key == MW_RESOURCE_KEY_AUTHOR_COMPATIBLE) {
+              $key = MW_RESOURCE_KEY_AUTHOR;
+            }
             $res->set($key, $value);
           }
         }
@@ -123,8 +133,8 @@
     }
     
     function update_resource_internal($dataspace, $resource, $should_create) {
-      # TODO
-      $is_versioned = ($dataspace != MW_DS_USERS);
+      $ds_def = $this->dataspace_defs[$dataspace];
+      $is_versioned = ($ds_def->is_versioned());
       $keys = array();
       $cols = array();
       $placeholders = array();
@@ -136,6 +146,9 @@
         }
         if (!$is_versioned && !$should_create && ($key == MW_RESOURCE_KEY_NAME)) {
           continue;
+        }
+        if ($key == MW_RESOURCE_KEY_AUTHOR) {
+          $key = MW_RESOURCE_KEY_AUTHOR_COMPATIBLE;
         }
         array_push($keys, $key);
         array_push($placeholders, '?');
@@ -161,28 +174,15 @@
     
     # ordered by revision from last to first
     function get_resource_history($dataspace, $name, $with_data) {
-      # TODO
-      $has_content = ($dataspace != MW_DS_USERS);
-      $is_versioned = ($dataspace != MW_DS_USERS);
-      $has_timestamp = ($dataspace != MW_DS_USERS);
-      $has_password = ($dataspace == MW_DS_USERS);
-      $query = $this->open_query('select '.
-         ($has_content && $with_data ? MW_RESOURCE_KEY_CONTENT.',' : '').
-         ($has_content ? 'length('.MW_RESOURCE_KEY_CONTENT.') as '.MW_RESOURCE_KEY_CONTENT_LENGTH.',' : '').
-         ($has_timestamp ? MW_RESOURCE_KEY_LAST_MODIFIED.',' : '').
-         ($is_versioned ? MW_RESOURCE_KEY_MESSAGE.',' : '').
-         ($is_versioned ? MW_RESOURCE_KEY_AUTHOR.',' : '').
-         ($is_versioned ? MW_RESOURCE_KEY_REVISION.',' : '').
-         ($has_password ? MW_RESOURCE_KEY_PASSWORD.',' : '').
-         MW_RESOURCE_KEY_NAME.
-         ' from '.$dataspace. ' where '.
-         MW_RESOURCE_KEY_NAME.'=?'.($is_versioned ? ' order by '.MW_RESOURCE_KEY_REVISION.' desc' : ''),
-         $name);
+      $query = $this->get_resource_internal($dataspace, $name, null, $with_data);
       $ret = array();
       while (($result = $this->fetch_query_result($query))) {
         $res = new MW_Resource();
         foreach ($result as $key => $value) {
           if (!is_int($key)) {
+            if ($key == MW_RESOURCE_KEY_AUTHOR_COMPATIBLE) {
+              $key = MW_RESOURCE_KEY_AUTHOR;
+            }
             $res->set($key, $value);
           }
         }
@@ -278,6 +278,20 @@
     # result: result from open_query()
     function fetch_query_result($result) {
       return mysql_fetch_array($result);
+    }
+
+    var $dataspace_defs = array();
+
+    function register_dataspace($dataspace_def) {
+      global $install_mode;
+      if ($install_mode) {
+        # TODO update of database schema
+      }
+      $ds_name = $dataspace_def->get_name();
+      if (isset($this->dataspace_defs[$ds_name])) {
+        trigger_error("Duplicate dataspace definition: " . $ds_name);
+      }
+      $this->dataspace_defs[$ds_name] = $dataspace_def;
     }
     
   }

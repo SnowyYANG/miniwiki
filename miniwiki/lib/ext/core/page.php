@@ -5,6 +5,8 @@
 
   # extension Core Page (bundled)
 
+  define("MW_DS_PAGES", "pages");
+  
   class EXT_CorePage extends MW_Extension {
 
     function get_name() {
@@ -21,6 +23,8 @@
 
     function initialize() {
       register_page_handler(new MW_CorePage_Page_Handler());
+      $dataspace_def = new MW_DataSpace_Definition(MW_DS_PAGES, true, MW_RESOURCE_CONTENT_TYPE_TEXT);
+      register_dataspace($dataspace_def);
       return true;
     }
 

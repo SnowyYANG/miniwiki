@@ -137,17 +137,17 @@
   define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
   define("MW_PAGE_TAG_USER", "user");
   define("MW_PAGE_TAG_UPLOAD", "upload");
-  define("MW_DS_PAGES", "pages");
-  define("MW_DS_UPLOADS", "uploads");
-  define("MW_DS_USERS", "users");
   define("MW_RESOURCE_KEY_NAME", "name");
   define("MW_RESOURCE_KEY_CONTENT", "content");
   define("MW_RESOURCE_KEY_CONTENT_LENGTH", "length");
   define("MW_RESOURCE_KEY_LAST_MODIFIED", "last_modified");
   define("MW_RESOURCE_KEY_MESSAGE", "message");
-  define("MW_RESOURCE_KEY_AUTHOR", "user");
+  define("MW_RESOURCE_KEY_AUTHOR", "author");
   define("MW_RESOURCE_KEY_REVISION", "revision");
-  define("MW_RESOURCE_KEY_PASSWORD", "password");
+  define("MW_RESOURCE_CONTENT_TYPE_NONE", "none");
+  define("MW_RESOURCE_CONTENT_TYPE_TEXT", "text");
+  define("MW_RESOURCE_CONTENT_TYPE_BINARY", "binary");
+  define("MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT", "text:");
 
   # assign user-visible texts to action names
   $mw_texts[MW_ACTION_VIEW] = $mw_texts[MWT_ACTION_VIEW];
@@ -350,8 +350,23 @@
   }
   
   function new_storage() {
-    global $storage_class_name;
-    return new $storage_class_name();
+    global $storage_class_name, $delayed_dataspace_registration;
+    $storage = new $storage_class_name();
+    foreach ($delayed_dataspace_registration as $dataspace_def) {
+      $storage->register_dataspace($dataspace_def);
+    }
+    return $storage;
+  }
+
+  $delayed_dataspace_registration = array();
+
+  function register_dataspace($dataspace_def) {
+    global $storage, $delayed_dataspace_registration;
+    if (isset($storage)) {
+      $storage->register_dataspace($dataspace_def);
+    } else {
+      array_push($delayed_dataspace_registration, $dataspace_def);
+    }
   }
 
   # HTTP request class
@@ -531,6 +546,40 @@
     }
   }
 
+  class MW_DataSpace_Definition {
+    var $name;
+    var $versioned;
+    var $content_type;
+    var $custom_keys;
+
+    function MW_DataSpace_Definition($name, $versioned, $content_type) {
+      $this->name = $name;
+      $this->versioned = $versioned;
+      $this->content_type = $content_type;
+      $this->custom_keys = array();
+    }
+
+    function get_name() {
+      return $this->name;
+    }
+
+    function is_versioned() {
+      return $this->versioned;
+    }
+
+    function get_content_type() {
+      return $this->content_type;
+    }
+
+    function get_custom_keys() {
+      return $this->custom_keys;
+    }
+
+    function add_custom_key($name, $type) {
+      $this->custom_keys[$name] = $type;
+    }
+  }
+  
   class MW_Storage {
     # ordered by name
     function get_resource_names($dataspace) {
@@ -561,6 +610,10 @@
     # ordered by revision from last to first
     function get_resource_history($dataspace, $name, $with_data) {
       die("abstract: get_resource_history");
+    }
+
+    function register_dataspace($dataspace_def) {
+      die("abstract: register_dataspace");
     }
     
     function destroy() {

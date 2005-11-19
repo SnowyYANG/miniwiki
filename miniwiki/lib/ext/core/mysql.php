@@ -282,12 +282,66 @@
 
     var $dataspace_defs = array();
 
+    function exists_table($name) {
+      $query = $this->open_query("show tables from ".$this->dbname." like ?", $name);
+      $exists = ($this->fetch_query_result($query));
+      $this->close_query($res);
+      return $exists;
+    }
+
+    function create_dataspace_table($dataspace_def) {
+      $ds_name = $dataspace_def->get_name();
+      $defs = array();
+      # column definitons are ordered to be shown in nice order by default in select *
+      array_push($defs, MW_RESOURCE_KEY_NAME." varchar(100) NOT NULL default ''");
+      if ($dataspace_def->is_versioned()) {
+         array_push($defs, MW_RESOURCE_KEY_REVISION." int(11) NOT NULL default NULL AUTO_INCREMENT");
+      }
+      if ($dataspace_def->get_content_type == MW_RESOURCE_CONTENT_TYPE_TEXT) {
+         array_push($defs, MW_RESOURCE_KEY_CONTENT." text");
+      } else if ($dataspace_def->get_content_type == MW_RESOURCE_CONTENT_TYPE_BINARY) {
+         array_push($defs, MW_RESOURCE_KEY_CONTENT." mediumblob");
+      }
+      array_push($defs, MW_RESOURCE_KEY_LAST_MODIFIED." timestamp(14) NOT NULL");
+      if ($dataspace_def->is_versioned()) {
+         array_push($defs, MW_RESOURCE_KEY_MESSAGE." varchar(250) default NULL");
+         array_push($defs, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE." varchar(100) default NULL");
+      }
+      foreach ($dataspace_def->get_custom_keys() as $key => $type) {
+         list($type_name, $type_arg) = explode(':', $type);
+         if ($type_name == MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT) {
+            if (!isset($type_arg)) {
+               $type_arg = "100";
+            }
+            array_push($defs, "$key $type_name($type_arg)");
+         } else {
+            trigger_error("Unknown custom key type: ".$type_name);
+         }
+      }
+      if ($dataspace_def->is_versioned()) {
+         array_push($defs, "PRIMARY KEY (".MW_RESOURCE_KEY_NAME.",".MW_RESOURCE_KEY_REVISION.")");
+      } else {
+         array_push($defs, "PRIMARY KEY (".MW_RESOURCE_KEY_NAME.")");
+      }
+      $sql = 'create table '.$ds_name. ' ('.implode($defs, ',').')';
+      $this->exec_statement($sql);
+    }
+
+    function alter_dataspace_table($dataspace_def) {
+      $ds_name = $dataspace_def->get_name();
+      # TODO
+    }
+
     function register_dataspace($dataspace_def) {
       global $install_mode;
-      if ($install_mode) {
-        # TODO update of database schema
-      }
       $ds_name = $dataspace_def->get_name();
+      if ($install_mode) {
+        if (!$this->exists_table($ds_name)) {
+          $this->create_dataspace_table($dataspace_def);
+        } else {
+          $this->alter_dataspace_table($dataspace_def);
+        }
+      }
       if (isset($this->dataspace_defs[$ds_name])) {
         trigger_error("Duplicate dataspace definition: " . $ds_name);
       }

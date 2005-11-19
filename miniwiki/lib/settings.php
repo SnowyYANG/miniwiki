@@ -96,8 +96,15 @@ For uploading new version, please, use '''Edit''' link at the bottom.",
     return 'users/'.$user;
   }
 
-  $renderer_class_name = "MW_CoreRenderer";
-  $users_manager_class_name = "MW_CoreUsersManager";
-  $storage_class_name = "MW_MySQL_Storage";
+  # defaults
+  if (!isset($renderer_class_name)) {
+    $renderer_class_name = "MW_CoreRenderer";
+  }
+  if (!isset($users_manager_class_name)) {
+    $users_manager_class_name = "MW_CoreUsersManager";
+  }
+  if (!isset($storage_class_name)) {
+    $storage_class_name = "MW_MySQL_Storage";
+  }
   
 ?>

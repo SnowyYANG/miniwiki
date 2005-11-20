@@ -285,51 +285,176 @@
     function exists_table($name) {
       $query = $this->open_query("show tables from ".$this->dbname." like ?", $name);
       $exists = ($this->fetch_query_result($query));
-      $this->close_query($res);
+      $this->close_query($query);
       return $exists;
+    }
+
+    function get_column_definition($dataspace_def, $name) {
+      switch ($name) {
+        case MW_RESOURCE_KEY_NAME:
+          return $name." varchar(100) NOT NULL default ''";
+        case MW_RESOURCE_KEY_REVISION:
+          return $name." int(11) NOT NULL AUTO_INCREMENT";
+        case MW_RESOURCE_KEY_CONTENT:
+          return $name." ".(($dataspace_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_TEXT) ? "text" : "mediumblob")." default NULL";
+        case MW_RESOURCE_KEY_LAST_MODIFIED:
+          return $name." timestamp(14) NOT NULL";
+        case MW_RESOURCE_KEY_MESSAGE:
+          return $name." varchar(250) default NULL";
+        case MW_RESOURCE_KEY_AUTHOR_COMPATIBLE:
+          return $name." varchar(100) default NULL";
+        default:
+          $custom_keys = $dataspace_def->get_custom_keys();
+          if (isset($custom_keys[$name])) {
+            $type = $custom_keys[$name];
+            list($type_name, $type_arg) = explode(':', $type);
+            if ($type_name.':' === MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT) {
+                if (!isset($type_arg)) {
+                  $type_arg = "100";
+                }
+                return $name." varchar($type_arg) default NULL";
+            } else {
+                trigger_error("Unknown custom key type: ".$type_name);
+            }
+          }
+      }
+      trigger_error("Unknown resource key: ".$name);
+    }
+
+    function query_column_definitions($table_name) {
+      $query = $this->open_query("show columns from ".$table_name);
+      $coldefs = array();
+      while (($res = $this->fetch_query_result($query))) {
+        $name = $res['Field'];
+        $type = $res['Type'];
+        $not_null = ($res['Null'] !== "YES");
+        $primary_key = (stripos($res['Key'], "PRI") !== false);
+        $default = $res['Default'];
+        $auto_increment = (stripos($res['Extra'], "auto_increment") !== false);
+        if (strcasecmp($type, 'timestamp') == 0) {
+          # to be compatible with all MySQL versions
+          $type .= '(14)';
+        }
+        if (stripos($type, 'timestamp') !== false) {
+          if (!$not_null && (strcasecmp($default, 'current_timestamp') == 0)) {
+            $not_null = true;
+            $default = null;
+          }
+        }
+        $coldef = $name.' '.$type;
+        if ($not_null) {
+          $coldef .= ' not null';
+        }
+        if ($default !== null) {
+          $coldef .= ' default ';
+          if (!is_numeric($default)) {
+            $coldef .= "'" . mysql_real_escape_string($default) . "'";
+          } else {
+            $coldef .= $default;
+          }
+        } elseif (!$not_null) {
+          $coldef .= ' default NULL';
+        }
+        if ($auto_increment) {
+          $coldef .= ' auto_increment';
+        }
+        $coldefs[$name] = $coldef;
+        if ($primary_key) {
+          if (!isset($coldefs['#PRIMARY_KEYS'])) {
+            $coldefs['#PRIMARY_KEYS'] = array();
+          }
+          $coldefs['#PRIMARY_KEYS'][$name] = true;
+        }
+      }
+      $this->close_query($query);
+      return $coldefs;
     }
 
     function create_dataspace_table($dataspace_def) {
       $ds_name = $dataspace_def->get_name();
       $defs = array();
       # column definitons are ordered to be shown in nice order by default in select *
-      array_push($defs, MW_RESOURCE_KEY_NAME." varchar(100) NOT NULL default ''");
+      array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_NAME));
       if ($dataspace_def->is_versioned()) {
-         array_push($defs, MW_RESOURCE_KEY_REVISION." int(11) NOT NULL default NULL AUTO_INCREMENT");
+         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_REVISION));
       }
-      if ($dataspace_def->get_content_type == MW_RESOURCE_CONTENT_TYPE_TEXT) {
-         array_push($defs, MW_RESOURCE_KEY_CONTENT." text");
-      } else if ($dataspace_def->get_content_type == MW_RESOURCE_CONTENT_TYPE_BINARY) {
-         array_push($defs, MW_RESOURCE_KEY_CONTENT." mediumblob");
+      if ($dataspace_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE) {
+         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_CONTENT));
       }
-      array_push($defs, MW_RESOURCE_KEY_LAST_MODIFIED." timestamp(14) NOT NULL");
+      array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_LAST_MODIFIED));
       if ($dataspace_def->is_versioned()) {
-         array_push($defs, MW_RESOURCE_KEY_MESSAGE." varchar(250) default NULL");
-         array_push($defs, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE." varchar(100) default NULL");
+         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_MESSAGE));
+         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE));
       }
-      foreach ($dataspace_def->get_custom_keys() as $key => $type) {
-         list($type_name, $type_arg) = explode(':', $type);
-         if ($type_name == MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT) {
-            if (!isset($type_arg)) {
-               $type_arg = "100";
-            }
-            array_push($defs, "$key $type_name($type_arg)");
-         } else {
-            trigger_error("Unknown custom key type: ".$type_name);
-         }
+      foreach (array_keys($dataspace_def->get_custom_keys()) as $key) {
+         array_push($defs, $this->get_column_definition($dataspace_def, $key));
       }
       if ($dataspace_def->is_versioned()) {
          array_push($defs, "PRIMARY KEY (".MW_RESOURCE_KEY_NAME.",".MW_RESOURCE_KEY_REVISION.")");
       } else {
          array_push($defs, "PRIMARY KEY (".MW_RESOURCE_KEY_NAME.")");
       }
-      $sql = 'create table '.$ds_name. ' ('.implode($defs, ',').')';
+      show_install_message("Creating table $ds_name");
+      $sql = 'create table '.$ds_name. ' ('.implode($defs, ', ').')';
       $this->exec_statement($sql);
+    }
+
+    function alter_column_definition($dataspace_def, $db_coldefs, $name) {
+      $ds_name = $dataspace_def->get_name();
+      $our_coldef = $this->get_column_definition($dataspace_def, $name);
+      $db_coldef = $db_coldefs[$name];
+      if ($db_coldef == null) {
+        $sql = 'alter table '.$ds_name. ' add '.$our_coldef;
+        show_install_message("Adding column $ds_name.$name");
+        $this->exec_statement($sql);
+      } elseif (strcasecmp($our_coldef, $db_coldef) != 0) {
+        $sql = 'alter table '.$ds_name. ' modify '.$our_coldef;
+        show_install_message("Modifying column $ds_name.$name");
+        $this->exec_statement($sql);
+      }
     }
 
     function alter_dataspace_table($dataspace_def) {
       $ds_name = $dataspace_def->get_name();
-      # TODO
+      $db_coldefs = $this->query_column_definitions($dataspace_def->get_name());
+      $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_NAME);
+      if ($dataspace_def->is_versioned()) {
+         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_REVISION);
+      }
+      if ($dataspace_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE) {
+         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_CONTENT);
+      }
+      $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_LAST_MODIFIED);
+      if ($dataspace_def->is_versioned()) {
+         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_MESSAGE);
+         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE);
+      }
+      foreach (array_keys($dataspace_def->get_custom_keys()) as $key) {
+         $this->alter_column_definition($dataspace_def, $db_coldefs, $key);
+      }
+      $alter_primary_keys = false;
+      if (!isset($db_coldefs['#PRIMARY_KEYS'])) {
+        $alter_primary_keys = true;
+      } else if (!isset($db_coldefs['#PRIMARY_KEYS'][MW_RESOURCE_KEY_NAME])) {
+        $alter_primary_keys = true;
+      } else if ($dataspace_def->is_versioned()
+                 && !isset($db_coldefs['#PRIMARY_KEYS'][MW_RESOURCE_KEY_REVISION])) {
+        $alter_primary_keys = true;
+      }
+      if ($alter_primary_keys) {
+        show_install_message("Adding primary keys to $ds_name");
+        if (isset($db_coldefs['#PRIMARY_KEYS'])) {
+          $sql = 'alter table '.$ds_name. ' drop primary key';
+          $this->exec_statement($sql);
+        }
+        $sql = 'alter table '.$ds_name. ' add primary key';
+        if ($dataspace_def->is_versioned()) {
+           $sql .= "(".MW_RESOURCE_KEY_NAME.",".MW_RESOURCE_KEY_REVISION.")";
+        } else {
+           $sql .= "(".MW_RESOURCE_KEY_NAME.")";
+        }
+        $this->exec_statement($sql);
+      }
     }
 
     function register_dataspace($dataspace_def) {

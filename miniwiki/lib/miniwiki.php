@@ -17,6 +17,12 @@
   # miniWiki version as X.Y string
   define("MW_VERSION", "0.2");
 
+  if (!function_exists('stripos')) {
+    function stripos($haystack,$needle,$offset = 0) {
+      return(strpos(strtolower($haystack),strtolower($needle),$offset));
+    }
+  }
+
   # main page name
   define("MW_PAGE_NAME_MAIN", "Main Page");
   # default page name (if none requested)
@@ -887,6 +893,17 @@
       die ("abstract: render");
     }
     
+  }
+
+  class MW_Install_Handler {
+    function show_install_message($msg) {
+      die ("abstract: show_install_message");
+    }
+  }
+
+  function show_install_message($msg) {
+    global $install_handler;
+    $install_handler->show_install_message($msg);
   }
 
   class MW_Extension {

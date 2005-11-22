@@ -13,5 +13,8 @@ TODO list:
 - import/export of pages and other data (used also by install/upgrade)
 - #REDIRECT support
 - search
+- unify class names (to really sick Mixed_Caps)
+- convert last_modified value to/from unified format and UTC timezone in the storage
+  - format_last_modified() should convert to current timezone (represented by envvar TZ)
 
 $Id$

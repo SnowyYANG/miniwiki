@@ -98,7 +98,8 @@
          (sizeof($ds_def->get_custom_keys()) > 0 ? implode(array_keys($ds_def->get_custom_keys()), ',').',' : '').
          MW_RESOURCE_KEY_NAME.
          ' from '.$dataspace. ' where '.
-         MW_RESOURCE_KEY_NAME.'=?'.(isset($revision) && $is_versioned ? ' and '.MW_RESOURCE_KEY_REVISION.'=?' : ''),
+         MW_RESOURCE_KEY_NAME.'=?'.(isset($revision) && $is_versioned ? ' and '.MW_RESOURCE_KEY_REVISION.'=?' : '').
+         (!isset($revision) && $is_versioned ? ' order by '.MW_RESOURCE_KEY_REVISION.' desc' : ''),
          $name, $revision);
     }
     
@@ -472,7 +473,15 @@
       }
       $this->dataspace_defs[$ds_name] = $dataspace_def;
     }
-    
+
+    function get_dataspace_names() {
+      return array_keys($this->dataspace_defs);
+    }
+
+    function get_dataspace_definition($dataspace) {
+      return $this->dataspace_defs[$dataspace];
+    }
+
   }
   
 ?>

@@ -621,7 +621,15 @@
     function register_dataspace($dataspace_def) {
       die("abstract: register_dataspace");
     }
-    
+
+    function get_dataspace_names() {
+      die("abstract: get_dataspace_names");
+    }
+
+    function get_dataspace_definition($dataspace) {
+      die("abstract: get_dataspace_definition");
+    }
+
     function destroy() {
     }
   }
@@ -648,7 +656,7 @@
     return mktime($hour, $min, $sec, $month, $day, $year);
   }
 
-  # returns last modified value retruned as YEAR/MONTH/DAY HOUR:MIN:SEC
+  # returns last modified value returned as YEAR/MONTH/DAY HOUR:MIN:SEC
   # val: last modified value (as loaded from database)
   function format_last_modified($val) {
     $ts = last_modified_as_timestamp($val);
@@ -891,6 +899,75 @@
     # vars (optional): MW_Variables to be used as global variables
     function render($page, $raw) {
       die ("abstract: render");
+    }
+    
+  }
+
+  $importers = array();
+
+  function register_importer($importer) {
+    global $importers;
+    array_push($importers, $importer);
+  }
+
+  function get_importers() {
+    global $importers;
+    return $importers;
+  }
+
+  function import($file, $with_history = true, $dataspaces = array()) {
+    global $importers;
+    foreach ($importers as $importer) {
+      # null is "unknown format", true is OK and string is error message
+      $ret = $importer->import($file, $with_history, $dataspaces);
+      if ($ret !== null) {
+        return $ret;
+      }
+    }
+    return null;
+  }
+
+  class MW_Importer {
+
+    function import($file, $with_history = true, $dataspaces = array()) {
+      die("abstract: import");
+    }
+
+    function get_format() {
+      die("abstract: get_format");
+    }
+  
+  }
+
+  $exporters = array();
+
+  function register_exporter($exporter) {
+    global $exporters;
+    $exporters[$exporter->get_format()] = $exporter;
+  }
+
+  function get_exporters() {
+    global $exporters;
+    return $exporters;
+  }
+
+  function export($format, $file, $with_history = true, $dataspaces = array()) {
+    global $exporters;
+    if (isset($exporters[$format])) {
+      $exporter = $exporters[$format];
+      return $exporter->export($file, $with_history, $dataspaces);
+    }
+    return null;
+  }
+
+  class MW_Exporter {
+
+    function export($file, $with_history = true, $dataspaces = array()) {
+      die("abstract: export");
+    }
+  
+    function get_format() {
+      die("abstract: get_format");
     }
     
   }

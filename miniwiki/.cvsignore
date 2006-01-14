@@ -1,9 +1,0 @@
-*.dump
-packaged
-*.sample
-.project
-*.kdevelop
-*.kdevses
-local
-templates
-gendoc

@@ -1,6 +1,6 @@
 <?php
   # $Id$
-  # (c)2005 Stepan Roh <src@srnet.cz>
+  # (c)2005,2006 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
   
   /** @file

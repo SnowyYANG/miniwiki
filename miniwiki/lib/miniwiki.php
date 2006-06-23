@@ -368,7 +368,7 @@
   }
 
   /** returns instance of MW_Special_Upload_Page
-  * name: upload name (not upload page name)
+  * @param name upload name (not upload page name)
   * @param revision wanted revision
   */
   function new_upload_page($name, $revision) {
@@ -499,7 +499,7 @@
     /** @private
     * check if given password is valid for current user
     * @param pass password
-    * @param returns true if password is valid
+    * @returns true if password is valid
     */
     function validate($pass) {
       $user_page = new_user_page($this->user);

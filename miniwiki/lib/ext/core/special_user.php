@@ -63,8 +63,7 @@
     
     /** @protected
     * constructor (do not use directly, use new_user_page() or new_page())
-    * @param name page name
-    * @param revision page revision
+    * @param page "real" page
     */
     function MW_Special_User_Page($page) {
       parent::MW_Page($page->name);

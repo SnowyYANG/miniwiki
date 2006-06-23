@@ -1,9 +1,15 @@
 TODO list:
 
+- version 0.3
+- year 2006
+- Doxygenize
+- unify class names (to PrefixMixedCaps)
+- classify standalone pages
 - recent changes page
 - layout page describing how everything looks (not just header and footer)
 - install/upgrade script (including db scheme change (needs support in
   storages) and default pages update)
+- upgrade: user -> author
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces)
 - convert Special pages to use Wiki markup
@@ -13,7 +19,6 @@ TODO list:
 - import/export of pages and other data (used also by install/upgrade)
 - #REDIRECT support
 - search
-- unify class names (to really sick Mixed_Caps)
 - convert last_modified value to/from unified format and UTC timezone in the storage
   - format_last_modified() should convert to current timezone (represented by envvar TZ)
 

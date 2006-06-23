@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<resource dataspace="pages" name="Main Page">
+<key name="content">Welcome to '''miniWiki''' version {{$version}}, simple Wiki written in [http://www.php.net PHP] which uses [http://www.mysql.com MySQL] as its storage.
+
+Login as [[User:admin|admin]] if you want to edit pages.
+
+* [http://miniwiki.sourceforge.net/wiki/index.php/User%27s_Guide User's Guide] (external link)
+* [[Special:Users|List of All Users]]
+* [[Special:Pages|List of All Pages]]
+* [[Special:Uploads|List of All Uploads]]
+
+If you did an upgrade from version older than 0.3 you most probably see this page instead of your own main page.
+From version 0.3 main page is called [[Main Page]], but do not worry, your old page is still on [[MainPage]], just copy its contents over here.
+</key>
+<key name="length">693</key>
+<key name="last_modified">20060624T012154Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">Main Page</key>
+</resource>
+<resource dataspace="pages" name="User:admin">
+<key name="content">Admin's password is ''admin''. Change it as soon as possible, please.</key>
+<key name="length">69</key>
+<key name="last_modified">20050416T143620Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">User:admin</key>
+</resource>
+</resources>

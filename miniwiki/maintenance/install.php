@@ -70,5 +70,19 @@
   # forces intialization of delayed dataspace definitions which is what we need
   new_storage();
 
+  function import_with_check($file) {
+    show_install_message()'Importing data from '.$file);
+    $status = import($file);
+    if ($status === null) {
+      trigger_error("Unable to import $file - is required extension missing?");
+    } else if ($status !== true) {
+      trigger_error("Error occurred while importing $file: ", $status);
+    }
+  }
+  
+  import_with_check('data/users.xml');
+  import_with_check('data/pages.xml');
+  import_with_check('data/uploads.xml');
+  
   echo('<p><b>Success</b></p>');
 ?>

@@ -952,11 +952,11 @@
     return $importers;
   }
 
-  function import($file, $with_history = true, $dataspaces = array()) {
+  function import($file, $with_history = true, $dataspaces = array(), $force_import = false) {
     global $importers;
     foreach ($importers as $importer) {
       # null is "unknown format", true is OK and string is error message
-      $ret = $importer->import($file, $with_history, $dataspaces);
+      $ret = $importer->import($file, $with_history, $dataspaces, $force_import);
       if ($ret !== null) {
         return $ret;
       }
@@ -966,7 +966,7 @@
 
   class MW_Importer {
 
-    function import($file, $with_history = true, $dataspaces = array()) {
+    function import($file, $with_history = true, $dataspaces = array(), $force_import = false) {
       die("abstract: import");
     }
 

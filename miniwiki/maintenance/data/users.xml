@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<resource dataspace="users" name="admin">
+<key name="password">21232f297a57a5a743894a0e4a801fc3</key>
+<key name="name">admin</key>
+</resource>
+</resources>

@@ -1,0 +1,2 @@
+# comment out to allow access from web (see various scripts for valid username/password combinations)
+#Deny from all

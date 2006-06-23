@@ -31,6 +31,7 @@
 
   include('settings.php');
   include('miniwiki.php');
+  miniwiki_boot();
   $storage = new_storage();
   $users_mgr = new_users_manager();
   $renderer = new_renderer();

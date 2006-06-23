@@ -1111,7 +1111,14 @@
     }
   }
 
-  load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
-  initialize_extensions();
+  /**
+  * Initialize miniWiki infrastructure.
+  * <p>
+  * Will load and initialize extensions.
+  */
+  function miniwiki_boot() {
+    load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
+    initialize_extensions();
+  }
 
 ?>

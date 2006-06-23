@@ -1,5 +1,5 @@
-miniWiki 0.2 (c)2005 Stepan Roh
--------------------------------
+miniWiki 0.3 (c)2005,2006 Stepan Roh
+------------------------------------
 
 miniWiki is simple Wiki written in PHP which uses MySQL as its storage.
 
@@ -17,13 +17,20 @@ Unpack distribution archive somewhere under your web server's document
 directory and execute MySQL script miniwiki.sql (or miniwiki_empty.sql for
 installation without initial content).
 
-Upgrade from 0.1
-----------------
+Upgrade from previous versions
+------------------------------
 
 Unpack distribution archive over the previous version. Because directory
 structure changed, remove all PHP, CSS and JS files in the root directory
 with the exception of index.php and userdefs.php.
-Finally backup your database and execute MySQL script upgrade_from_0_1.sql. 
+Finally backup your database, make changes in maintenance/.htaccess as hinted
+inside, change $install_pass in maintenance/install.php and point your browser
+to it, when asked for username and password use the ones
+from inside the script (stored in variables $install_user and $install_pass).
+Script will then upgrade the storage.
+
+Note that unlike version 0.2, upgrade from 0.1 to 0.3 does not rename MainPage
+to Main Page.
 
 Setup
 -----

@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Special User (bundled)
+  /** @file
+  * extension Core Special User (bundled)
+  */
 
   class EXT_CoreSpecialUser extends MW_Extension {
 
@@ -47,19 +49,23 @@
     }
   }
 
-  # special user page (MW_PAGE_NAME_PREFIX_USER)
-  # this page always exists even if empty (but then it is not stored in database)
-  # user associated with this page may not exist
+  /**
+  * special user page (MW_PAGE_NAME_PREFIX_USER)
+  * this page always exists even if empty (but then it is not stored in database)
+  * user associated with this page may not exist
+  */
   class MW_Special_User_Page extends MW_Page {
     # [read-only] attributes
-    # user associated with this user page
+    /** user associated with this user page */
     var $related_user;
-    # overlayed page
+    /** overlayed page */
     var $page;
     
-    # constructor (do not use directly, use new_user_page() or new_page())
-    # name: page name
-    # revision: page revision
+    /** @protected
+    * constructor (do not use directly, use new_user_page() or new_page())
+    * @param name page name
+    * @param revision page revision
+    */
     function MW_Special_User_Page($page) {
       parent::MW_Page($page->name);
       $this->page = $page;
@@ -84,12 +90,12 @@
       return $this->page->has_action($action);
     }
     
-    # user page always exists
+    /** user page always exists */
     function exists() {
       return true;
     }
     
-    # user page is always loaded
+    /** user page is always loaded */
     function load() {
       $this->page->load();
       $this->fill_vars();
@@ -97,7 +103,7 @@
       return true;
     }
     
-    # user page exists even if deleted
+    /** user page exists even if deleted */
     function delete() {
       $this->page->delete();
       $this->fill_vars();
@@ -136,28 +142,34 @@
       return $this->page->get_all_revisions();
     }
     
-    # create user associated with this page (user page is not created)
-    # change_password() must be called too or else noone can login as this user
+    /**
+    * create user associated with this page (user page is not created)
+    * change_password() must be called too or else noone can login as this user
+    */
     function create_user() {
       global $users_mgr;
       $users_mgr->create_user($this->related_user);
     }
     
-    # delete user associated with this page (user page is not deleted)
+    /** delete user associated with this page (user page is not deleted) */
     function delete_user() {
       global $users_mgr;
       $users_mgr->delete_user($this->related_user);
     }
     
-    # change password for associated user
-    # pass: new password
+    /**
+    * change password for associated user
+    * @param pass new password
+    */
     function change_password($pass) {
       global $users_mgr;
       $users_mgr->change_password($this->related_user, $pass);
     }
     
-    # returns true if given password is valid for associated user
-    # pass: password
+    /**
+    * returns true if given password is valid for associated user
+    * @param pass password
+    */
     function is_password_valid($pass) {
       global $users_mgr;
       return $users_mgr->is_password_valid($this->related_user, $pass);

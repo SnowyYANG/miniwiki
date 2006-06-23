@@ -3,12 +3,14 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # page header
-  # mw_encoding: output encoding
-  # page: current MW_Page
-  # title: override page name
-  # db: curent MW_Database
-  # renderer: current MW_Renderer
+  /** @file
+  * page header
+  * @param mw_encoding output encoding
+  * @param page current MW_Page
+  * @param title override page name
+  * @param db curent MW_Database
+  * @param renderer current MW_Renderer
+  */
 
   if (!isset ($title)) {
     $title = $page->title;

@@ -3,13 +3,15 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # page footer
-  # auth: current MW_Auth
-  # db: curent MW_Database
-  # mw_texts: texts array
-  # page: current MW_Page
-  # req: current MW_Request
-  # renderer: current MW_Renderer
+  /** @file
+  * page footer
+  * @param auth current MW_Auth
+  * @param db curent MW_Database
+  * @param mw_texts texts array
+  * @param page current MW_Page
+  * @param req current MW_Request
+  * @param renderer current MW_Renderer
+  */
 
   $layout_footer = new_page(MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
   if ($layout_footer->load()) {
@@ -18,9 +20,11 @@
 
   echo '<div class="footer">', "\n";
 
-  # shows action links (active if current user has permissions, completely missing if current page does not have such action)
-  # actions: array of action names
-  # head_rev: true if action should link to HEAD revision, links to current page's revision otherwise - defaults to false
+  /** @file
+  * shows action links (active if current user has permissions, completely missing if current page does not have such action)
+  * actions: array of action names
+  * head_rev: true if action should link to HEAD revision, links to current page's revision otherwise - defaults to false
+  */
   function show_actions($actions, $head_rev = false) {
     global $page, $auth, $mw_texts;
     foreach ($actions as $action) {

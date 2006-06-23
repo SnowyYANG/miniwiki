@@ -3,9 +3,11 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # edit upload file (allows to upload new version)
-  # mw_texts: texts array
-  # page: current MW_Page
+  /** @file
+  * edit upload file (allows to upload new version)
+  * @param mw_texts texts array
+  * @param page current MW_Page
+  */
 
   $title = $mw_texts[MWT_EDITING] . " " . $page->name;
   include('header.php');

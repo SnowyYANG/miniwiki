@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Special:Uploads (bundled)
+  /** @file
+  * extension Core Special:Uploads (bundled)
+  */
 
   class EXT_CoreSpecialUploads extends MW_Extension {
 
@@ -37,10 +39,10 @@
     }
   }
 
-  # special page with list of all uploads (MW_PAGE_NAME_UPLOADS)
+  /** special page with list of all uploads (MW_PAGE_NAME_UPLOADS) */
   class MW_Special_Uploads_Page extends MW_Special_Page {
 
-    # constructor (do not use directly, use new_page())
+    /** @protected constructor (do not use directly, use new_page()) */
     function MW_Special_Uploads_Page($name) {
       parent::MW_Special_Page($name);
     }
@@ -76,10 +78,12 @@
       echo "</ul></div>\n";
     }
 
-    # upload new file
-    # content: new content
-    # message: change message
-    # name: file name
+    /**
+    * upload new file
+    * @param content new content
+    * @param message change message
+    * @param name file name
+    */
     function upload($content, $message, $name) {
       $page = new_upload_page($name, MW_REVISION_HEAD);
       $page->update($content, $message);

@@ -3,18 +3,24 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # main entrance page
+  /** @file
+  * main entrance page
+  */
 
   define("MW_DEBUG", false);
   
-  # error handler
+  /**
+  * error handler
+  */
   function error_handler($errno, $errstr, $errfile, $errline) {
     echo "<b>OOPS! Something is wrong: $errstr</b><br/>(error code $errno, file $errfile, line $errline)<br/><br/>\n";
   }
   set_error_handler("error_handler");
   
-  # echo debug message (if MW_DEBUG is true)
-  # msg: message to show
+  /**
+  * echo debug message (if MW_DEBUG is true)
+  * msg: message to show
+  */
   function debug($msg) {
     if (MW_DEBUG) {
       echo '<div class="debug">'.htmlspecialchars('DEBUG: '.$msg, ENT_NOQUOTES),"</div>\n";
@@ -35,9 +41,11 @@
     add_info_text($mw_texts[MWT_LOGIN_INVALID]);
   }
 
-  # handle given action
-  # action: action to handle
-  # returns new action to handle or null
+  /**
+  * handle given action
+  * action: action to handle
+  * returns new action to handle or null
+  */
   function handle_action($action) {
     global $db, $renderer, $req, $auth, $page, $mw_texts, $mw_db_host, $mw_db_user, $mw_db_pass,
            $mw_db_name, $mw_auth_realm, $mw_encoding, $mw_db_encoding, $mw_db_use_server_collation;

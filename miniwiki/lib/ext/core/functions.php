@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Functions (bundled)
+  /** @file
+  * extension Core Functions (bundled)
+  */
 
   class EXT_CoreFunctions extends MW_Extension {
 
@@ -34,13 +36,15 @@
       return true;
     }
 
-    # joins arguments and returns them
+    /** joins arguments and returns them */
     function wiki_fn_echo($args, $renderer_state) {
       return join('', $args);
     }
 
-    # set wiki variable specified by first argument to value specified by second argument
-    # multiple variables may be specified
+    /**
+    * set wiki variable specified by first argument to value specified by second argument
+    * multiple variables may be specified
+    */
     function wiki_fn_set($args, $renderer_state) {
       while (count($args) > 0) {
         $name = array_shift($args);
@@ -50,7 +54,7 @@
       return '';
     }
 
-    # set wiki variable specified by first argument to result of function call specified in rest of the arguments
+    /** set wiki variable specified by first argument to result of function call specified in rest of the arguments */
     function wiki_fn_call($args, $renderer_state) {
       $name = array_shift($args);
       $call_func = array_shift($args);
@@ -60,7 +64,7 @@
       return '';
     }
 
-    # returns raw content of page specified by first argument
+    /** returns raw content of page specified by first argument */
     function wiki_fn_include($args, $renderer_state) {
       $inc_page_name = array_shift($args);
       $inc_args_str = '';
@@ -74,20 +78,22 @@
       return '[['.$inc_page_name .']]';
     }
 
-    # push new wiki variables on the stack
+    /** push new wiki variables on the stack */
     function wiki_fn_push_vars($args, $renderer_state) {
       $renderer_state->push_variables();
       return '';
     }
 
-    # remove last pushed wiki variables from the stack
+    /** remove last pushed wiki variables from the stack */
     function wiki_fn_pop_vars($args, $renderer_state) {
       $renderer_state->pop_variables();
       return '';
     }
 
-    # returns URL for given action, revision (set to revision variable if omitted; head means HEAD rvision)
-    # and page (set to page variable if omitted)
+    /**
+    * returns URL for given action, revision (set to revision variable if omitted; head means HEAD revision)
+    * and page (set to page variable if omitted)
+    */
     function wiki_fn_action_link($args, $renderer_state) {
       $action = array_shift($args);
       $revision = array_shift($args);
@@ -108,15 +114,17 @@
       return $page->url_for_action($action);
     }
   
-    # returns non-empty string if two values are equal (as strings), empty otherwise
+    /** returns non-empty string if two values are equal (as strings), empty otherwise */
     function wiki_fn_is_eq($args, $renderer_state) {
       $val1 = array_shift($args);
       $val2 = array_shift($args);
       return ($val1 == $val2) ? 'true' : '';
     }
 
-    # returns non-empty string if given action is available for revision (set to revision variable if omitted; head means HEAD revision)
-    # and page (set to page variable if omitted) 
+    /**
+    * returns non-empty string if given action is available for revision (set to revision variable if omitted; head means HEAD revision)
+    * and page (set to page variable if omitted)
+    */
     function wiki_fn_has_action($args, $renderer_state) {
       $action = array_shift($args);
       $revision = array_shift($args);
@@ -135,9 +143,11 @@
       return ($page->has_action($action) ? 'true' : '');
     }
   
-    # returns non-empty string if current user has permission on given action
-    # for revision (set to revision variable if omitted; head means HEAD revision)
-    # and page (set to page variable if omitted) 
+    /**
+    * returns non-empty string if current user has permission on given action
+    * for revision (set to revision variable if omitted; head means HEAD revision)
+    * and page (set to page variable if omitted)
+    */
     function wiki_fn_is_action_permitted($args, $renderer_state) {
       $action = array_shift($args);
       $revision = array_shift($args);
@@ -156,7 +166,7 @@
       return ($auth->is_action_permitted($action, $page) ? 'true' : '');
     }
   
-    # returns non-empty string if given page exists
+    /** returns non-empty string if given page exists */
     function wiki_fn_exists($args, $renderer_state) {
       $page_name = array_shift($args);
       $page = new_page($page_name, MW_REVISION_HEAD);

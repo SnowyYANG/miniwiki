@@ -3,9 +3,11 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # edit Wiki page
-  # mw_texts: texts array
-  # page: current MW_Page
+  /** @file
+  * edit Wiki page
+  * @param mw_texts texts array
+  * @param page current MW_Page
+  */
 
   $title = $mw_texts[MWT_EDITING] . " " . $page->name;
   include('header.php');
@@ -16,11 +18,12 @@
   }
   echo '<div class="page-edit">', "\n";
   echo '<form method="post" action="', htmlspecialchars($page->url_for_action(MW_ACTION_UPDATE), ENT_QUOTES), '">', "\n";
-  # generate edit button
-  # label: button label
-  # text: text inserted on current cursor position into textarea with id "editarea" if button is pressed
-  #       % indicates where cursor should be positioned
-  # accesskey: access key of this button (e.g. Alt-KEY in Mozilla Firefox) - defaults to nothing
+  /** generate edit button
+  * label: button label
+  * text: text inserted on current cursor position into textarea with id "editarea" if button is pressed
+  *       % indicates where cursor should be positioned
+  * accesskey: access key of this button (e.g. Alt-KEY in Mozilla Firefox) - defaults to nothing
+  */
   function generate_button($label, $text, $accesskey = '') {
     echo '<button type="button"';
     if ($accesskey != '') {

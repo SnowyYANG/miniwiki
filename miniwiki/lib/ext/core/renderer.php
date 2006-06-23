@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Renderer (bundled)
+  /** @file
+  * extension Core Renderer (bundled)
+  */
 
   class EXT_CoreRenderer extends MW_Extension {
 
@@ -27,28 +29,32 @@
 
   register_extension(new EXT_CoreRenderer());
 
-  # internal Wiki renderer state
+  /** internal Wiki renderer state */
   class MW_CoreRenderer_State extends MW_Renderer_State {
     # [read-only] attributes
     var $headings;
-    # headings counter (current number)
+    /** headings counter (current number) */
     var $headings_counter;
     
-    # constructor (do not call)
-    # renderer: MW_Renderer
-    # page: MW_Page or null
-    # raw: raw text to render
-    # super_wiki_variables: super MW_Variables to use
+    /** @protected
+    * constructor (do not call)
+    * @param renderer MW_Renderer
+    * @param page MW_Page or null
+    * @param raw raw text to render
+    * @param super_wiki_variables super MW_Variables to use
+    */
     function MW_CoreRenderer_State($renderer, $page, $raw, $super_wiki_variables) {
       parent::MW_Renderer_State($renderer, $page, $raw, $super_wiki_variables);
       $this->headings = array();
       $this->headings_counter = '';
     }
 
-    # [private] add heading into headings array
-    # level: heading level
-    # title: heading title
-    # anchor: heading anchor
+    /** @private
+    * add heading into headings array
+    * @param level heading level
+    * @param title heading title
+    * @param anchor heading anchor
+    */
     function add_heading($level, $title, $anchor) {
       if ($level < 2) {
         # super-headings (level 1, single =) are ignored
@@ -65,16 +71,20 @@
       array_push($this->headings, $heading);
     }
 
-    # [private] makes anchor name from normal name
-    # replaces spaces with '_'
-    # name: name to make anchor name from
+    /** @private
+    * makes anchor name from normal name
+    * replaces spaces with '_'
+    * @param name name to make anchor name from
+    */
     function make_anchor_name($name) {
       return str_replace(' ', '_', $name);
     }
 
-    # [private] returns HTML code for link to internal Wiki page
-    # name: page name
-    # title: link title
+    /** @private
+    * returns HTML code for link to internal Wiki page
+    * @param name page name
+    * @param title link title
+    */
     function process_internal_link($name, $title) {
       debug('MW_Page.process_internal_link(name='.$name.', title='.$title.')');
       $fragment = null;
@@ -118,7 +128,7 @@
         .'</a>';
     }
 
-    # [private] callback for preg_replace_callback in process_inline()
+    /** @private callback for preg_replace_callback in process_inline() */
     function process_inline_cb($matches) {
       $type = $matches[0];
       if (preg_match("/^'''/", $type)) {
@@ -154,26 +164,26 @@
     }
 
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_strong($matches) {
       $text = $matches[1];
       return '<strong>'.$text.'</strong>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_em($matches) {
       $text = $matches[1];
       return '<em>'.$text.'</em>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_internal_link($matches) {
       $name = $matches[1];
       $title = ((count($matches) > 2) ? $matches[2] : $name);
       return $this->process_internal_link($name, $title);
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_external_link($matches) {
       $url = $matches[1];
       $title = ((count($matches) > 2) ? $matches[2] : $url);
@@ -186,24 +196,24 @@
       return '<a href="'.$url.'">'.$title.'</a>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_br($matches) {
       return '<br/>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_form_end($matches) {
       return '</form>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_form($matches) {
       $method = $matches[1];
       $action = $matches[2];
       return '<form method="'.$method. '" action="'.$action.'">';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_form_field($matches) {
       $name = $matches[1];
       $type = $matches[2];
@@ -250,12 +260,12 @@
       }
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_box_end($matches) {
       return '</div>';
     }
 
-    # [private] sub-callback for preg_replace_callback in process_inline()
+    /** @private sub-callback for preg_replace_callback in process_inline() */
     function process_inline_cb_box($matches) {
       $name = $matches[1];
       if ($name[0] == '#') {
@@ -265,9 +275,11 @@
       return '<div class="'.$name. '">';
     }
 
-    # [private] returns HTML code for inline Wiki markup:
-    #   '''BOLD''', ''ITALIC'', [[PAGE_NAME:LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br>, forms, boxes
-    # text: text to process
+    /** @private
+    * returns HTML code for inline Wiki markup:
+    *   '''BOLD''', ''ITALIC'', [[PAGE_NAME:LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br>, forms, boxes
+    * @param text text to process
+    */
     function process_inline($text) {
       debug('MW_Page.process_inline(text='.$text. ')');
       $text = preg_replace_callback(
@@ -289,7 +301,7 @@
       return $text;
     }
     
-    # [private] callback for preg_replace_callback in process_heading_block()
+    /** @private callback for preg_replace_callback in process_heading_block() */
     function process_heading_block_cb($matches) {
       debug('MW_Page.process_heading_block_cb(matches='.join(', ', $matches).')');
       $h_level = strlen($matches[1]);
@@ -299,9 +311,11 @@
       return '<h'.$h_level. '><a name="'.$h_anchor.'">'.$this->process_inline($h_name).'</a></h'.$h_level.'>';
     }
     
-    # [private] returns HTML code for heading block (=H1= ... ======H6======)
-    # heading title is inline processed
-    # block: block to process
+    /** @private
+    * returns HTML code for heading block (=H1= ... ======H6======)
+    * heading title is inline processed
+    * @param block block to process
+    */
     function process_heading_block($block) {
       debug('MW_Page.process_heading_block(block='.$block.')');
       $block = preg_replace_callback(
@@ -311,10 +325,12 @@
       return $block."\n";
     }
     
-    # [private] returns HTML code for list item (* ... **********...)
-    # item content is inline processed
-    # item: item to process
-    # depth: depth of previous item in the same list block or 0
+    /** @private
+    * returns HTML code for list item (* ... **********...)
+    * item content is inline processed
+    * @param item item to process
+    * @param depth depth of previous item in the same list block or 0
+    */
     function process_list_item($item, &$depth) {
       debug('MW_Page.process_list_item(item='.$item. ', depth='.$depth. ')');
       $ret = '';
@@ -348,9 +364,11 @@
       return $ret;
     }
     
-    # [private] returns HTML code for list block (block starting with *)
-    # list block is composed of list items
-    # block: block to process
+    /** @private
+    * returns HTML code for list block (block starting with *)
+    * list block is composed of list items
+    * @param block block to process
+    */
     function process_list_block($block) {
       debug('MW_Page.process_list_block(block='.$block. ')');
       $ret = '';
@@ -374,9 +392,11 @@
       return $ret;
     }
     
-    # [private] returns HTML for normal block (paragraph)
-    # block content is inline processed
-    # block: block to process
+    /** @private
+    * returns HTML for normal block (paragraph)
+    * block content is inline processed
+    * @param block block to process
+    */
     function process_normal_block($block) {
       $processed = $this->process_inline($block);
       # prevent div inside paragraph
@@ -386,9 +406,11 @@
       return $processed;
     }
     
-    # [private] returns HTML for given block
-    # detects heading, list and normal blocks
-    # block: block to process
+    /** @private
+    * returns HTML for given block
+    * detects heading, list and normal blocks
+    * @param block block to process
+    */
     function process_block($block) {
       if ($block{0} == '=') {
         return $this->process_heading_block($block);
@@ -401,9 +423,11 @@
       }
     }
 
-    # [private] returns HTML for given block chain
-    # chain is composed of blocks separated by empty lines
-    # chain: chain to process
+    /** @private
+    * returns HTML for given block chain
+    * chain is composed of blocks separated by empty lines
+    * @param chain chain to process
+    */
     function process_block_chain($chain) {
       debug('MW_Page.process_block_chain(chain='.$chain. ')');
       $chain = htmlspecialchars($chain, ENT_NOQUOTES);
@@ -415,7 +439,7 @@
       return $ret;
     }
     
-    # [private] callback for preg_replace_callback in process_includes()
+    /** @private callback for preg_replace_callback in process_includes() */
     function process_includes_cb($matches) {
       debug('MW_Page.process_includes_cb(matches='.join(', ', $matches).')');
       $inc_command = $matches[1];
@@ -440,9 +464,11 @@
       return $matches[1];
     }
     
-    # [private] process includes {{...}}
-    # this function only replaces all {{...}} with its contents (NOT processed/rendered)
-    # line: line to process
+    /** @private
+    * process includes {{...}}
+    * this function only replaces all {{...}} with its contents (NOT processed/rendered)
+    * @param line line to process
+    */
     function process_includes($line) {
       debug('MW_Page.process_includes(line='.$line. ')');
       $line = preg_replace_callback(
@@ -452,9 +478,11 @@
       return $line;
     }
     
-    # [private] process header link
-    # header link may be either raw URL or [[page]]
-    # link: header link value
+    /** @private
+    * process header link
+    * header link may be either raw URL or [[page]]
+    * @param link header link value
+    */
     function process_header_link($link) {
       if (strpos($link, '[[') === 0) {
         # [[page]]
@@ -465,9 +493,11 @@
       return htmlspecialchars($link, ENT_QUOTES);
     }
     
-    # render Wiki markup to output
-    # raw text is split into blocks (separated by empty lines) and then rendered,
-    # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
+    /**
+    * render Wiki markup to output
+    * raw text is split into blocks (separated by empty lines) and then rendered,
+    * text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
+    */
     function render() {
       if (strlen($this->raw) == 0) {
         global $mw_texts;
@@ -585,15 +615,17 @@
     
   }
 
-  # Wiki renderer
+  /** Wiki renderer */
   class MW_CoreRenderer extends MW_Renderer {
     
-    # render Wiki markup to output
-    # raw text is split into blocks (separated by empty lines) and then rendered,
-    # text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
-    # page: MW_Page (may be null)
-    # raw: raw text (empty message is output if raw text is empty)
-    # vars (optional): MW_Variables to be used as global variables
+    /**
+    * render Wiki markup to output
+    * raw text is split into blocks (separated by empty lines) and then rendered,
+    * text between <pre> and </pre> (must begin lines) is not Wiki-processed (regardless of blocks)
+    * @param page MW_Page (may be null)
+    * @param raw raw text (empty message is output if raw text is empty)
+    * @param vars (optional): MW_Variables to be used as global variables
+    */
     function render($page, $raw) {
       $vars = null;
       if (func_num_args() > 2) {

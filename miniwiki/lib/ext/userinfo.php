@@ -3,8 +3,10 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension User Info (bundled)
-
+  /** @file
+  * extension User Info (bundled)
+  */
+  
   class EXT_UserInfo extends MW_Extension {
 
     function get_name() {
@@ -24,7 +26,7 @@
       return true;
     }
 
-    # returns user information
+    /** returns user information */
     function wiki_fn_user_info() {
       global $auth;
       if ($auth->is_logged) {

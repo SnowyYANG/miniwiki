@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core User Manager (bundled)
+  /** @file
+  * extension Core User Manager (bundled)
+  */
 
   define("MW_DS_USERS", "users");
   define("MW_RESOURCE_KEY_PASSWORD", "password");

@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Special Upload (bundled)
+  /** @file
+  * extension Core Special Upload (bundled)
+  */
 
   define("MW_DS_UPLOADS", "uploads");
   
@@ -48,19 +50,21 @@
     }
   }
 
-  # special upload page (MW_PAGE_NAME_PREFIX_UPLOAD or MW_PAGE_NAME_PREFIX_DATA)
+  /** special upload page (MW_PAGE_NAME_PREFIX_UPLOAD or MW_PAGE_NAME_PREFIX_DATA) */
   class MW_Special_Upload_Page extends MW_Page {
     # [read-only] attributes
-    # upload name
+    /** upload name */
     var $upload_name;
-    # is this an upload (MW_PAGE_NAME_PREFIX_UPLOAD) or data (MW_PAGE_NAME_PREFIX_DATA) page?
+    /** is this an upload (MW_PAGE_NAME_PREFIX_UPLOAD) or data (MW_PAGE_NAME_PREFIX_DATA) page? */
     var $is_data_page;
-    # MIME type
+    /** MIME type */
     var $mime_type;
     
-    # constructor (do not use directly, use new_page())
-    # name: page name
-    # revision: page revision
+    /** @protected
+    * constructor (do not use directly, use new_page())
+    * @param name page name
+    * @param revision page revision
+    */
     function MW_Special_Upload_Page($name, $revision) {
       parent::MW_Page($name);
       if (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
@@ -74,8 +78,10 @@
       $this->mime_type = $this->guess_type($this->upload_name);
     }
 
-    # [private] guess MIME type from file name (form extension)
-    # name: file name
+    /** @private
+    * guess MIME type from file name (form extension)
+    * @param name file name
+    */
     function guess_type($name) {
       if (preg_match('/\.txt$/i', $name)) {
         return "text/plain";
@@ -117,19 +123,23 @@
       return $storage->exists(MW_DS_UPLOADS, $this->upload_name);
     }
 
-    # unlike general contract this function does not load raw content - use load_with_raw_content()
-    # note that render() does not render raw content, but dynamic content
+    /**
+    * unlike general contract this function does not load raw content - use load_with_raw_content()
+    * note that render() does not render raw content, but dynamic content
+    */
     function load() {
       return $this->load_internal(false);
     }
     
-    # same as load(), but also loads raw content (as described by general contract for load())
+    /** same as load(), but also loads raw content (as described by general contract for load()) */
     function load_with_raw_content() {
       return $this->load_internal(true);
     }
     
-    # [private] internal load() function
-    # with_raw: whether to load raw_content or not
+    /** @private
+    * internal load() function
+    * @param with_raw whether to load raw_content or not
+    */
     function load_internal($with_raw) {
       $rev = $this->revision;
       global $storage;

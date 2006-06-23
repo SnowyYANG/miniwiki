@@ -3,19 +3,21 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # miniWiki library
-  # auth: current MW_Auth
-  # db: curent MW_Database
-  # mw_db_encoding: database encoding
-  # mw_db_use_server_collation: whether to let database sort strings according to its settings or
-  #                             according to wanted mw_db_encoding
-  # mw_texts: texts array
-  # renderer: current MW_Renderer
+  /** @file
+  * miniWiki library
+  * @param auth current MW_Auth
+  * @param db curent MW_Database
+  * @param mw_db_encoding database encoding
+  * @param mw_db_use_server_collation whether to let database sort strings according to its settings or
+  *                             according to wanted mw_db_encoding
+  * @param mw_texts texts array
+  * @param renderer current MW_Renderer
+  */
 
-  # miniWiki product name
+  /** miniWiki product name */
   define("MW_NAME", "miniWiki");
-  # miniWiki version as X.Y string
-  define("MW_VERSION", "0.2");
+  /** miniWiki version as X.Y string */
+  define("MW_VERSION", "0.3-svn");
 
   if (!function_exists('stripos')) {
     function stripos($haystack,$needle,$offset = 0) {
@@ -23,123 +25,123 @@
     }
   }
 
-  # main page name
+  /** main page name */
   define("MW_PAGE_NAME_MAIN", "Main Page");
-  # default page name (if none requested)
+  /** default page name (if none requested) */
   define("MW_DEFAULT_PAGE_NAME", MW_PAGE_NAME_MAIN);
-  # view page action (renders Wiki page)
+  /** view page action (renders Wiki page) */
   define("MW_ACTION_VIEW", "view");
-  # view page source action (shows Wiki markup)
+  /** view page source action (shows Wiki markup) */
   define("MW_ACTION_VIEW_SOURCE", "view_source");
-  # edit page action (shows Wiki editor)
+  /** edit page action (shows Wiki editor) */
   define("MW_ACTION_EDIT", "edit");
-  # delete page action (really deletes page)
+  /** delete page action (really deletes page) */
   define("MW_ACTION_DELETE", "delete");
-  # show history action (shows history page)
+  /** show history action (shows history page) */
   define("MW_ACTION_HISTORY", "history");
-  # update page action (really changes Wiki page or shows a preview)
+  /** update page action (really changes Wiki page or shows a preview) */
   define("MW_ACTION_UPDATE", "update");
-  # login action (will show login dialog if current credentials are invalid)
+  /** login action (will show login dialog if current credentials are invalid) */
   define("MW_ACTION_LOGIN", "login");
-  # relogin action (will show login dialog even if current credentials are valid - needs correct old_user)
+  /** relogin action (will show login dialog even if current credentials are valid - needs correct old_user) */
   define("MW_ACTION_RELOGIN", "relogin");
-  # change password action (really changes password)
+  /** change password action (really changes password) */
   define("MW_ACTION_CHANGE_PASSWORD", "change_password");
-  # create user action (really creates user with disabled login)
+  /** create user action (really creates user with disabled login) */
   define("MW_ACTION_CREATE_USER", "create_user");
-  # delete user action (really deletes user, user page is not deleted)
+  /** delete user action (really deletes user, user page is not deleted) */
   define("MW_ACTION_DELETE_USER", "delete_user");
-  # upload action
+  /** upload action */
   define("MW_ACTION_UPLOAD", "upload");
-  # default action (if none requested)
+  /** default action (if none requested) */
   define("MW_DEFAULT_ACTION", MW_ACTION_VIEW);
-  # page name request variable
+  /** page name request variable */
   define("MW_REQVAR_PAGE_NAME", "page_name");
-  # action request variable
+  /** action request variable */
   define("MW_REQVAR_ACTION", "action");
-  # page revision request variable
+  /** page revision request variable */
   define("MW_REQVAR_REVISION", "revision");
-  # HEAD pseudo-revision name (latest revision will be used when talking to database)
+  /** HEAD pseudo-revision name (latest revision will be used when talking to database) */
   define("MW_REVISION_HEAD", "HEAD");
-  # page content request variable (for update action)
+  /** page content request variable (for update action) */
   define("MW_REQVAR_CONTENT", "content");
-  # update message (for update action)
+  /** update message (for update action) */
   define("MW_REQVAR_MESSAGE", "message");
-  # preview submit (for update action)
+  /** preview submit (for update action) */
   define("MW_REQVAR_PREVIEW", "preview");
-  # old user request variable (for relogin action)
+  /** old user request variable (for relogin action) */
   define("MW_REQVAR_OLD_USER", "old_user");
-  # user request variable (for create user, delete user and change password actions)
+  /** user request variable (for create user, delete user and change password actions) */
   define("MW_REQVAR_USER", "user");
-  # password request variable (for change password action)
+  /** password request variable (for change password action) */
   define("MW_REQVAR_PASS", "pass");
-  # source file (for upload action)
+  /** source file (for upload action) */
   define("MW_REQVAR_SOURCEFILE", "sourcefile");
-  # destination file (for upload action)
+  /** destination file (for upload action) */
   define("MW_REQVAR_DESTFILE", "destfile");
-  # name of table with pages
+  /** name of table with pages */
   define("MW_DB_TABLE_PAGES", "pages");
-  # name of page name column
+  /** name of page name column */
   define("MW_DB_TABLE_PAGES_COLUMN_NAME", "name");
-  # name of page revision column
+  /** name of page revision column */
   define("MW_DB_TABLE_PAGES_COLUMN_REVISION", "revision");
-  # name of page content column
+  /** name of page content column */
   define("MW_DB_TABLE_PAGES_COLUMN_CONTENT", "content");
-  # name of page last modification time column
+  /** name of page last modification time column */
   define("MW_DB_TABLE_PAGES_COLUMN_LAST_MODIFIED", "last_modified");
-  # name of page revision message column
+  /** name of page revision message column */
   define("MW_DB_TABLE_PAGES_COLUMN_MESSAGE", "message");
-  # name of page revision author column
+  /** name of page revision author column */
   define("MW_DB_TABLE_PAGES_COLUMN_USER", "user");
-  # users list special page name
+  /** users list special page name */
   define("MW_PAGE_NAME_USERS", "Special:Users");
-  # pages list special page name
+  /** pages list special page name */
   define("MW_PAGE_NAME_PAGES", "Special:Pages");
-  # user page name prefix
+  /** user page name prefix */
   define("MW_PAGE_NAME_PREFIX_USER", "User:");
-  # admin user name
+  /** admin user name */
   define("MW_USER_NAME_ADMIN", "admin");
-  # name of table with users
+  /** name of table with users */
   define("MW_DB_TABLE_USERS", "users");
-  # name of user name column
+  /** name of user name column */
   define("MW_DB_TABLE_USERS_COLUMN_NAME", "name");
-  # name of user password column (password is hashed with MD5 before storing)
+  /** name of user password column (password is hashed with MD5 before storing) */
   define("MW_DB_TABLE_USERS_COLUMN_PASSWORD", "password");
-  # name of table with uploads
+  /** name of table with uploads */
   define("MW_DB_TABLE_UPLOADS", "uploads");
-  # name of upload name column
+  /** name of upload name column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_NAME", "name");
-  # name of upload revision column
+  /** name of upload revision column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_REVISION", "revision");
-  # name of upload content column
+  /** name of upload content column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_CONTENT", "content");
-  # name of upload last modification time column
+  /** name of upload last modification time column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_LAST_MODIFIED", "last_modified");
-  # name of upload revision message column
+  /** name of upload revision message column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_MESSAGE", "message");
-  # name of upload revision author column
+  /** name of upload revision author column */
   define("MW_DB_TABLE_UPLOADS_COLUMN_USER", "user");
-  # uploads list special page name
+  /** uploads list special page name */
   define("MW_PAGE_NAME_UPLOADS", "Special:Uploads");
-  # upload page prefix
+  /** upload page prefix */
   define("MW_PAGE_NAME_PREFIX_UPLOAD", "Upload:");
-  # data page prefix (raw uploaded file)
+  /** data page prefix (raw uploaded file) */
   define("MW_PAGE_NAME_PREFIX_DATA", "data/");
-  # data page prefix (raw uploaded file) from miniWiki 0.2
+  /** data page prefix (raw uploaded file) from miniWiki 0.2 */
   define("MW_PAGE_NAME_PREFIX_DATA_0_2", "Data:");
-  # default MIME type for uploaded files
+  /** default MIME type for uploaded files */
   define("MW_DEFAULT_MIME_TYPE", "application/octet-stream");
-  # image link page prefix (will render image directly)
+  /** image link page prefix (will render image directly) */
   define("MW_LINK_NAME_PREFIX_IMAGE", "Image:");
-  # default stylesheet upload name
+  /** default stylesheet upload name */
   define("MW_DEFAULT_STYLESHEET_NAME", "default.css");
-  # default javascript functions upload name
+  /** default javascript functions upload name */
   define("MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME", "functions.js");
-  # layout page prefix
+  /** layout page prefix */
   define("MW_PAGE_NAME_PREFIX_LAYOUT", "MW:Layout:");
-  # footer layout page name
+  /** footer layout page name */
   define("MW_PAGE_NAME_LAYOUT_FOOTER", MW_PAGE_NAME_PREFIX_LAYOUT . "Footer");
-  # header layout page name
+  /** header layout page name */
   define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
   define("MW_PAGE_TAG_USER", "user");
   define("MW_PAGE_TAG_UPLOAD", "upload");
@@ -170,33 +172,41 @@
   $mw_texts[MW_ACTION_UPLOAD] = $mw_texts[MWT_ACTION_UPLOAD];
 
   # info text functions
-  # info text array (do not use directly, use add_info_text() and get_info_text())
+  /** info text array (do not use directly, use add_info_text() and get_info_text()) */
   $info_text = array();
-  # add new information to be shown to the user
-  # text: text to show
+  /**
+  * add new information to be shown to the user
+  * @param text text to show
+  */
   function add_info_text($text) {
     global $info_text;
     array_push ($info_text, $text);
   }
-  # returns array with all information texts
+  /**
+  * returns array with all information texts
+  */
   function get_info_text() {
     global $info_text;
     return $info_text;
   }
 
-  # wiki functions handling
+  /** wiki functions handling */
   $wiki_functions = array();
-  # register wiki function
-  # name: wiki function name
-  # cb: function callback
+  /**
+  * register wiki function
+  * @param name wiki function name
+  * @param cb function callback
+  */
   function register_wiki_function($name, $cb) {
     global $wiki_functions;
     $wiki_functions[$name] = $cb;
   }
-  # call wiki function
-  # name: wiki function name
-  # args: wiki function argument
-  # renderer_state: MW_Renderer_State
+  /**
+  * call wiki function
+  * @param name wiki function name
+  * @param args wiki function argument
+  * @param renderer_state MW_Renderer_State
+  */
   function call_wiki_function($name, $args, $renderer_state) {
     global $wiki_functions;
     if (isset ($wiki_functions[$name])) {
@@ -205,7 +215,9 @@
     return null;
   }
 
-  # returns new MW_Variables with prefilled global values
+  /**
+  * returns new MW_Variables with prefilled global values
+  */
   function new_global_wiki_variables() {
     global $auth, $req;
     $vars = new MW_Variables(null);
@@ -217,51 +229,65 @@
     return $vars;
   }
 
-  # returns new MW_Variables
-  # supervars: super MW_Variables to use
+  /**
+  * returns new MW_Variables
+  * @param supervars super MW_Variables to use
+  */
   function new_wiki_variables($supervars) {
     return new MW_Variables($supervars);
   }
 
-  # returns instance of MW_Request
+  /**
+  * returns instance of MW_Request
+  */
   function new_request() {
     return new MW_Request();
   }
 
-  # returns instance of MW_Auth
+  /**
+  * returns instance of MW_Auth
+  */
   function new_auth() {
     return new MW_Auth();
   }
 
-  # returns filtered page name
-  # _ is replaced with space
-  # " # $ * + < > = @ [ ] \ ^ ` { } | ~ are removed
-  # name: page name
+  /**
+  * returns filtered page name
+  * _ is replaced with space
+  * " # $ * + < > = @ [ ] \ ^ ` { } | ~ are removed
+  * @param name page name
+  */
   function filter_page_name($name) {
     $name = str_replace('_', ' ', $name);
     return str_replace(array('"', '#' ,"$" ,'*', '+' ,'<' ,'>' ,'=' ,'@' ,'[' ,']' ,'\\', '^', '`', '{', '}' ,'|', '~'), '', $name);
   }
 
-  # returns encoded page name
-  # space is replaced with _
-  # rawurlencode must still be used if this should be part of URL
-  # name: page name
+  /**
+  * returns encoded page name
+  * space is replaced with _
+  * rawurlencode must still be used if this should be part of URL
+  * @param name page name
+  */
   function encode_page_name($name) {
     return str_replace(' ', '_', $name);
   }
 
-  # returns encoded page name
-  # + and _ are replaced with space
-  # rawurldecode must still be used if this comes from URL
-  # name: page name
+  /**
+  * returns encoded page name
+  * + and _ are replaced with space
+  * rawurldecode must still be used if this comes from URL
+  * @param name page name
+  */
   function decode_page_name($name) {
     return str_replace(array('+', '_'), ' ', $name);
   }
 
-  # returns urlencoded page name
-  # does not encode forward slash as %2F
-  # see encode_page_name for more
-  # name: page name
+  /**
+  * returns urlencoded page name
+  * does not encode forward slash as %2F
+  * see encode_page_name for more
+  * @param name page name
+  */
   function urlencode_page_name($name) {
     return str_replace(array('%2F', '%2f'), '/', rawurlencode(encode_page_name($name)));
   }
@@ -324,27 +350,34 @@
     return null;
   }
 
-  # returns instance of MW_Page
-  # name: page name
-  # revision: wanted revision
+  /**
+  * returns instance of MW_Page
+  * @param name page name
+  * @param revision wanted revision
+  */
   function new_page($name, $revision) {
     return new_page_with_tag(null, $name, $revision);
   }
 
-  # returns instance of MW_Special_User_Page
-  # user: user name (not user page name)
+  /**
+  * returns instance of MW_Special_User_Page
+  * @param user user name (not user page name)
+  */
   function new_user_page($user) {
     return new_page_with_tag(MW_PAGE_TAG_USER, $user, MW_REVISION_HEAD);
   }
 
-  # returns instance of MW_Special_Upload_Page
-  # name: upload name (not upload page name)
-  # revision: wanted revision
+  /** returns instance of MW_Special_Upload_Page
+  * name: upload name (not upload page name)
+  * @param revision wanted revision
+  */
   function new_upload_page($name, $revision) {
     return new_page_with_tag(MW_PAGE_TAG_UPLOAD, $name, $revision);
   }
 
-  # returns instance of MW_Renderer
+  /**
+  * returns instance of MW_Renderer
+  */
   function new_renderer() {
     global $renderer_class_name;
     return new $renderer_class_name();
@@ -375,35 +408,37 @@
     }
   }
 
-  # HTTP request class
+  /**
+  * HTTP request class
+  */
   class MW_Request {
     # [read-only] attributes
-    # MW_REQVAR_PAGE_NAME
+    /** MW_REQVAR_PAGE_NAME */
     var $page_name;
-    # MW_REQVAR_ACTION
+    /** MW_REQVAR_ACTION */
     var $action;
-    # MW_REQVAR_REVISION
+    /** MW_REQVAR_REVISION */
     var $revision;
-    # MW_REQVAR_CONTENT
+    /** MW_REQVAR_CONTENT */
     var $content;
-    # MW_REQVAR_MESSAGE
+    /** MW_REQVAR_MESSAGE */
     var $message;
-    # MW_REQVAR_PREVIEW
+    /** MW_REQVAR_PREVIEW */
     var $preview;
-    # MW_REQVAR_OLD_USER
+    /** MW_REQVAR_OLD_USER */
     var $old_user;
-    # MW_REQVAR_USER
+    /** MW_REQVAR_USER */
     var $user;
-    # MW_REQVAR_PASS
+    /** MW_REQVAR_PASS */
     var $pass;
-    # MW_REQVAR_SOURCEFILE (as associative array with keys name, type, size and tmp_name)
+    /** MW_REQVAR_SOURCEFILE (as associative array with keys name, type, size and tmp_name) */
     var $sourcefile;
-    # MW_REQVAR_DESTFILE
+    /** MW_REQVAR_DESTFILE */
     var $destfile;
-    # whether this is head request
+    /** whether this is head request */
     var $is_head;
 
-    # constructor (do not use directly, use new_request())
+    /** @protected constructor (do not use directly, use new_request()) */
     function MW_Request() {
       $req_array = $_REQUEST;
       if (get_magic_quotes_gpc()) {
@@ -437,17 +472,19 @@
     }
   }
 
-  # HTTP Auth class
+  /**
+  * HTTP Auth class
+  */
   class MW_Auth {
     # [read-only] attributes
-    # were credentials specified by user?
+    /** were credentials specified by user? */
     var $has_credentials;
-    # current user name
+    /** current user name */
     var $user;
-    # is user logged in?
+    /** is user logged in? */
     var $is_logged;
 
-    # constructor (do not use directly, use new_auth())
+    /** @protected constructor (do not use directly, use new_auth()) */
     function MW_Auth() {
       $this->has_credentials = isset($_SERVER['PHP_AUTH_USER']);
       $this->user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
@@ -459,34 +496,40 @@
       }
     }
     
-    # [private] check if given password is valid for current user
-    # pass: password
-    # returns true if password is valid
+    /** @private
+    * check if given password is valid for current user
+    * @param pass password
+    * @param returns true if password is valid
+    */
     function validate($pass) {
       $user_page = new_user_page($this->user);
       $this->is_logged = $user_page->is_password_valid($pass);
     }
     
-    # returns true if user specified credentials, but those were not valid
+    /** returns true if user specified credentials, but those were not valid */
     function is_invalid() {
       return ($this->has_credentials && !$this->is_logged);
     }
     
-    # returns true if current user has permission to execute action specified by request on given page
-    # see is_action_permitted() for more information
-    # req: MW_Request
-    # page: MW_Page
+    /**
+    * returns true if current user has permission to execute action specified by request on given page
+    * see is_action_permitted() for more information
+    * @param req MW_Request
+    * @param page MW_Page
+    */
     function is_permitted($req, $page) {
       return $this->is_action_permitted($req->action, $page);
     }
     
-    # returns true if current user has permission to execute given action on given page
-    # everyone can relogin, login, view, view source and show history
-    # logged user can edit, delete and update
-    # only admin or same user can change password
-    # only admin can create or delete user
-    # action: action name
-    # page: MW_Page
+    /**
+    * returns true if current user has permission to execute given action on given page
+    * everyone can relogin, login, view, view source and show history
+    * logged user can edit, delete and update
+    * only admin or same user can change password
+    * only admin can create or delete user
+    * @param action action name
+    * @param page MW_Page
+    */
     function is_action_permitted($action, $page) {
       global $auth_read_logged_only, $auth_write_admin_only;
       $is_logged = $this->is_logged;
@@ -613,7 +656,7 @@
       die("abstract: create_resource");
     }
     
-    # ordered by revision from last to first
+    /** ordered by revision from last to first */
     function get_resource_history($dataspace, $name, $with_data) {
       die("abstract: get_resource_history");
     }
@@ -634,8 +677,10 @@
     }
   }
 
-  # returns last modified value as UNIX timestamp (see mktime())
-  # val: last modified value (as loaded from database)
+  /**
+  * returns last modified value as UNIX timestamp (see mktime())
+  * @param val last modified value (as loaded from database)
+  */
   function last_modified_as_timestamp($val) {
     # detect whether we have MySQL's "INTERNAL" or "ISO" (or similar) timestamp format - default changed in MySQL 4.1.x
     if (strlen($val) == 14) {
@@ -656,42 +701,48 @@
     return mktime($hour, $min, $sec, $month, $day, $year);
   }
 
-  # returns last modified value returned as YEAR/MONTH/DAY HOUR:MIN:SEC
-  # val: last modified value (as loaded from database)
+  /**
+  * returns last modified value returned as YEAR/MONTH/DAY HOUR:MIN:SEC
+  * @param val last modified value (as loaded from database)
+  */
   function format_last_modified($val) {
     $ts = last_modified_as_timestamp($val);
     # TODO configurable
     return strftime("%Y/%m/%d %H:%M:%S", $ts);
   }
   
-  # returns current date and time as last modified value
+  /**
+  * returns current date and time as last modified value
+  */
   function now_as_last_modified() {
     return strftime("%Y%m%d%H%M%S");
   }
   
-  # [abstract] Wiki page
+  /**
+  * [abstract] Wiki page
+  */
   class MW_Page {
     # [read-only] attributes
-    # page name
+    /** page name */
     var $name;
-    # page revision
+    /** page revision */
     var $revision;
-    # is some content loaded?
+    /** is some content loaded? */
     var $has_content;
-    # raw content (may be empty even if has_content is true) - valid after load()
+    /** raw content (may be empty even if has_content is true) - valid after load() */
     var $raw_content;
-    # time of last modification (special format) - valid after load()
+    /** time of last modification (special format) - valid after load() */
     var $last_modified;
-    # page revision message (if any) - valid after load()
+    /** page revision message (if any) - valid after load() */
     var $message;
-    # page revision author (if any) - valid after load()
+    /** page revision author (if any) - valid after load() */
     var $user;
-    # page title - valid after load()
+    /** page title - valid after load() */
     var $title;
-    # raw content length in bytes - maybe valid before load(), but may be set to null after load() if still not known
+    /** raw content length in bytes - maybe valid before load(), but may be set to null after load() if still not known */
     var $raw_content_length;
 
-    # constructor
+    /** constructor */
     function MW_Page($name) {
       $this->name = $name;
       $this->revision = MW_REVISION_HEAD;
@@ -704,48 +755,57 @@
       $this->raw_content_length = null;
     }
     
-    # [override, returns false] returns true if this page supports given action
-    # action: action
+    /**
+    * [override, returns false] returns true if this page supports given action
+    * @param action action
+    */
     function has_action($action) {
       return false;
     }
     
-    # [override, returns false] returns true if this page (with revision) exists
+    /** [override, returns false] returns true if this page (with revision) exists */
     function exists() {
       return false;
     }
     
-    # [override, returns false] load page (with revision) content
-    # returns true if content has been loaded successfully
+    /**
+    * [override, returns false] load page (with revision) content
+    * @returns true if content has been loaded successfully
+    */
     function load() {
       $this->title = $this->name;
       return false;
     }
     
-    # [override] delete page (including all revisions)
+    /** [override] delete page (including all revisions) */
     function delete() {
     }
     
-    # [override] update and reload page (revision will change)
-    # content: new content
-    # message: change message
-    # returns true if content has been set (it was different from old content)
+    /** [override] update and reload page (revision will change)
+    * @param content new content
+    * @param message change message
+    * @returns true if content has been set (it was different from old content)
+    */
     function update($content, $message) {
       return false;
     }
     
-    # [override] set content for preview
-    # content: new content
+    /**
+    * [override] set content for preview
+    * @param content new content
+    */
     function update_for_preview($content) {
     }
     
-    # [override] render page (with revision) content (must be loaded first) to output
+    /** [override] render page (with revision) content (must be loaded first) to output */
     function render() {
     }
     
-    # returns URL for this page and given action
-    # action: action name
-    # ...rev: revision - defaults to current
+    /**
+    * returns URL for this page and given action
+    * @param action action name
+    * @param rev revision - defaults to current
+    */
     function url_for_action($action) {
       $rev = $this->revision;
       if (func_num_args() > 1) {
@@ -764,14 +824,16 @@
       return $ret;
     }
     
-    # [override, returns empty array] returns array of MW_Page instances representing all revisions including current one
-    # returned array is ordered by revision in descending order (HEAD first)
+    /**
+    * [override, returns empty array] returns array of MW_Page instances representing all revisions including current one
+    * returned array is ordered by revision in descending order (HEAD first)
+    */
     function get_all_revisions() {
       return array();
     }
   }
   
-  # [abstract] special page
+  /** [abstract] special page */
   class MW_Special_Page extends MW_Page {
 
     function MW_Special_Page($name) {
@@ -805,23 +867,27 @@
     
   }
 
-  # wiki variables
+  /** wiki variables */
   class MW_Variables {
     # [read-only] attributes
-    # variables array
+    /** variables array */
     var $variables;
-    # super MW_Variables
+    /** super MW_Variables */
     var $supervars;
     
-    # constructor (do not call)
-    # supervars: super MW_Variables to use
+    /** @protected
+    * constructor (do not call)
+    * @param supervars super MW_Variables to use
+    */
     function MW_Variables($supervars) {
       $this->variables = array();
       $this->supervars = $supervars;
     }
   
-    # returns value of given variable
-    # name: variable name
+    /**
+    * returns value of given variable
+    * @param name variable name
+    */
     function get($name) {
       if (isset($this->variables[$name])) {
         return $this->variables[$name];
@@ -832,30 +898,34 @@
       return null;
     }
   
-    # sets value of given variable
-    # name: variable name
-    # value: variable value
+    /**
+    * sets value of given variable
+    * @param name variable name
+    * @param value: variable value
+    */
     function set($name, $value) {
       $this->variables[$name] = $value;
     }
   
   }
 
-  # Wiki renderer state
+  /** Wiki renderer state */
   class MW_Renderer_State {
     # [read-only] attributes
-    # MW_Renderer
+    /** MW_Renderer */
     var $renderer;
-    # raw text to render
+    /** raw text to render */
     var $raw;
-    # current MW_Variables
+    /** current MW_Variables */
     var $wiki_variables;
     
-    # constructor (do not call)
-    # renderer: MW_Renderer
-    # page: MW_Page or null
-    # raw: raw text to render
-    # super_wiki_variables: super MW_Variables to use
+    /** @protected
+    * constructor (do not call)
+    * @param renderer MW_Renderer
+    * @param page MW_Page or null
+    * @param raw raw text to render
+    * @param super_wiki_variables: super MW_Variables to use
+    */
     function MW_Renderer_State($renderer, $page, $raw, $super_wiki_variables) {
       $this->renderer = $renderer;
       $this->raw = $raw;
@@ -869,12 +939,12 @@
       }
     }
 
-    # push new wiki_variables on top of existing ones
+    /** push new wiki_variables on top of existing ones */
     function push_variables() {
       $this->wiki_variables = new_wiki_variables($this->wiki_variables);
     }
 
-    # pop wiki_variables and restore their super ones
+    /** pop wiki_variables and restore their super ones */
     function pop_variables() {
       # we are on original variables which have globals as super
       if ($this->wiki_variables->supervars->supervars === null) {
@@ -883,20 +953,22 @@
       $this->wiki_variables = $this->wiki_variables->supervars;
     }
     
-    # render Wiki markup to output
+    /** render Wiki markup to output */
     function render() {
       die ("abstract: render");
     }
     
   }
 
-  # Wiki renderer
+  /** Wiki renderer */
   class MW_Renderer {
 
-    # render Wiki markup to output
-    # page: MW_Page (may be null)
-    # raw: raw text (empty message is output if raw text is empty)
-    # vars (optional): MW_Variables to be used as global variables
+    /**
+    * render Wiki markup to output
+    * @param page MW_Page (may be null)
+    * @param raw raw text (empty message is output if raw text is empty)
+    * @param vars (optional) MW_Variables to be used as global variables
+    */
     function render($page, $raw) {
       die ("abstract: render");
     }

@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Page (bundled)
+  /** @file
+  * extension Core Page (bundled)
+  */
 
   define("MW_DS_PAGES", "pages");
   
@@ -44,12 +46,14 @@
     }
   }
 
-  # regular Wiki page
+  /** regular Wiki page */
   class MW_DB_Page extends MW_Page {
     
-    # constructor (do not use directly, use new_page())
-    # name: page name
-    # revision: page revision
+    /** @protected
+    * constructor (do not use directly, use new_page())
+    * @param name page name
+    * @param revision page revision
+    */
     function MW_DB_Page($name, $revision) {
       parent::MW_Page($name);
       $this->revision = $revision;
@@ -67,7 +71,7 @@
       return $storage->exists(MW_DS_PAGES, $this->name);
     }
 
-    # [private] process content (mainly directives)
+    /** @private process content (mainly directives) */
     function process_content() {
       if ($this->has_content) {
         # TODO will happily process directives inside <pre> blocks

@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core XML Import/Export (bundled)
+  /** @file
+  * extension Core XML Import/Export (bundled)
+  */
 
   class EXT_Core_XML_Import_Export extends MW_Extension {
 
@@ -36,7 +38,7 @@
 
   /*
     XML format (if miniWiki's encoding is not UTF-8 and iconv() is not available, internal encoding is used):
-    
+
     <?xml version="1.0" encoding="utf-8"?>
     <resources>
       <resource dataspace="DATASPACE_NAME" name="RESOURCE_NAME">

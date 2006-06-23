@@ -3,8 +3,10 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # history page
-  # page: current MW_Page
+  /** @file
+  * history page
+  * @param page current MW_Page
+  */
 
   $title = $page->name;
   include('header.php');

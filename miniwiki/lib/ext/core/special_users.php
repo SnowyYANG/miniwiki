@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Special:Users (bundled)
+  /** @file
+  * extension Core Special:Users (bundled)
+  */
 
   class EXT_CoreSpecialUsers extends MW_Extension {
 
@@ -37,11 +39,13 @@
     }
   }
 
-  # special page with list of users (MW_PAGE_NAME_USERS)
-  # allows user creation and deletion (if permitted)
+  /**
+  * special page with list of users (MW_PAGE_NAME_USERS)
+  * allows user creation and deletion (if permitted)
+  */
   class MW_Special_Users_Page extends MW_Special_Page {
 
-    # constructor (do not use directly, use new_page())
+    /** @protected constructor (do not use directly, use new_page()) */
     function MW_Special_Users_Page($name) {
       parent::MW_Special_Page($name);
     }

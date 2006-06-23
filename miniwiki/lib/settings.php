@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
   
-  # global settings
+  /** @file
+  * global settings
+  */
   
   # texts array definition
 
@@ -91,7 +93,9 @@ For uploading new version, please, use '''Edit''' link at the bottom.",
     MWT_PAGE_NOT_UPDATED => "No edits. Page was not updated.",
   );
   
-  # returns information file name for given user (for use by user_info wiki function)
+  /**
+  * returns information file name for given user (for use by user_info wiki function)
+  */
   function get_user_info_file($user) {
     return 'users/'.$user;
   }

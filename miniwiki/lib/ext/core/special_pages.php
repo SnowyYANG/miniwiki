@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Special:Pages (bundled)
+  /** @file
+  * extension Core Special:Pages (bundled)
+  */
 
   class EXT_CoreSpecialPages extends MW_Extension {
 
@@ -37,10 +39,10 @@
     }
   }
 
-  # special page with list of all regular pages (MW_PAGE_NAME_PAGES)
+  /** special page with list of all regular pages (MW_PAGE_NAME_PAGES) */
   class MW_Special_Pages_Page extends MW_Special_Page {
 
-    # constructor (do not use directly, use new_page())
+    /** @protected constructor (do not use directly, use new_page()) */
     function MW_Special_Pages_Page($name) {
       parent::MW_Special_Page($name);
     }

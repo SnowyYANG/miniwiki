@@ -3,7 +3,9 @@
   # (c)2005 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
-  # extension Core Obsolete (bundled)
+  /** @file
+  * extension Core Obsolete (bundled)
+  */
 
   class EXT_CoreObsolete extends MW_Extension {
 

@@ -10,7 +10,7 @@
   define("MW_DS_USERS", "users");
   define("MW_RESOURCE_KEY_PASSWORD", "password");
     
-  class EXT_CoreUsersManager extends MW_Extension {
+  class MW_CoreUsersManagerExtension extends MW_Extension {
 
     function get_name() {
       return "Core Users Manager";
@@ -25,7 +25,7 @@
     }
 
     function initialize() {
-      $dataspace_def = new MW_DataSpace_Definition(MW_DS_USERS, false, MW_RESOURCE_CONTENT_TYPE_NONE);
+      $dataspace_def = new MW_DataSpaceDefinition(MW_DS_USERS, false, MW_RESOURCE_CONTENT_TYPE_NONE);
       $dataspace_def->add_custom_key(MW_RESOURCE_KEY_PASSWORD, MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT . "32");
       register_dataspace($dataspace_def);
       return true;
@@ -33,9 +33,9 @@
 
   }
 
-  register_extension(new EXT_CoreUsersManager());
+  register_extension(new MW_CoreUsersManagerExtension());
 
-  class MW_CoreUsersManager extends MW_Users_Manager {
+  class MW_CoreUsersManager extends MW_UsersManager {
 
     function get_all_usernames() {
       global $storage;

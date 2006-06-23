@@ -205,7 +205,7 @@
   * call wiki function
   * @param name wiki function name
   * @param args wiki function argument
-  * @param renderer_state MW_Renderer_State
+  * @param renderer_state MW_RendererState
   */
   function call_wiki_function($name, $args, $renderer_state) {
     global $wiki_functions;
@@ -292,7 +292,7 @@
     return str_replace(array('%2F', '%2f'), '/', rawurlencode(encode_page_name($name)));
   }
   
-  class MW_Page_Handler {
+  class MW_PageHandler {
     var $next;
     function get_priority() {
       return 0;
@@ -302,7 +302,7 @@
     }
   }
   
-  class MW_Last_Page_Handler extends MW_Page_Handler {
+  class MW_LastPageHandler extends MW_PageHandler {
     function get_priority() {
       return 10000;
     }
@@ -311,7 +311,7 @@
     }
   }
   
-  $page_handlers = array(new MW_Last_Page_Handler());
+  $page_handlers = array(new MW_LastPageHandler());
   
   function register_page_handler($handler) {
     global $page_handlers;
@@ -360,14 +360,14 @@
   }
 
   /**
-  * returns instance of MW_Special_User_Page
+  * returns instance of MW_SpecialUserPage
   * @param user user name (not user page name)
   */
   function new_user_page($user) {
     return new_page_with_tag(MW_PAGE_TAG_USER, $user, MW_REVISION_HEAD);
   }
 
-  /** returns instance of MW_Special_Upload_Page
+  /** returns instance of MW_SpecialUploadPage
   * @param name upload name (not upload page name)
   * @param revision wanted revision
   */
@@ -560,7 +560,7 @@
     
   }
 
-  class MW_Users_Manager {
+  class MW_UsersManager {
     function get_all_usernames() {
       die("abstract: get_all_usernames");
     }
@@ -595,13 +595,13 @@
     }
   }
 
-  class MW_DataSpace_Definition {
+  class MW_DataSpaceDefinition {
     var $name;
     var $versioned;
     var $content_type;
     var $custom_keys;
 
-    function MW_DataSpace_Definition($name, $versioned, $content_type) {
+    function MW_DataSpaceDefinition($name, $versioned, $content_type) {
       $this->name = $name;
       $this->versioned = $versioned;
       $this->content_type = $content_type;
@@ -834,9 +834,9 @@
   }
   
   /** [abstract] special page */
-  class MW_Special_Page extends MW_Page {
+  class MW_SpecialPage extends MW_Page {
 
-    function MW_Special_Page($name) {
+    function MW_SpecialPage($name) {
       parent::MW_Page($name);
       $this->has_content = true;
       $this->last_modified = now_as_last_modified();
@@ -910,7 +910,7 @@
   }
 
   /** Wiki renderer state */
-  class MW_Renderer_State {
+  class MW_RendererState {
     # [read-only] attributes
     /** MW_Renderer */
     var $renderer;
@@ -926,7 +926,7 @@
     * @param raw raw text to render
     * @param super_wiki_variables: super MW_Variables to use
     */
-    function MW_Renderer_State($renderer, $page, $raw, $super_wiki_variables) {
+    function MW_RendererState($renderer, $page, $raw, $super_wiki_variables) {
       $this->renderer = $renderer;
       $this->raw = $raw;
       $this->wiki_variables = new_wiki_variables($super_wiki_variables);
@@ -1044,7 +1044,7 @@
     
   }
 
-  class MW_Install_Handler {
+  class MW_InstallHandler {
     function show_install_message($msg) {
       die ("abstract: show_install_message");
     }

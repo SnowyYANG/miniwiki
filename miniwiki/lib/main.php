@@ -89,7 +89,7 @@
         if ($page->load()) {
           include(($action == MW_ACTION_VIEW_SOURCE) ? 'viewsource.php' : 'viewpage.php');
           break;
-        } else if (is_a($page, 'MW_Special_Upload_Page') && $page->is_data_page) {
+        } else if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
           # missing data page should raise 404 Not Found
           header ("HTTP/1.0 404 Not Found");
         }
@@ -100,7 +100,7 @@
         if (!$page->has_content) {
           $page->load();
         }
-        if (is_a($page, 'MW_Special_Upload_Page')) {
+        if (is_a($page, 'MW_SpecialUploadPage')) {
           include('editupload.php');
         } else {
           include('editpage.php');
@@ -127,7 +127,7 @@
           trigger_error('Possible upload attack with file '.$req->sourcefile['name'], E_USER_ERROR);
           break;
         }
-        if (is_a($page, 'MW_Special_Uploads_Page')) {
+        if (is_a($page, 'MW_SpecialUploadsPage')) {
           $filename = $req->destfile ? $req->destfile : $req->sourcefile['name'];
           $page = $page->upload(file_get_contents($req->sourcefile['tmp_name']), $req->message, $filename);
         } else {

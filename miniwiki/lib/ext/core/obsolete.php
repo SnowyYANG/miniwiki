@@ -7,7 +7,7 @@
   * extension Core Obsolete (bundled)
   */
 
-  class EXT_CoreObsolete extends MW_Extension {
+  class MW_CoreObsoleteExtension extends MW_Extension {
 
     function get_name() {
       return "Core Obsolete";
@@ -22,15 +22,15 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Obsolete_Page_Handler());
+      register_page_handler(new MW_ObsoletePageHandler());
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreObsolete());
+  register_extension(new MW_CoreObsoleteExtension());
 
-  class MW_Obsolete_Page_Handler extends MW_Page_Handler {
+  class MW_ObsoletePageHandler extends MW_PageHandler {
     function get_priority() {
       return -100;
     }

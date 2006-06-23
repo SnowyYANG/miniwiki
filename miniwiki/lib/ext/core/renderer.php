@@ -7,7 +7,7 @@
   * extension Core Renderer (bundled)
   */
 
-  class EXT_CoreRenderer extends MW_Extension {
+  class MW_CoreRendererExtension extends MW_Extension {
 
     function get_name() {
       return "Core Renderer";
@@ -27,10 +27,10 @@
 
   }
 
-  register_extension(new EXT_CoreRenderer());
+  register_extension(new MW_CoreRendererExtension());
 
   /** internal Wiki renderer state */
-  class MW_CoreRenderer_State extends MW_Renderer_State {
+  class MW_CoreRendererState extends MW_RendererState {
     # [read-only] attributes
     var $headings;
     /** headings counter (current number) */
@@ -43,8 +43,8 @@
     * @param raw raw text to render
     * @param super_wiki_variables super MW_Variables to use
     */
-    function MW_CoreRenderer_State($renderer, $page, $raw, $super_wiki_variables) {
-      parent::MW_Renderer_State($renderer, $page, $raw, $super_wiki_variables);
+    function MW_CoreRendererState($renderer, $page, $raw, $super_wiki_variables) {
+      parent::MW_RendererState($renderer, $page, $raw, $super_wiki_variables);
       $this->headings = array();
       $this->headings_counter = '';
     }
@@ -109,7 +109,7 @@
           $data_page = new_page($data_name, $revision);
           # small hack to change link on Upload page
           global $page;
-          $name = (is_a($page, "MW_Special_Upload_Page") ? $data_name : $upload_name);
+          $name = (is_a($page, "MW_SpecialUploadPage") ? $data_name : $upload_name);
         }
         $linked_page = new_page($name, $revision);
         $link_exists = $linked_page->exists();
@@ -634,7 +634,7 @@
       if ($vars === null) {
         $vars = new_global_wiki_variables();
       }
-      $state = new MW_CoreRenderer_State($this, $page, $raw, $vars);
+      $state = new MW_CoreRendererState($this, $page, $raw, $vars);
       $state->render();
     }
     

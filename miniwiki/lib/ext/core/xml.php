@@ -7,7 +7,7 @@
   * extension Core XML Import/Export (bundled)
   */
 
-  class EXT_Core_XML_Import_Export extends MW_Extension {
+  class MW_CoreXMLImportExportExtension extends MW_Extension {
 
     function get_name() {
       return "Core XML Import/Export";
@@ -22,14 +22,14 @@
     }
 
     function initialize() {
-      register_importer(new MW_XML_Importer());
-      register_exporter(new MW_XML_Exporter());
+      register_importer(new MW_XMLImporter());
+      register_exporter(new MW_XMLExporter());
       return true;
     }
 
   }
 
-  register_extension(new EXT_Core_XML_Import_Export());
+  register_extension(new MW_CoreXMLImportExportExtension());
 
   define('MW_XML_FORMAT', 'XML');
   define('MW_XML_TYPE_TEXT', 'text');
@@ -54,7 +54,7 @@
       datetime - RESOURCE_KEY_VALUE is YYYY-MM-DDTHH:MM:SSZ (corresponds to XSD dateTime with UTC timezone)
   */
 
-  class MW_XML_Importer extends MW_Importer {
+  class MW_XMLImporter extends MW_Importer {
 
     function get_format() {
       return MW_XML_FORMAT;
@@ -62,7 +62,7 @@
     
   }
 
-  class MW_XML_Exporter extends MW_Exporter {
+  class MW_XMLExporter extends MW_Exporter {
 
     function export($file, $with_history = true, $dataspaces = array()) {
       global $storage, $mw_encoding;

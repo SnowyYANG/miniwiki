@@ -7,7 +7,7 @@
   * extension Core Special:Uploads (bundled)
   */
 
-  class EXT_CoreSpecialUploads extends MW_Extension {
+  class MW_CoreSpecialUploadsExtension extends MW_Extension {
 
     function get_name() {
       return "Core Special:Uploads";
@@ -22,29 +22,29 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Special_Uploads_Page_Handler());
+      register_page_handler(new MW_SpecialUploadsPageHandler());
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreSpecialUploads());
+  register_extension(new MW_CoreSpecialUploadsExtension());
 
-  class MW_Special_Uploads_Page_Handler extends MW_Page_Handler {
+  class MW_SpecialUploadsPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       if (($tag == null) && ($name == MW_PAGE_NAME_UPLOADS)) {
-        return new MW_Special_Uploads_Page($name);
+        return new MW_SpecialUploadsPage($name);
       }
       return $this->next->get_page($tag, $name, $revision);
     }
   }
 
   /** special page with list of all uploads (MW_PAGE_NAME_UPLOADS) */
-  class MW_Special_Uploads_Page extends MW_Special_Page {
+  class MW_SpecialUploadsPage extends MW_SpecialPage {
 
     /** @protected constructor (do not use directly, use new_page()) */
-    function MW_Special_Uploads_Page($name) {
-      parent::MW_Special_Page($name);
+    function MW_SpecialUploadsPage($name) {
+      parent::MW_SpecialPage($name);
     }
 
     function has_action($action) {

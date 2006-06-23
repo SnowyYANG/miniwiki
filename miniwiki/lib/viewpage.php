@@ -8,7 +8,7 @@
   * @param page current MW_Page
   */
 
-  if (is_a($page, 'MW_Special_Upload_Page') && $page->is_data_page) {
+  if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
     header('Content-Type: '.$page->mime_type);
     if ($page->last_modified != 0) {
       header('Last-Modified: '.gmdate("D, d M Y H:i:s", last_modified_as_timestamp($page->last_modified)).' GMT');;

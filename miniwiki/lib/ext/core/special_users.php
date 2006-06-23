@@ -7,7 +7,7 @@
   * extension Core Special:Users (bundled)
   */
 
-  class EXT_CoreSpecialUsers extends MW_Extension {
+  class MW_CoreSpecialUsersExtension extends MW_Extension {
 
     function get_name() {
       return "Core Special:Users";
@@ -22,18 +22,18 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Special_Users_Page_Handler());
+      register_page_handler(new MW_SpecialUsersPageHandler());
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreSpecialUsers());
+  register_extension(new MW_CoreSpecialUsersExtension());
 
-  class MW_Special_Users_Page_Handler extends MW_Page_Handler {
+  class MW_SpecialUsersPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       if (($tag == null) && ($name == MW_PAGE_NAME_USERS)) {
-        return new MW_Special_Users_Page($name);
+        return new MW_SpecialUsersPage($name);
       }
       return $this->next->get_page($tag, $name, $revision);
     }
@@ -43,11 +43,11 @@
   * special page with list of users (MW_PAGE_NAME_USERS)
   * allows user creation and deletion (if permitted)
   */
-  class MW_Special_Users_Page extends MW_Special_Page {
+  class MW_SpecialUsersPage extends MW_SpecialPage {
 
     /** @protected constructor (do not use directly, use new_page()) */
-    function MW_Special_Users_Page($name) {
-      parent::MW_Special_Page($name);
+    function MW_SpecialUsersPage($name) {
+      parent::MW_SpecialPage($name);
     }
 
     function render() {

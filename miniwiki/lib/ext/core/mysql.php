@@ -7,7 +7,7 @@
   * extension Core MySQL Storage (bundled)
   */
 
-  class EXT_CoreMySQLStorage extends MW_Extension {
+  class MW_CoreMySQLStorageExtension extends MW_Extension {
 
     function get_name() {
       return "Core MySQL Storage";
@@ -27,12 +27,12 @@
 
   }
 
-  register_extension(new EXT_CoreMySQLStorage());
+  register_extension(new MW_CoreMySQLStorageExtension());
 
   define("MW_RESOURCE_KEY_AUTHOR_COMPATIBLE", "user");
   
   /** database access class */
-  class MW_MySQL_Storage extends MW_Storage {
+  class MW_MySQLStorage extends MW_Storage {
     /** @private host name */
     var $host;
     /** @private user name */
@@ -45,7 +45,7 @@
     var $conn;
     
     /** constructor */
-    function MW_MySQL_Storage() {
+    function MW_MySQLStorage() {
       global $mw_db_host, $mw_db_user, $mw_db_pass, $mw_db_name;
       $this->host = $mw_db_host;
       $this->user = $mw_db_user;

@@ -9,7 +9,7 @@
 
   define("MW_DS_PAGES", "pages");
   
-  class EXT_CorePage extends MW_Extension {
+  class MW_CorePageExtension extends MW_Extension {
 
     function get_name() {
       return "Core Page";
@@ -24,37 +24,37 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_CorePage_Page_Handler());
-      $dataspace_def = new MW_DataSpace_Definition(MW_DS_PAGES, true, MW_RESOURCE_CONTENT_TYPE_TEXT);
+      register_page_handler(new MW_CorePagePageHandler());
+      $dataspace_def = new MW_DataSpaceDefinition(MW_DS_PAGES, true, MW_RESOURCE_CONTENT_TYPE_TEXT);
       register_dataspace($dataspace_def);
       return true;
     }
 
   }
 
-  register_extension(new EXT_CorePage());
+  register_extension(new MW_CorePageExtension());
 
-  class MW_CorePage_Page_Handler extends MW_Page_Handler {
+  class MW_CorePagePageHandler extends MW_PageHandler {
     function get_priority() {
       return 100;
     }
     function get_page($tag, $name, $revision) {
       if ($tag == null) {
-        return new MW_DB_Page($name, $revision);
+        return new MW_DBPage($name, $revision);
       }
       return $this->next->get_page($tag, $name, $revision);
     }
   }
 
   /** regular Wiki page */
-  class MW_DB_Page extends MW_Page {
+  class MW_DBPage extends MW_Page {
     
     /** @protected
     * constructor (do not use directly, use new_page())
     * @param name page name
     * @param revision page revision
     */
-    function MW_DB_Page($name, $revision) {
+    function MW_DBPage($name, $revision) {
       parent::MW_Page($name);
       $this->revision = $revision;
     }

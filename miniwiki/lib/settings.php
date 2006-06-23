@@ -108,7 +108,7 @@ For uploading new version, please, use '''Edit''' link at the bottom.",
     $users_manager_class_name = "MW_CoreUsersManager";
   }
   if (!isset($storage_class_name)) {
-    $storage_class_name = "MW_MySQL_Storage";
+    $storage_class_name = "MW_MySQLStorage";
   }
   
 ?>

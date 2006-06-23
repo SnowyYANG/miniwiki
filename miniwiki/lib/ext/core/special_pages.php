@@ -7,7 +7,7 @@
   * extension Core Special:Pages (bundled)
   */
 
-  class EXT_CoreSpecialPages extends MW_Extension {
+  class MW_CoreSpecialPagesExtension extends MW_Extension {
 
     function get_name() {
       return "Core Special:Pages";
@@ -22,29 +22,29 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Special_Pages_Page_Handler());
+      register_page_handler(new MW_SpecialPagesPageHandler());
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreSpecialPages());
+  register_extension(new MW_CoreSpecialPagesExtension());
 
-  class MW_Special_Pages_Page_Handler extends MW_Page_Handler {
+  class MW_SpecialPagesPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       if (($tag == null) && ($name == MW_PAGE_NAME_PAGES)) {
-        return new MW_Special_Pages_Page($name);
+        return new MW_SpecialPagesPage($name);
       }
       return $this->next->get_page($tag, $name, $revision);
     }
   }
 
   /** special page with list of all regular pages (MW_PAGE_NAME_PAGES) */
-  class MW_Special_Pages_Page extends MW_Special_Page {
+  class MW_SpecialPagesPage extends MW_SpecialPage {
 
     /** @protected constructor (do not use directly, use new_page()) */
-    function MW_Special_Pages_Page($name) {
-      parent::MW_Special_Page($name);
+    function MW_SpecialPagesPage($name) {
+      parent::MW_SpecialPage($name);
     }
 
     function render() {

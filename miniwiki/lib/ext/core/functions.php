@@ -7,7 +7,7 @@
   * extension Core Functions (bundled)
   */
 
-  class EXT_CoreFunctions extends MW_Extension {
+  class MW_CoreFunctionsExtension extends MW_Extension {
 
     function get_name() {
       return "Core Functions";
@@ -174,6 +174,6 @@
     }
   }
 
-  register_extension(new EXT_CoreFunctions());
+  register_extension(new MW_CoreFunctionsExtension());
 
 ?>

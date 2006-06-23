@@ -7,7 +7,7 @@
   * extension User Info (bundled)
   */
   
-  class EXT_UserInfo extends MW_Extension {
+  class MW_UserInfoExtension extends MW_Extension {
 
     function get_name() {
       return "User Info";
@@ -44,6 +44,6 @@
     }
   }
 
-  register_extension(new EXT_UserInfo());
+  register_extension(new MW_UserInfoExtension());
 
 ?>

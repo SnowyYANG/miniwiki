@@ -9,7 +9,7 @@
 
   define("MW_DS_UPLOADS", "uploads");
   
-  class EXT_CoreSpecialUpload extends MW_Extension {
+  class MW_CoreSpecialUploadExtension extends MW_Extension {
 
     function get_name() {
       return "Core Special Upload";
@@ -24,34 +24,34 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Special_Upload_Page_Handler());
-      $dataspace_def = new MW_DataSpace_Definition(MW_DS_UPLOADS, true, MW_RESOURCE_CONTENT_TYPE_BINARY);
+      register_page_handler(new MW_SpecialUploadPageHandler());
+      $dataspace_def = new MW_DataSpaceDefinition(MW_DS_UPLOADS, true, MW_RESOURCE_CONTENT_TYPE_BINARY);
       register_dataspace($dataspace_def);
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreSpecialUpload());
+  register_extension(new MW_CoreSpecialUploadExtension());
 
-  class MW_Special_Upload_Page_Handler extends MW_Page_Handler {
+  class MW_SpecialUploadPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       if ($tag == null) {
         if (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
-          return new MW_Special_Upload_Page($name, $revision);
+          return new MW_SpecialUploadPage($name, $revision);
         } elseif (strpos($name, MW_PAGE_NAME_PREFIX_DATA) === 0) {
-          return new MW_Special_Upload_Page($name, $revision);
+          return new MW_SpecialUploadPage($name, $revision);
         }
       }
       if ($tag == MW_PAGE_TAG_UPLOAD) {
-        return new MW_Special_Upload_Page(MW_PAGE_NAME_PREFIX_UPLOAD.$name, $revision);
+        return new MW_SpecialUploadPage(MW_PAGE_NAME_PREFIX_UPLOAD.$name, $revision);
       }
       return $this->next->get_page($tag, $name, $revision);
     }
   }
 
   /** special upload page (MW_PAGE_NAME_PREFIX_UPLOAD or MW_PAGE_NAME_PREFIX_DATA) */
-  class MW_Special_Upload_Page extends MW_Page {
+  class MW_SpecialUploadPage extends MW_Page {
     # [read-only] attributes
     /** upload name */
     var $upload_name;
@@ -65,7 +65,7 @@
     * @param name page name
     * @param revision page revision
     */
-    function MW_Special_Upload_Page($name, $revision) {
+    function MW_SpecialUploadPage($name, $revision) {
       parent::MW_Page($name);
       if (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
         $this->upload_name = substr($name, strlen(MW_PAGE_NAME_PREFIX_UPLOAD));
@@ -182,7 +182,7 @@
     function render() {
       global $renderer, $mw_texts;
       if ($this->is_data_page) {
-        trigger_error("INTERNAL: MW_Special_Upload_Page.render(): is_data_page is true", E_USER_ERROR);
+        trigger_error("INTERNAL: MW_SpecialUploadPage.render(): is_data_page is true", E_USER_ERROR);
       } else {
         $text = $mw_texts[MWT_UPLOAD_PAGE_TEXT];
         $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;

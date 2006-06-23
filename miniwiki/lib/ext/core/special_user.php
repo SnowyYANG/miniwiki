@@ -7,7 +7,7 @@
   * extension Core Special User (bundled)
   */
 
-  class EXT_CoreSpecialUser extends MW_Extension {
+  class MW_CoreSpecialUserExtension extends MW_Extension {
 
     function get_name() {
       return "Core Special User";
@@ -22,15 +22,15 @@
     }
 
     function initialize() {
-      register_page_handler(new MW_Special_User_Page_Handler());
+      register_page_handler(new MW_SpecialUserPageHandler());
       return true;
     }
 
   }
 
-  register_extension(new EXT_CoreSpecialUser());
+  register_extension(new MW_CoreSpecialUserExtension());
 
-  class MW_Special_User_Page_Handler extends MW_Page_Handler {
+  class MW_SpecialUserPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       $overlay = false;
       if (($tag == null) && (strpos($name, MW_PAGE_NAME_PREFIX_USER) === 0)) {
@@ -43,7 +43,7 @@
       }
       $page = $this->next->get_page($tag, $name, $revision);
       if ($overlay && ($page !== null)) {
-        $page = new MW_Special_User_Page($page);
+        $page = new MW_SpecialUserPage($page);
       }
       return $page;
     }
@@ -54,7 +54,7 @@
   * this page always exists even if empty (but then it is not stored in database)
   * user associated with this page may not exist
   */
-  class MW_Special_User_Page extends MW_Page {
+  class MW_SpecialUserPage extends MW_Page {
     # [read-only] attributes
     /** user associated with this user page */
     var $related_user;
@@ -65,7 +65,7 @@
     * constructor (do not use directly, use new_user_page() or new_page())
     * @param page "real" page
     */
-    function MW_Special_User_Page($page) {
+    function MW_SpecialUserPage($page) {
       parent::MW_Page($page->name);
       $this->page = $page;
       $this->fill_vars();

@@ -772,10 +772,9 @@
     * @param action action name
     * @param rev revision - defaults to current
     */
-    function url_for_action($action) {
-      $rev = $this->revision;
-      if (func_num_args() > 1) {
-        $rev = func_get_arg(1);
+    function url_for_action($action, $rev = null) {
+      if ($rev === null) {
+        $rev = $this->revision;
       }
       $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode_page_name($this->name);
       $in_query = false;
@@ -935,7 +934,7 @@
     * @param raw raw text (empty message is output if raw text is empty)
     * @param vars (optional) MW_Variables to be used as global variables
     */
-    function render($page, $raw) {
+    function render($page, $raw, $vars = null) {
       die ("abstract: render");
     }
     

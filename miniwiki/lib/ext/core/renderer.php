@@ -626,11 +626,7 @@
     * @param raw raw text (empty message is output if raw text is empty)
     * @param vars (optional): MW_Variables to be used as global variables
     */
-    function render($page, $raw) {
-      $vars = null;
-      if (func_num_args() > 2) {
-        $vars = func_get_arg(2);
-      }
+    function render($page, $raw, $vars = null) {
       if ($vars === null) {
         $vars = new_global_wiki_variables();
       }

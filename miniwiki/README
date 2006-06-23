@@ -29,8 +29,8 @@ to it, when asked for username and password use the ones
 from inside the script (stored in variables $install_user and $install_pass).
 Script will then upgrade the storage.
 
-Note that unlike version 0.2, upgrade from 0.1 to 0.3 does not rename MainPage
-to Main Page.
+Note that since version 0.3 main page name is Main Page and not MainPage. This
+is not handled by upgrade process and must be done by hand.
 
 Setup
 -----

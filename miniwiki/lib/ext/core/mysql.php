@@ -78,7 +78,7 @@
       $ds_def = $this->dataspace_defs[$dataspace];
       $has_content = ($ds_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE);
       $is_versioned = ($ds_def->is_versioned());
-      # TODO schema update is not yet working
+      /** @todo schema update is not yet working */
       $has_timestamp = ($dataspace != MW_DS_USERS);
       if (isset($revision) && $is_versioned) {
         if ($revision == MW_REVISION_HEAD) {

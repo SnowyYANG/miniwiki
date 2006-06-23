@@ -84,7 +84,7 @@
       foreach ($dataspaces as $ds) {
         $ds_def = $storage->get_dataspace_definition($ds);
         $types_map = array();
-        # XXX custom keys may have (currently) only text type
+        /** @todo custom keys may have (currently) only text type */
         if ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY) {
           $types_map[MW_RESOURCE_KEY_CONTENT] = MW_XML_TYPE_BINARY;
         }

@@ -316,7 +316,7 @@
   function register_page_handler($handler) {
     global $page_handlers;
     array_push($page_handlers, $handler);
-    # XXX maybe later
+    /** @todo maybe later */
     initialize_page_handlers();
   }
   
@@ -707,7 +707,7 @@
   */
   function format_last_modified($val) {
     $ts = last_modified_as_timestamp($val);
-    # TODO configurable
+    /** @todo configurable */
     return strftime("%Y/%m/%d %H:%M:%S", $ts);
   }
   

@@ -79,20 +79,6 @@
   define("MW_REQVAR_SOURCEFILE", "sourcefile");
   /** destination file (for upload action) */
   define("MW_REQVAR_DESTFILE", "destfile");
-  /** name of table with pages */
-  define("MW_DB_TABLE_PAGES", "pages");
-  /** name of page name column */
-  define("MW_DB_TABLE_PAGES_COLUMN_NAME", "name");
-  /** name of page revision column */
-  define("MW_DB_TABLE_PAGES_COLUMN_REVISION", "revision");
-  /** name of page content column */
-  define("MW_DB_TABLE_PAGES_COLUMN_CONTENT", "content");
-  /** name of page last modification time column */
-  define("MW_DB_TABLE_PAGES_COLUMN_LAST_MODIFIED", "last_modified");
-  /** name of page revision message column */
-  define("MW_DB_TABLE_PAGES_COLUMN_MESSAGE", "message");
-  /** name of page revision author column */
-  define("MW_DB_TABLE_PAGES_COLUMN_USER", "user");
   /** users list special page name */
   define("MW_PAGE_NAME_USERS", "Special:Users");
   /** pages list special page name */
@@ -101,26 +87,6 @@
   define("MW_PAGE_NAME_PREFIX_USER", "User:");
   /** admin user name */
   define("MW_USER_NAME_ADMIN", "admin");
-  /** name of table with users */
-  define("MW_DB_TABLE_USERS", "users");
-  /** name of user name column */
-  define("MW_DB_TABLE_USERS_COLUMN_NAME", "name");
-  /** name of user password column (password is hashed with MD5 before storing) */
-  define("MW_DB_TABLE_USERS_COLUMN_PASSWORD", "password");
-  /** name of table with uploads */
-  define("MW_DB_TABLE_UPLOADS", "uploads");
-  /** name of upload name column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_NAME", "name");
-  /** name of upload revision column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_REVISION", "revision");
-  /** name of upload content column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_CONTENT", "content");
-  /** name of upload last modification time column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_LAST_MODIFIED", "last_modified");
-  /** name of upload revision message column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_MESSAGE", "message");
-  /** name of upload revision author column */
-  define("MW_DB_TABLE_UPLOADS_COLUMN_USER", "user");
   /** uploads list special page name */
   define("MW_PAGE_NAME_UPLOADS", "Special:Uploads");
   /** upload page prefix */

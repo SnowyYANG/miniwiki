@@ -29,7 +29,7 @@
 
   register_extension(new MW_CoreMySQLStorageExtension());
 
-  define("MW_RESOURCE_KEY_AUTHOR_COMPATIBLE", "user");
+  define("MW_RESOURCE_KEY_AUTHOR_0_2", "user");
   
   /** database access class */
   class MW_MySQLStorage extends MW_Storage {
@@ -94,7 +94,7 @@
          ($has_content ? 'length('.MW_RESOURCE_KEY_CONTENT.') as '.MW_RESOURCE_KEY_CONTENT_LENGTH.',' : '').
          ($has_timestamp ? MW_RESOURCE_KEY_LAST_MODIFIED.',' : '').
          ($is_versioned ? MW_RESOURCE_KEY_MESSAGE.',' : '').
-         ($is_versioned ? MW_RESOURCE_KEY_AUTHOR_COMPATIBLE.',' : '').
+         ($is_versioned ? MW_RESOURCE_KEY_AUTHOR.',' : '').
          (!isset($revison) && $is_versioned ? MW_RESOURCE_KEY_REVISION.',' : '').
          (sizeof($ds_def->get_custom_keys()) > 0 ? implode(array_keys($ds_def->get_custom_keys()), ',').',' : '').
          MW_RESOURCE_KEY_NAME.
@@ -111,9 +111,6 @@
         $res = new MW_Resource();
         foreach ($result as $key => $value) {
           if (!is_int($key)) {
-            if ($key == MW_RESOURCE_KEY_AUTHOR_COMPATIBLE) {
-              $key = MW_RESOURCE_KEY_AUTHOR;
-            }
             $res->set($key, $value);
           }
         }
@@ -149,9 +146,6 @@
         if (!$is_versioned && !$should_create && ($key == MW_RESOURCE_KEY_NAME)) {
           continue;
         }
-        if ($key == MW_RESOURCE_KEY_AUTHOR) {
-          $key = MW_RESOURCE_KEY_AUTHOR_COMPATIBLE;
-        }
         array_push($keys, $key);
         array_push($placeholders, '?');
         $cols[$key] = $value;
@@ -182,9 +176,6 @@
         $res = new MW_Resource();
         foreach ($result as $key => $value) {
           if (!is_int($key)) {
-            if ($key == MW_RESOURCE_KEY_AUTHOR_COMPATIBLE) {
-              $key = MW_RESOURCE_KEY_AUTHOR;
-            }
             $res->set($key, $value);
           }
         }
@@ -317,7 +308,7 @@
           return $name." timestamp(14) NOT NULL";
         case MW_RESOURCE_KEY_MESSAGE:
           return $name." varchar(250) default NULL";
-        case MW_RESOURCE_KEY_AUTHOR_COMPATIBLE:
+        case MW_RESOURCE_KEY_AUTHOR:
           return $name." varchar(100) default NULL";
         default:
           $custom_keys = $dataspace_def->get_custom_keys();
@@ -400,7 +391,7 @@
       array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_LAST_MODIFIED));
       if ($dataspace_def->is_versioned()) {
          array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_MESSAGE));
-         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE));
+         array_push($defs, $this->get_column_definition($dataspace_def, MW_RESOURCE_KEY_AUTHOR));
       }
       foreach (array_keys($dataspace_def->get_custom_keys()) as $key) {
          array_push($defs, $this->get_column_definition($dataspace_def, $key));
@@ -418,10 +409,15 @@
     function alter_column_definition($dataspace_def, $db_coldefs, $name) {
       $ds_name = $dataspace_def->get_name();
       $our_coldef = $this->get_column_definition($dataspace_def, $name);
-      $db_coldef = $db_coldefs[$name];
+      $db_coldef = (isset($db_coldefs[$name]) ? $db_coldefs[$name] : null);
       if ($db_coldef == null) {
-        $sql = 'alter table '.$ds_name. ' add '.$our_coldef;
-        show_install_message("Adding column $ds_name.$name");
+        if (($name == MW_RESOURCE_KEY_AUTHOR) && isset($db_coldefs[MW_RESOURCE_KEY_AUTHOR_0_2])) {
+          $sql = 'alter table '.$ds_name. ' change '.MW_RESOURCE_KEY_AUTHOR_0_2.' '.$our_coldef;
+          show_install_message("Renaming column $ds_name.".MW_RESOURCE_KEY_AUTHOR_0_2." to $ds_name.$name");
+        } else {
+          $sql = 'alter table '.$ds_name. ' add '.$our_coldef;
+          show_install_message("Adding column $ds_name.$name");
+        }
         $this->exec_statement($sql);
       } elseif (strcasecmp($our_coldef, $db_coldef) != 0) {
         $sql = 'alter table '.$ds_name. ' modify '.$our_coldef;
@@ -443,7 +439,7 @@
       $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_LAST_MODIFIED);
       if ($dataspace_def->is_versioned()) {
          $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_MESSAGE);
-         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_AUTHOR_COMPATIBLE);
+         $this->alter_column_definition($dataspace_def, $db_coldefs, MW_RESOURCE_KEY_AUTHOR);
       }
       foreach (array_keys($dataspace_def->get_custom_keys()) as $key) {
          $this->alter_column_definition($dataspace_def, $db_coldefs, $key);

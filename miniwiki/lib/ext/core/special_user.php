@@ -111,7 +111,7 @@
     }
     
     function update_for_preview($content) {
-      $this->page->update_for_preview($content, $message);
+      $this->page->update_for_preview($content);
       $this->fill_vars();
     }
     

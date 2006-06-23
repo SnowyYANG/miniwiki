@@ -1,5 +1,5 @@
 <?php
-  # $Id: main.php 60 2006-06-23 15:25:44Z src $
+  # $Id$
   # (c)2005,2006 Stepan Roh <src@srnet.cz>
   # Free to copy, free to modify, NO WARRANTY
 
@@ -35,7 +35,7 @@
   
   ini_set('include_path', ini_get('include_path').':../lib');
 
-  if ($install_pass == null) {
+  if ($install_pass === null) {
     die("Password is not set - aborting.");
   }
 

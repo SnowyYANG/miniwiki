@@ -54,13 +54,12 @@
       datetime - RESOURCE_KEY_VALUE is YYYY-MM-DDTHH:MM:SSZ (corresponds to XSD dateTime with UTC timezone)
   */
 
+  /** @todo XML import */
   class MW_XMLImporter extends MW_Importer {
 
     function get_format() {
       return MW_XML_FORMAT;
     }
-
-    /** @todo XML import */
     
   }
 

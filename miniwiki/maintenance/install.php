@@ -56,7 +56,7 @@
   include('settings.php');
   include('miniwiki.php');
 
-  echo('<p>miniWiki version: '.MW_VERSION.'</p>');
+  echo('<p>'.MW_NAME.' version: '.MW_VERSION.'</p>');
 
   class MW_WebInstallHandler extends MW_InstallHandler {
     function show_install_message($msg) {

@@ -59,6 +59,8 @@
     function get_format() {
       return MW_XML_FORMAT;
     }
+
+    /** @todo XML import */
     
   }
 

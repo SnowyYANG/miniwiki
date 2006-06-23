@@ -3,6 +3,7 @@ TODO list:
 - version 0.3
 - year 2006
 - Doxygenize
+- improve code docs
 - unify class names (to PrefixMixedCaps)
 - classify standalone pages
 - recent changes page

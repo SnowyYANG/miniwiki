@@ -78,8 +78,6 @@
       $ds_def = $this->dataspace_defs[$dataspace];
       $has_content = ($ds_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE);
       $is_versioned = ($ds_def->is_versioned());
-      /** @todo schema update is not yet working */
-      $has_timestamp = ($dataspace != MW_DS_USERS);
       if (isset($revision) && $is_versioned) {
         if ($revision == MW_REVISION_HEAD) {
           $query = $this->open_query('select max(revision) from '.$dataspace. ' where '.MW_RESOURCE_KEY_NAME.'=?', $name);
@@ -92,7 +90,7 @@
       return $this->open_query('select '.
          ($has_content && $with_data ? MW_RESOURCE_KEY_CONTENT.',' : '').
          ($has_content ? 'length('.MW_RESOURCE_KEY_CONTENT.') as '.MW_RESOURCE_KEY_CONTENT_LENGTH.',' : '').
-         ($has_timestamp ? MW_RESOURCE_KEY_LAST_MODIFIED.',' : '').
+         MW_RESOURCE_KEY_LAST_MODIFIED.','.
          ($is_versioned ? MW_RESOURCE_KEY_MESSAGE.',' : '').
          ($is_versioned ? MW_RESOURCE_KEY_AUTHOR.',' : '').
          (!isset($revison) && $is_versioned ? MW_RESOURCE_KEY_REVISION.',' : '').

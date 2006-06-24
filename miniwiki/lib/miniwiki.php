@@ -103,8 +103,12 @@
   define("MW_DEFAULT_STYLESHEET_NAME", "default.css");
   /** default javascript functions upload name */
   define("MW_DEFAULT_JAVASCRIPT_FUNCTIONS_NAME", "functions.js");
+  /** internal miniWiki namespace prefix */
+  define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW:");
+  /** internal miniWiki namespace prefix for uploads */
+  define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "mw/");
   /** layout page prefix */
-  define("MW_PAGE_NAME_PREFIX_LAYOUT", "MW:Layout:");
+  define("MW_PAGE_NAME_PREFIX_LAYOUT", MW_PAGE_NAME_PREFIX_MINIWIKI . "Layout:");
   /** footer layout page name */
   define("MW_PAGE_NAME_LAYOUT_FOOTER", MW_PAGE_NAME_PREFIX_LAYOUT . "Footer");
   /** header layout page name */
@@ -493,6 +497,7 @@
     * logged user can edit, delete and update
     * only admin or same user can change password
     * only admin can create or delete user
+    * only admin can edit pages from internal miniWiki namespace (MW:)
     * @param action action name
     * @param page MW_Page
     */
@@ -513,6 +518,12 @@
         case MW_ACTION_DELETE:
         case MW_ACTION_UPDATE:
         case MW_ACTION_UPLOAD:
+          if (strpos($page->name, MW_PAGE_NAME_PREFIX_MINIWIKI) === 0) {
+            return $is_admin;
+          }
+          if (strpos($page->name, MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI) === 0) {
+            return $is_admin;
+          }
           return ($auth_write_admin_only ? $is_admin : $is_logged);
         case MW_ACTION_CHANGE_PASSWORD:
           return $is_related || $is_admin;

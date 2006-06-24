@@ -2,9 +2,7 @@ TODO list:
 
 - XML import
 - drop hardcoded header and footer - use solely MW:Layout:*
-- only admin can edit MW:* pages
 - drop external data/* - use solely data/mw/layout/*
-- only admin can edit data/mw/* uploads
 - improve code docs
 - classify standalone pages
 - recent changes page

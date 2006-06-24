@@ -7,6 +7,8 @@
   * support for HTTP requests
   */
 
+  require_once('registry.php');
+  
   /** view page action (renders Wiki page) */
   define("MW_ACTION_VIEW", "view");
   /** view page source action (shows Wiki markup) */
@@ -56,11 +58,16 @@
   /** destination file (for upload action) */
   define("MW_REQVAR_DESTFILE", "destfile");
   
+  define("MW_COMPONENT_ROLE_REQUEST", "MW_Request");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_REQUEST);
+  $registry->register(new MW_Request(), MW_COMPONENT_ROLE_REQUEST);
+  
   /**
   * returns instance of MW_Request
   */
-  function new_request() {
-    return new MW_Request();
+  function &get_request() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_REQUEST);
   }
 
   /**
@@ -93,7 +100,7 @@
     /** whether this is head request */
     var $is_head;
 
-    /** @protected constructor (do not use directly, use new_request()) */
+    /** @protected constructor (do not use directly, use get_request()) */
     function MW_Request() {
       $req_array = $_REQUEST;
       if (get_magic_quotes_gpc()) {

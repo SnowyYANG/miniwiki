@@ -5,13 +5,6 @@
 
   /** @file
   * miniWiki library
-  * @param auth current MW_Auth
-  * @param db curent MW_Database
-  * @param mw_db_encoding database encoding
-  * @param mw_db_use_server_collation whether to let database sort strings according to its settings or
-  *                             according to wanted mw_db_encoding
-  * @param mw_texts texts array
-  * @param renderer current MW_Renderer
   */
 
   require_once('registry.php');
@@ -25,6 +18,7 @@
   require_once('request.php');
   require_once('installation.php');
   require_once('wiki_functions.php');
+  require_once('text.php');
 
   /** miniWiki product name */
   define("MW_NAME", "miniWiki");
@@ -79,26 +73,6 @@
   $mw_texts[MW_ACTION_CREATE_USER] = $mw_texts[MWT_ACTION_CREATE_USER];
   $mw_texts[MW_ACTION_DELETE_USER] = $mw_texts[MWT_ACTION_DELETE_USER];
   $mw_texts[MW_ACTION_UPLOAD] = $mw_texts[MWT_ACTION_UPLOAD];
-
-  # info text functions
-  /** info text array (do not use directly, use add_info_text() and get_info_text()) */
-  $info_text = array();
-  
-  /**
-  * add new information to be shown to the user
-  * @param text text to show
-  */
-  function add_info_text($text) {
-    global $info_text;
-    array_push ($info_text, $text);
-  }
-  /**
-  * returns array with all information texts
-  */
-  function get_info_text() {
-    global $info_text;
-    return $info_text;
-  }
 
   /**
   * Initialize miniWiki infrastructure.

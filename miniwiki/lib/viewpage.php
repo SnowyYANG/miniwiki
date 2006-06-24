@@ -5,9 +5,10 @@
 
   /** @file
   * view Wiki page
-  * @param page current MW_Page
   */
 
+  $page =& get_current_page();
+  
   if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
     header('Content-Type: '.$page->mime_type);
     if ($page->last_modified != 0) {

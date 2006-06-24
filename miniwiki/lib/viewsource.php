@@ -6,8 +6,9 @@
   /** @file
   * view Wiki page source
   * @param mw_texts texts array
-  * @param page current MW_Page
   */
+
+  $page =& get_current_page();
   
   $title = $mw_texts[MWT_VIEWING] . " " . $page->name;
   include('header.php');

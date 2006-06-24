@@ -37,7 +37,7 @@
   * returns new MW_Variables with prefilled global values
   */
   function new_global_wiki_variables() {
-    global $req;
+    $req =& get_request();
     $auth =& get_auth();
     $vars = new MW_Variables(null);
     $vars->set('version', MW_VERSION);

@@ -99,7 +99,7 @@
       $is_image = false;
       if ($name == '') {
         # we must override current actions we are rendered with
-        global $page;
+        $page =& get_current_page();
         $linked_page = $page;
         $link_exists = true;
       } else {
@@ -109,7 +109,7 @@
           $data_name = MW_PAGE_NAME_PREFIX_DATA . substr($name, strlen(MW_LINK_NAME_PREFIX_IMAGE));
           $data_page = new_page($data_name, $revision);
           # small hack to change link on Upload page
-          global $page;
+          $page =& get_current_page();
           $name = (is_a($page, "MW_SpecialUploadPage") ? $data_name : $upload_name);
         }
         $linked_page = new_page($name, $revision);
@@ -603,7 +603,7 @@
         echo '<ul>', "\n";
         foreach ($this->headings as $heading) {
           # we must override current actions we are rendered with
-          global $page;
+          $page =& get_current_page();
           echo '<li class="toc-level-', $heading["level"] - 1, '"><a href="'
             .htmlspecialchars($page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES)
             .'#', $heading['anchor'], '">', $heading['number'], ' ', $heading['title'], '</a></li>', "\n";

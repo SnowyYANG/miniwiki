@@ -9,6 +9,19 @@
 
   require_once('registry.php');
 
+  define("MW_COMPONENT_ROLE_PAGE", "MW_Page");
+  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
+
+  function set_current_page(&$page) {
+    global $registry;
+    $registry->register($page, MW_COMPONENT_ROLE_PAGE);
+  }
+  
+  function &get_current_page() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_PAGE);
+  }
+  
   /** main page name */
   define("MW_PAGE_NAME_MAIN", "Main Page");
   /** default page name (if none requested) */

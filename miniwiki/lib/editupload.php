@@ -6,9 +6,10 @@
   /** @file
   * edit upload file (allows to upload new version)
   * @param mw_texts texts array
-  * @param page current MW_Page
   */
 
+  $page =& get_current_page();
+  
   $title = $mw_texts[MWT_EDITING] . " " . $page->name;
   include('header.php');
   echo '<div class="upload-edit">', "\n";

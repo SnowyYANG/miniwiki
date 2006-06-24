@@ -5,13 +5,12 @@
 
   /** @file
   * page header
-  * @param mw_encoding output encoding
-  * @param page current MW_Page
   * @param title override page name
-  * @param db curent MW_Database
-  * @param renderer current MW_Renderer
   */
 
+  $page =& get_current_page();
+  $renderer =& get_renderer();
+  
   if (!isset ($title)) {
     $title = $page->title;
   }

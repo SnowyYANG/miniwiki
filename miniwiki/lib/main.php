@@ -34,10 +34,10 @@
   miniwiki_boot();
   $storage =& get_storage();
   $users_mgr =& get_users_manager();
-  $renderer =& get_renderer();
-  $req = new_request();
+  $req =& get_request();
   $auth =& get_auth();
   $page = new_page($req->page_name, $req->revision);
+  set_current_page($page);
   if ($auth->is_invalid()) {
     add_info_text($mw_texts[MWT_LOGIN_INVALID]);
   }
@@ -48,8 +48,10 @@
   * returns new action to handle or null
   */
   function handle_action($action) {
-    global $db, $renderer, $req, $auth, $page, $mw_texts, $mw_db_host, $mw_db_user, $mw_db_pass,
-           $mw_db_name, $mw_auth_realm, $mw_encoding, $mw_db_encoding, $mw_db_use_server_collation;
+    global $mw_texts, $mw_auth_realm;
+    $auth =& get_auth();
+    $page =& get_current_page();
+    $req =& get_request();
 
     if (!$auth->is_action_permitted($action, $page)) {
       $action_text = (isset($mw_texts[$action]) ? $mw_texts[$action] : $mw_texts[MWT_UNKNOWN_ACTION]);

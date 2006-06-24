@@ -14,7 +14,7 @@
 
   define("MW_COMPONENT_ROLE_AUTH", "MW_Auth");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_AUTH);
-  $registry->register(new MW_Auth, MW_COMPONENT_ROLE_AUTH);
+  $registry->register(new MW_Auth(), MW_COMPONENT_ROLE_AUTH);
   define("MW_COMPONENT_ROLE_USERS_MANAGER", "MW_UsersManager");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_USERS_MANAGER);
   

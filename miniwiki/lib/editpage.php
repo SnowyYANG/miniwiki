@@ -6,9 +6,11 @@
   /** @file
   * edit Wiki page
   * @param mw_texts texts array
-  * @param page current MW_Page
   */
 
+  $page =& get_current_page();
+  $req =& get_request();
+  
   $title = $mw_texts[MWT_EDITING] . " " . $page->name;
   include('header.php');
   if ($req->preview && $page->has_content) {

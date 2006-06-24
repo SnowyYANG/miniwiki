@@ -5,9 +5,10 @@
 
   /** @file
   * history page
-  * @param page current MW_Page
   */
 
+  $page =& get_current_page();
+  
   $title = $page->name;
   include('header.php');
   echo '<div class="history"><ul>',"\n";

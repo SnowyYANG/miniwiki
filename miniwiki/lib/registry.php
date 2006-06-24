@@ -13,6 +13,10 @@
       die("abstract: register");
     }
 
+    function unregister(&$component, $role) {
+      die("abstract: unregister");
+    }
+
     function &lookup($role, $selector = null) {
       die("abstract: lookup");
     }
@@ -21,16 +25,27 @@
 
   class MW_SingletonComponentRegistry extends MW_ComponentRegistry {
 
+    var $allow_overwrites = false;
     var $component = null;
+
+    function MW_SingletonComponentRegistry($allow_overwrites = false) {
+      $this->allow_overwrites = $allow_overwrites;
+    }
   
     function register(&$component, $role, $selector = null) {
-      if ($this->component !== null) {
+      if (!$this->allow_overwrites && ($this->component !== null)) {
         trigger_error("Component for role $role is already registered as ".$this->component.", ignoring $component ", E_USER_ERROR);
       } else {
         $this->component =& $component;
       }
     }
 
+    function unregister(&$component, $role) {
+      if ($this->component === $component) {
+        $this->component = null;
+      }
+    }
+    
     function &lookup($role, $selector = null) {
       return $this->component;
     }
@@ -52,6 +67,13 @@
       }
     }
 
+    function unregister(&$component, $role) {
+      $keys = array_keys($this->components, $component);
+      foreach ($keys as $key) {
+        unset($this->components[$key]);
+      }
+    }
+    
     function &lookup($role, $selector = null) {
       if ($selector === null) {
         return $this->components;
@@ -84,6 +106,11 @@
     function register(&$component, $role, $selector = null) {
       $registry =& $this->get_registry($role);
       $registry->register($component, $role, $selector);
+    }
+
+    function unregister(&$component, $role) {
+      $registry =& $this->get_registry($role);
+      $registry->unregister($component, $role);
     }
 
     function &lookup($role, $selector = null) {

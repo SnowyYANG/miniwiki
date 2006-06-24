@@ -1,11 +1,12 @@
 Changes from 0.2 to 0.3:
 
+- heavily restructualized source
+- easy adding of new functionality with extensions
 - main page called Main Page and not MainPage
 - more Wiki functions
 - conditional directives #IF and #IFEMPTY
-- UI header and footer can be changed in Wiki
+- UI header and footer are stored in Wiki
   including CSS and JS files
-- code split to core and extensions
 - install/upgrade script
 - XML export/import
 - ... and more

@@ -9,7 +9,7 @@
 
   require_once('registry.php');
 
-  define("MW_COMPONENT_ROLE_EXPORTER", "_exporter");
+  define("MW_COMPONENT_ROLE_EXPORTER", "MW_Exporter");
 
   function register_exporter(&$exporter) {
     global $registry;

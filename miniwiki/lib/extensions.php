@@ -30,7 +30,7 @@
     }
   }
 
-  define("MW_COMPONENT_ROLE_EXTENSION", "_extension");
+  define("MW_COMPONENT_ROLE_EXTENSION", "MW_Extension");
   
   function register_extension($extension) {
     global $registry, $disabled_extensions;

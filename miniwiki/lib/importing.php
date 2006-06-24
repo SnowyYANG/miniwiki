@@ -9,7 +9,7 @@
 
   require_once('registry.php');
 
-  define("MW_COMPONENT_ROLE_IMPORTER", "_importer");
+  define("MW_COMPONENT_ROLE_IMPORTER", "MW_Importer");
 
   function register_importer(&$importer) {
     global $registry;

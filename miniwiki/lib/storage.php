@@ -23,7 +23,7 @@
   define("MW_RESOURCE_CONTENT_TYPE_BINARY", "binary");
   define("MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT", "text:");
   
-  define("MW_COMPONENT_ROLE_STORAGE", "_storage");
+  define("MW_COMPONENT_ROLE_STORAGE", "MW_Storage");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_STORAGE);
   define("MW_COMPONENT_ROLE_DELAYED_DATASPACE_REGISTRATION", "_delayed_dataspace_registration");
   

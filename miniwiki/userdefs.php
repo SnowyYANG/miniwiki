@@ -29,4 +29,8 @@
   /** whether changing pages is allowed only for administrator */
   $auth_write_admin_only = false;
 
+  /** list of MW_Extension classes which should not be initialized */
+  $disabled_extensions = array(
+  );
+
 ?>

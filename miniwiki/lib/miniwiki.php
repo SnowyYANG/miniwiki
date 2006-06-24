@@ -1088,7 +1088,15 @@
   $extensions = array();
 
   function register_extension($extension) {
-    global $extensions;
+    global $extensions, $disabled_extensions;
+    if (isset($disabled_extensions)) {
+      foreach ($disabled_extensions as $disabled_ext) {
+        if (is_a($extension, $disabled_ext)) {
+          debug("Disabling extension ".$extension->get_name());
+          return;
+        }
+      }
+    }
     array_push ($extensions, $extension);
   }
 

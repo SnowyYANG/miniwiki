@@ -74,7 +74,7 @@
     /** @private process content (mainly directives) */
     function process_content() {
       if ($this->has_content) {
-        /** @todo will happily process directives inside <pre> blocks */
+        /** @todo will happily process directives inside &lt;pre&gt; blocks */
         if (preg_match_all("/(?:^|\n)#TITLE\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $this->title = $matches[1][count($matches[1]) - 1];
           $this->title = str_replace("\r", '', $this->title);

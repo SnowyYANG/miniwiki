@@ -1,6 +1,5 @@
 TODO list:
 
-- import/export of concrete resources (just pass e.g. users:admin or pages:Main Page as dataspace)
 - XML import
 - improve code docs
 - classify standalone pages

@@ -53,6 +53,17 @@
       binary - RESOURCE_KEY_VALUE is encoded with base64
       datetime - RESOURCE_KEY_VALUE is YYYY-MM-DDTHH:MM:SSZ (corresponds to XSD dateTime with UTC timezone)
   */
+        
+  function explode_dataspace_name($name, &$ds_name, &$res_name) {
+    $i = strpos($name, ':');
+    if ($i !== false) {
+      $ds_name = substr($name, 0, $i);
+      $res_name = substr($name, $i + 1);
+    } else {
+      $ds_name = $name;
+      $res_name = null;
+    }
+  }
 
   /** @todo XML import */
   class MW_XMLImporter extends MW_Importer {
@@ -83,6 +94,7 @@
         $dataspaces = $storage->get_dataspace_names();
       }
       foreach ($dataspaces as $ds) {
+        explode_dataspace_name($ds, $ds, $wanted_res);
         $ds_def = $storage->get_dataspace_definition($ds);
         $types_map = array();
         /** @todo custom keys may have (currently) only text type */
@@ -92,6 +104,9 @@
         $types_map[MW_RESOURCE_KEY_LAST_MODIFIED] = MW_XML_TYPE_DATETIME;
         $res_names = $storage->get_resource_names($ds);
         foreach ($res_names as $res_name) {
+          if (($wanted_res !== null) && (strpos($res_name, $wanted_res) !== 0)) {
+            continue;
+          }
           if ($with_history) {
             $resources = $storage->get_resource_history($ds, $res_name, true);
           } else {

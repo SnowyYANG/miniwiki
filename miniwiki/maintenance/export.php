@@ -44,7 +44,7 @@
     echo MW_NAME, ' ', MW_VERSION, ' (c)2005,2006 Stepan Roh <src@srnet.cz>', "\n";
 ?>
 
-Usage: <?php echo $argv[0]; ?> [--omit-history] format file dataspace*
+Usage: <?php echo $argv[0]; ?> [--omit-history] format file dataspace[:resource_prefix]*
 
 Available formats:
 <?php

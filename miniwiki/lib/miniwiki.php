@@ -345,6 +345,17 @@
     return new_page_with_tag(MW_PAGE_TAG_UPLOAD, $name, $revision);
   }
 
+  $renderer_class_name = null;
+  
+  function register_renderer_class($class_name) {
+    global $renderer_class_name;
+    if ($renderer_class_name !== null) {
+      trigger_error("Renderer class $renderer_class_name already registered, ignoring $class_name ", E_USER_ERROR);
+    } else {
+      $renderer_class_name = $class_name;
+    }
+  }
+  
   /**
   * returns instance of MW_Renderer
   */
@@ -353,9 +364,31 @@
     return new $renderer_class_name();
   }
 
+  $users_manager_class_name = null;
+  
+  function register_users_manager_class($class_name) {
+    global $users_manager_class_name;
+    if ($users_manager_class_name !== null) {
+      trigger_error("Users manager class $users_manager_class_name already registered, ignoring $class_name ", E_USER_ERROR);
+    } else {
+      $users_manager_class_name = $class_name;
+    }
+  }
+  
   function new_users_manager() {
     global $users_manager_class_name;
     return new $users_manager_class_name();
+  }
+  
+  $storage_class_name = null;
+  
+  function register_storage_class($class_name) {
+    global $storage_class_name;
+    if ($storage_class_name !== null) {
+      trigger_error("Storage class $storage_class_name already registered, ignoring $class_name", E_USER_ERROR);
+    } else {
+      $storage_class_name = $class_name;
+    }
   }
   
   function new_storage() {

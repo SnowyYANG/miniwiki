@@ -25,6 +25,7 @@
     }
 
     function initialize() {
+      register_users_manager_class("MW_CoreUsersManager");
       $dataspace_def = new MW_DataSpaceDefinition(MW_DS_USERS, false, MW_RESOURCE_CONTENT_TYPE_NONE);
       $dataspace_def->add_custom_key(MW_RESOURCE_KEY_PASSWORD, MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT . "32");
       register_dataspace($dataspace_def);

@@ -80,8 +80,39 @@
   * Will load and initialize extensions.
   */
   function miniwiki_boot() {
+    register_shutdown_function('miniwiki_shutdown');
     load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
     initialize_extensions();
+  }
+
+  define("MW_COMPONENT_ROLE_SHUTDOWN", "_shutdown");
+
+  function register_shutdown_object(&$object) {
+    global $registry;
+    $registry->register($object, MW_COMPONENT_ROLE_SHUTDOWN);
+  }
+  
+  function unregister_shutdown_object(&$object) {
+    global $registry;
+    $registry->unregister($object, MW_COMPONENT_ROLE_SHUTDOWN);
+  }
+
+  function shutdown_cb(&$component) {
+    if (is_object($component) && method_exists($component, 'shutdown')) {
+      debug('Calling shutdown on '.get_class($component));
+      $component->shutdown();
+    }
+  }
+  
+  /**
+  * Shutdown miniWiki infrastructure.
+  * <p>
+  * Will call method shutdown() (if exists) on every object in registry (including shutdown
+  * objects).
+  */
+  function miniwiki_shutdown() {
+    global $registry;
+    $registry->apply('shutdown_cb');
   }
 
 ?>

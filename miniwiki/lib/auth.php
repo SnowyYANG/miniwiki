@@ -166,9 +166,6 @@
     function is_password_valid($user, $pass) {
       die("abstract: is_password_valid");
     }
-    
-    function destroy() {
-    }
   }
 
 ?>

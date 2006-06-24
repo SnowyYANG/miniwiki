@@ -21,6 +21,10 @@
       die("abstract: lookup");
     }
     
+    function apply($callback, $role = null, $selector = null) {
+      die("abstract: lookup");
+    }
+    
   }
 
   class MW_SingletonComponentRegistry extends MW_ComponentRegistry {
@@ -48,6 +52,12 @@
     
     function &lookup($role, $selector = null) {
       return $this->component;
+    }
+    
+    function apply($callback, $role = null, $selector = null) {
+      if ($this->component !== null) {
+        call_user_func($callback, $this->component);
+      }
     }
     
   }
@@ -84,6 +94,16 @@
       return null;
     }
     
+    function apply($callback, $role = null, $selector = null) {
+      if ($selector === null) {
+        foreach ($this->components as $component) {
+          call_user_func($callback, $component);
+        }
+      } elseif (isset($this->components[$selector])) {
+        call_user_func($callback, $this->components[$selector]);
+      }
+    }
+    
   }
 
   class MW_DelegatingComponentRegistry extends MW_ComponentRegistry {
@@ -117,6 +137,18 @@
       $registry =& $this->get_registry($role);
       return $registry->lookup($role, $selector);
     }
+
+    function apply($callback, $role = null, $selector = null) {
+      if ($role === null) {
+        foreach ($this->role_registries as $registry) {
+          $registry->apply($callback, $role, $selector);
+        }
+      } elseif (isset($this->role_registries[$role])) {
+        $registry = $this->role_registries[$role];
+        $registry->apply($callback, $role, $selector);
+      }
+    }
+    
   }
 
   $registry = new MW_DelegatingComponentRegistry();

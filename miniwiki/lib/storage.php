@@ -138,9 +138,6 @@
     function get_dataspace_definition($dataspace) {
       die("abstract: get_dataspace_definition");
     }
-
-    function destroy() {
-    }
   }
 
   /**

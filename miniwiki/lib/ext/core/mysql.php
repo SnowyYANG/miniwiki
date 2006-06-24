@@ -202,7 +202,7 @@
     * destroy database connection
     * must be called before script ends
     */
-    function destroy() {
+    function shutdown() {
       if (isset ($this->conn)) {
         mysql_close($this->conn) or die ("Can't close connection : " . mysql_error());
         unset($this->conn);

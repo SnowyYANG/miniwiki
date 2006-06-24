@@ -32,12 +32,10 @@
   include('settings.php');
   include('miniwiki.php');
   miniwiki_boot();
-  $storage =& get_storage();
-  $users_mgr =& get_users_manager();
   $req =& get_request();
-  $auth =& get_auth();
   $page = new_page($req->page_name, $req->revision);
   set_current_page($page);
+  $auth =& get_auth();
   if ($auth->is_invalid()) {
     add_info_text($mw_texts[MWT_LOGIN_INVALID]);
   }
@@ -151,6 +149,4 @@
     $action = handle_action($action);
   }
   
-  $users_mgr->destroy();
-  $storage->destroy();
 ?>

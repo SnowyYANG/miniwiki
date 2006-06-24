@@ -319,11 +319,11 @@
                 }
                 return $name." varchar($type_arg) default NULL";
             } else {
-                trigger_error("Unknown custom key type: ".$type_name);
+                trigger_error("Unknown custom key type: ".$type_name, E_USER_ERROR);
             }
           }
       }
-      trigger_error("Unknown resource key: ".$name);
+      trigger_error("Unknown resource key: ".$name, E_USER_ERROR);
     }
 
     function query_column_definitions($table_name) {
@@ -479,7 +479,7 @@
         }
       }
       if (isset($this->dataspace_defs[$ds_name])) {
-        trigger_error("Duplicate dataspace definition: " . $ds_name);
+        trigger_error("Duplicate dataspace definition: " . $ds_name, E_USER_ERROR);
       }
       $this->dataspace_defs[$ds_name] = $dataspace_def;
     }

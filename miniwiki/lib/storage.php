@@ -34,7 +34,6 @@
     foreach ($delayed_dataspace_registration as $dataspace_def) {
       $storage->register_dataspace($dataspace_def);
     }
-    $storage =& get_storage();
   }
   
   function &get_storage() {

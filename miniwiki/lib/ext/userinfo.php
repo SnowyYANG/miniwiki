@@ -28,7 +28,7 @@
 
     /** returns user information */
     function wiki_fn_user_info() {
-      global $auth;
+      $auth =& get_auth();
       if ($auth->is_logged) {
         $f = get_user_info_file($auth->user);
         if (!file_exists($f)) {

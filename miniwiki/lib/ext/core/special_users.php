@@ -52,7 +52,7 @@
 
     function render() {
       echo '<div class="special-users">', "\n";
-      global $auth;
+      $auth =& get_auth();
       if ($auth->is_action_permitted(MW_ACTION_CREATE_USER, $this)) {
         echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CREATE_USER), ENT_QUOTES), '">', "\n";
         echo '<input type="text" size="40" name="', MW_REQVAR_USER,'"/>', "\n";
@@ -61,7 +61,7 @@
         echo '</form>', "\n";
       }
       echo '<ul>', "\n";
-      global $users_mgr;
+      $users_mgr =& get_users_manager();
       $users = $users_mgr->get_all_usernames();
       foreach ($users as $name) {
         $page = new_user_page($name);

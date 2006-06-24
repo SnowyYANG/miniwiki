@@ -64,7 +64,7 @@
     }
   }
     
-  $install_handler = new MW_WebInstallHandler();
+  register_install_handler($install_handler);
   
   miniwiki_boot();
 

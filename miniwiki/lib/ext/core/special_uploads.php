@@ -56,7 +56,7 @@
     
     function render() {
       echo '<div class="special-uploads">', "\n";
-      global $auth;
+      $auth =& get_auth();
       if ($auth->is_action_permitted(MW_ACTION_UPLOAD, $this)) {
         echo '<form enctype="multipart/form-data" action="', htmlspecialchars($this->url_for_action(MW_ACTION_UPLOAD), ENT_QUOTES), '" method="post">'. "\n";
         global $mw_texts;
@@ -68,7 +68,7 @@
         echo '</form>', "\n";
       }
       echo "<ul>\n";
-      global $storage;
+      $storage =& get_storage();
       $names = $storage->get_resource_names(MW_DS_UPLOADS);
       foreach ($names as $name) {
         $page = new_upload_page($name, MW_REVISION_HEAD);

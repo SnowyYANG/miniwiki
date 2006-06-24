@@ -32,11 +32,11 @@
   include('settings.php');
   include('miniwiki.php');
   miniwiki_boot();
-  $storage = get_storage();
-  $users_mgr = get_users_manager();
-  $renderer = new_renderer();
+  $storage =& get_storage();
+  $users_mgr =& get_users_manager();
+  $renderer =& get_renderer();
   $req = new_request();
-  $auth = get_auth();
+  $auth =& get_auth();
   $page = new_page($req->page_name, $req->revision);
   if ($auth->is_invalid()) {
     add_info_text($mw_texts[MWT_LOGIN_INVALID]);

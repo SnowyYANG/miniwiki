@@ -67,7 +67,7 @@
     }
     
     function exists() {
-      global $storage;
+      $storage =& get_storage();
       return $storage->exists(MW_DS_PAGES, $this->name);
     }
 
@@ -84,7 +84,7 @@
 
     function load() {
       $rev = $this->revision;
-      global $storage;
+      $storage =& get_storage();
       $res = $storage->get_resource(MW_DS_PAGES, $this->name, $rev, true);
       $this->has_content = false;
       if ($res !== null) {
@@ -101,7 +101,7 @@
     }
     
     function delete() {
-      global $storage;
+      $storage =& get_storage();
       $storage->delete_resource(MW_DS_PAGES, $this->name);
       $this->has_content = false;
     }
@@ -111,7 +111,8 @@
       if ($this->has_content && ($this->raw_content == $content)) {
         return false;
       }
-      global $auth, $storage;
+      $storage =& get_storage();
+      $auth =& get_auth();
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
       $res = new MW_Resource();
@@ -134,12 +135,12 @@
     }
     
     function render() {
-      global $renderer;
+      $renderer =& get_renderer();
       $renderer->render($this, $this->raw_content);
     }
     
     function get_all_revisions() {
-      global $storage;
+      $storage =& get_storage();
       $resources = $storage->get_resource_history(MW_DS_PAGES, $this->name, false);
       $ret = array();
       $is_head = true;

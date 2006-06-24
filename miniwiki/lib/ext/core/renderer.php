@@ -22,7 +22,7 @@
     }
 
     function initialize() {
-      register_renderer_class("MW_CoreRenderer");
+      register_renderer(new MW_CoreRenderer());
       return true;
     }
 

@@ -119,7 +119,7 @@
     }
     
     function exists() {
-      global $storage;
+      $storage =& get_storage();
       return $storage->exists(MW_DS_UPLOADS, $this->upload_name);
     }
 
@@ -142,7 +142,7 @@
     */
     function load_internal($with_raw) {
       $rev = $this->revision;
-      global $storage;
+      $storage =& get_storage();
       $res = $storage->get_resource(MW_DS_UPLOADS, $this->upload_name, $rev, $with_raw);
       $this->has_content = false;
       if ($res !== null) {
@@ -160,13 +160,14 @@
     }
     
     function delete() {
-      global $storage;
+      $storage =& get_storage();
       $storage->delete_resource(MW_DS_UPLOADS, $this->upload_name);
       $this->has_content = false;
     }
     
     function update($content, $message) {
-      global $auth, $storage;
+      $storage =& get_storage();
+      $auth =& get_auth();
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
       $res = new MW_Resource();
@@ -180,7 +181,8 @@
     }
 
     function render() {
-      global $renderer, $mw_texts;
+      global $mw_texts;
+      $renderer =& get_renderer();
       if ($this->is_data_page) {
         trigger_error("INTERNAL: MW_SpecialUploadPage.render(): is_data_page is true", E_USER_ERROR);
       } else {
@@ -196,7 +198,7 @@
     }
 
     function get_all_revisions() {
-      global $storage;
+      $storage =& get_storage();
       $resources = $storage->get_resource_history(MW_DS_UPLOADS, $this->upload_name, false);
       $ret = array();
       $is_head = true;

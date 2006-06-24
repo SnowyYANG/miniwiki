@@ -7,6 +7,11 @@
   * support for installation mode
   */
 
+  require_once('registry.php');
+
+  define("MW_COMPONENT_ROLE_INSTALL_HANDLER", "MW_InstallHandler");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_INSTALL_HANDLER);
+  
   class MW_InstallHandler {
     function show_install_message($msg) {
       die ("abstract: show_install_message");
@@ -14,8 +19,13 @@
   }
 
   function show_install_message($msg) {
-    global $install_handler;
+    global $registry;
+    $install_handler =& $registry->lookup(MW_COMPONENT_ROLE_STORAGE);
     $install_handler->show_install_message($msg);
   }
 
+  function register_install_handler(&$handler) {
+    global $registry;
+    $registry->register($handler, MW_COMPONENT_ROLE_INSTALL_HANDLER);
+  }
 ?>

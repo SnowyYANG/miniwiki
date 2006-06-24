@@ -9,23 +9,20 @@
 
   require_once('registry.php');
   
-  $renderer_class_name = null;
+  define("MW_COMPONENT_ROLE_RENDERER", "MW_Renderer");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_RENDERER);
   
-  function register_renderer_class($class_name) {
-    global $renderer_class_name;
-    if ($renderer_class_name !== null) {
-      trigger_error("Renderer class $renderer_class_name already registered, ignoring $class_name ", E_USER_ERROR);
-    } else {
-      $renderer_class_name = $class_name;
-    }
+  function register_renderer($renderer) {
+    global $registry;
+    $registry->register($renderer, MW_COMPONENT_ROLE_RENDERER);
   }
   
   /**
   * returns instance of MW_Renderer
   */
-  function new_renderer() {
-    global $renderer_class_name;
-    return new $renderer_class_name();
+  function &get_renderer() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_RENDERER);
   }
 
   /**
@@ -40,7 +37,8 @@
   * returns new MW_Variables with prefilled global values
   */
   function new_global_wiki_variables() {
-    global $auth, $req;
+    global $req;
+    $auth =& get_auth();
     $vars = new MW_Variables(null);
     $vars->set('version', MW_VERSION);
     $vars->set('user', ($auth->is_logged ? $auth->user : ''));

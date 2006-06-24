@@ -49,7 +49,7 @@
 
     function render() {
       echo '<div class="special-pages"><ul>', "\n";
-      global $storage;
+      $storage =& get_storage();
       $names = $storage->get_resource_names(MW_DS_PAGES);
       foreach ($names as $name) {
         $page = new_page($name, MW_REVISION_HEAD);

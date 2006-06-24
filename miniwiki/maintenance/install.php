@@ -67,8 +67,6 @@
   $install_handler = new MW_WebInstallHandler();
   
   miniwiki_boot();
-  # forces intialization of delayed dataspace definitions which is what we need
-  new_storage();
 
   function import_with_check($file) {
     show_install_message()'Importing data from '.$file);

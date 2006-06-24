@@ -11,7 +11,7 @@
 
   define("MW_COMPONENT_ROLE_IMPORTER", "_importer");
 
-  function register_importer($importer) {
+  function register_importer(&$importer) {
     global $registry;
     $registry->register($importer, MW_COMPONENT_ROLE_IMPORTER);
   }

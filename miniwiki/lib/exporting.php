@@ -11,7 +11,7 @@
 
   define("MW_COMPONENT_ROLE_EXPORTER", "_exporter");
 
-  function register_exporter($exporter) {
+  function register_exporter(&$exporter) {
     global $registry;
     $registry->register($exporter, MW_COMPONENT_ROLE_EXPORTER, $exporter->get_format());
   }

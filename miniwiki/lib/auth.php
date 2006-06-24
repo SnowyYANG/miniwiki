@@ -11,28 +11,31 @@
 
   /** admin user name */
   define("MW_USER_NAME_ADMIN", "admin");
+
+  define("MW_COMPONENT_ROLE_AUTH", "_auth");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_AUTH);
+  $registry->register(new MW_Auth, MW_COMPONENT_ROLE_AUTH);
+  define("MW_COMPONENT_ROLE_USERS_MANAGER", "_users_manager");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_USERS_MANAGER);
   
   /**
   * returns instance of MW_Auth
   */
-  function new_auth() {
-    return new MW_Auth();
+  function &get_auth() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_AUTH);
   }
 
   $users_manager_class_name = null;
   
-  function register_users_manager_class($class_name) {
-    global $users_manager_class_name;
-    if ($users_manager_class_name !== null) {
-      trigger_error("Users manager class $users_manager_class_name already registered, ignoring $class_name ", E_USER_ERROR);
-    } else {
-      $users_manager_class_name = $class_name;
-    }
+  function register_users_manager(&$users_manager) {
+    global $registry;
+    $registry->register($users_manager, MW_COMPONENT_ROLE_USERS_MANAGER);
   }
   
-  function new_users_manager() {
-    global $users_manager_class_name;
-    return new $users_manager_class_name();
+  function &get_users_manager() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_USERS_MANAGER);
   }
   
   /**
@@ -47,15 +50,25 @@
     /** is user logged in? */
     var $is_logged;
 
-    /** @protected constructor (do not use directly, use new_auth()) */
+    /** @protected constructor (do not use directly, use get_auth()) */
     function MW_Auth() {
-      $this->has_credentials = isset($_SERVER['PHP_AUTH_USER']);
-      $this->user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
-      $pass = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : NULL);
-      if ($this->has_credentials) {
-        $this->validate($pass);
-      } else {
-        $this->is_logged = false;
+      # void
+    }
+
+    var $initialized = false;
+
+    /** @private */
+    function init() {
+      if (!$this->initialized) {
+        $this->has_credentials = isset($_SERVER['PHP_AUTH_USER']);
+        $this->user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
+        $pass = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : NULL);
+        if ($this->has_credentials) {
+          $this->validate($pass);
+        } else {
+          $this->is_logged = false;
+        }
+        $this->initialized = true;
       }
     }
     
@@ -71,6 +84,7 @@
     
     /** returns true if user specified credentials, but those were not valid */
     function is_invalid() {
+      $this->init();
       return ($this->has_credentials && !$this->is_logged);
     }
     
@@ -81,6 +95,7 @@
     * @param page MW_Page
     */
     function is_permitted($req, $page) {
+      $this->init();
       return $this->is_action_permitted($req->action, $page);
     }
     
@@ -95,6 +110,7 @@
     * @param page MW_Page
     */
     function is_action_permitted($action, $page) {
+      $this->init();
       global $auth_read_logged_only, $auth_write_admin_only;
       $is_logged = $this->is_logged;
       $is_admin = $this->is_logged && ($this->user == MW_USER_NAME_ADMIN);

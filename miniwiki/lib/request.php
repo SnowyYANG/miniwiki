@@ -39,8 +39,6 @@
   define("MW_REQVAR_ACTION", "action");
   /** page revision request variable */
   define("MW_REQVAR_REVISION", "revision");
-  /** HEAD pseudo-revision name (latest revision will be used when talking to database) */
-  define("MW_REVISION_HEAD", "HEAD");
   /** page content request variable (for update action) */
   define("MW_REQVAR_CONTENT", "content");
   /** update message (for update action) */

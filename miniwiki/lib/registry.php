@@ -27,7 +27,7 @@
       if ($this->component !== null) {
         trigger_error("Component for role $role is already registered as ".$this->component.", ignoring $component ", E_USER_ERROR);
       } else {
-        $this->component = $component;
+        $this->component =& $component;
       }
     }
 
@@ -48,7 +48,7 @@
       } elseif (isset($this->components[$selector])) {
         trigger_error("Component for role $role is already registered as ".$this->components[$selector].", ignoring $component ", E_USER_ERROR);
       } else {
-        $this->components[$selector] = $component;
+        $this->components[$selector] =& $component;
       }
     }
 
@@ -67,8 +67,7 @@
   class MW_DelegatingComponentRegistry extends MW_ComponentRegistry {
 
     /** [role -> MW_ComponentRegistry] */
-    var $role_registries = array(
-    );
+    var $role_registries = array();
 
     /** @private */
     function &get_registry($role) {
@@ -76,6 +75,10 @@
         $this->role_registries[$role] = new MW_UniqueComponentRegistry();
       }
       return $this->role_registries[$role];
+    }
+
+    function add_registry(&$registry, $role) {
+      $this->role_registries[$role] =& $registry;
     }
   
     function register(&$component, $role, $selector = null) {

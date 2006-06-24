@@ -121,7 +121,7 @@
     }
     
     function render() {
-      global $auth;
+      $auth =& get_auth();
       if ($auth->is_action_permitted(MW_ACTION_CHANGE_PASSWORD, $this)) {
         echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CHANGE_PASSWORD), ENT_QUOTES), '">', "\n";
         echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $this->related_user, '"/>', "\n";
@@ -146,13 +146,13 @@
     * change_password() must be called too or else noone can login as this user
     */
     function create_user() {
-      global $users_mgr;
+      $users_mgr =& get_users_manager();
       $users_mgr->create_user($this->related_user);
     }
     
     /** delete user associated with this page (user page is not deleted) */
     function delete_user() {
-      global $users_mgr;
+      $users_mgr =& get_users_manager();
       $users_mgr->delete_user($this->related_user);
     }
     
@@ -161,7 +161,7 @@
     * @param pass new password
     */
     function change_password($pass) {
-      global $users_mgr;
+      $users_mgr =& get_users_manager();
       $users_mgr->change_password($this->related_user, $pass);
     }
     
@@ -170,7 +170,7 @@
     * @param pass password
     */
     function is_password_valid($pass) {
-      global $users_mgr;
+      $users_mgr =& get_users_manager();
       return $users_mgr->is_password_valid($this->related_user, $pass);
     }
     

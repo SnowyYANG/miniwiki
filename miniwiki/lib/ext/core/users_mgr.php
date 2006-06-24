@@ -25,10 +25,10 @@
     }
 
     function initialize() {
-      register_users_manager_class("MW_CoreUsersManager");
       $dataspace_def = new MW_DataSpaceDefinition(MW_DS_USERS, false, MW_RESOURCE_CONTENT_TYPE_NONE);
       $dataspace_def->add_custom_key(MW_RESOURCE_KEY_PASSWORD, MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT . "32");
       register_dataspace($dataspace_def);
+      register_users_manager(new MW_CoreUsersManager());
       return true;
     }
 
@@ -39,24 +39,24 @@
   class MW_CoreUsersManager extends MW_UsersManager {
 
     function get_all_usernames() {
-      global $storage;
+      $storage =& get_storage();
       return $storage->get_resource_names(MW_DS_USERS);
     }
 
     function create_user($user) {
-      global $storage;
+      $storage =& get_storage();
       $res = new MW_Resource();
       $res->set(MW_RESOURCE_KEY_NAME, $user);
       $storage->create_resource(MW_DS_USERS, $res);
     }
 
     function delete_user($user) {
-      global $storage;
+      $storage =& get_storage();
       $storage->delete_resource(MW_DS_USERS, $user);
     }
 
     function change_password($user, $pass) {
-      global $storage;
+      $storage =& get_storage();
       $res = new MW_Resource();
       $res->set(MW_RESOURCE_KEY_NAME, $user);
       $md5_pass = md5($pass);
@@ -65,7 +65,7 @@
     }
     
     function is_password_valid($user, $pass) {
-      global $storage;
+      $storage =& get_storage();
       $md5_pass = md5($pass);
       $res = $storage->get_resource(MW_DS_USERS, $user, MW_REVISION_HEAD, false);
       return ($md5_pass == $res->get(MW_RESOURCE_KEY_PASSWORD));

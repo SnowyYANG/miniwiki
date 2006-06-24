@@ -139,7 +139,6 @@
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      global $auth;
       return ($page->has_action($action) ? 'true' : '');
     }
   
@@ -162,7 +161,7 @@
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      global $auth;
+      $auth =& get_auth();
       return ($auth->is_action_permitted($action, $page) ? 'true' : '');
     }
   

@@ -22,7 +22,7 @@
     }
 
     function initialize() {
-      register_storage_class("MW_MySQLStorage");
+      register_storage(new MW_MySQLStorage());
       return true;
     }
 

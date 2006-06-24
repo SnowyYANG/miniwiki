@@ -37,8 +37,6 @@
   include('settings.php');
   include('miniwiki.php');
   miniwiki_boot();
-  # forces intialization of delayed dataspace definitions which is what we need
-  $storage = new_storage();
     
   if ($argc < 2) {
     echo MW_NAME, ' ', MW_VERSION, ' (c)2005,2006 Stepan Roh <src@srnet.cz>', "\n";

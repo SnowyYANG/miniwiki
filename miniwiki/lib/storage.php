@@ -9,6 +9,8 @@
 
   require_once('registry.php');
 
+  /** HEAD pseudo-revision name (latest revision will be used when talking to database) */
+  define("MW_REVISION_HEAD", "HEAD");
   define("MW_RESOURCE_KEY_NAME", "name");
   define("MW_RESOURCE_KEY_CONTENT", "content");
   define("MW_RESOURCE_KEY_CONTENT_LENGTH", "length");
@@ -21,34 +23,32 @@
   define("MW_RESOURCE_CONTENT_TYPE_BINARY", "binary");
   define("MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT", "text:");
   
-  $storage_class_name = null;
+  define("MW_COMPONENT_ROLE_STORAGE", "_storage");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_STORAGE);
+  define("MW_COMPONENT_ROLE_DELAYED_DATASPACE_REGISTRATION", "_delayed_dataspace_registration");
   
-  function register_storage_class($class_name) {
-    global $storage_class_name;
-    if ($storage_class_name !== null) {
-      trigger_error("Storage class $storage_class_name already registered, ignoring $class_name", E_USER_ERROR);
-    } else {
-      $storage_class_name = $class_name;
-    }
-  }
-  
-  function new_storage() {
-    global $storage_class_name, $delayed_dataspace_registration;
-    $storage = new $storage_class_name();
+  function register_storage(&$storage) {
+    global $registry;
+    $registry->register($storage, MW_COMPONENT_ROLE_STORAGE);
+    $delayed_dataspace_registration = $registry->lookup(MW_COMPONENT_ROLE_DELAYED_DATASPACE_REGISTRATION);
     foreach ($delayed_dataspace_registration as $dataspace_def) {
       $storage->register_dataspace($dataspace_def);
     }
-    return $storage;
+    $storage =& get_storage();
+  }
+  
+  function &get_storage() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_STORAGE);
   }
 
-  $delayed_dataspace_registration = array();
-
   function register_dataspace($dataspace_def) {
-    global $storage, $delayed_dataspace_registration;
-    if (isset($storage)) {
+    $storage =& get_storage();
+    if ($storage !== null) {
       $storage->register_dataspace($dataspace_def);
     } else {
-      array_push($delayed_dataspace_registration, $dataspace_def);
+      global $registry;
+      $registry->register($dataspace_def, MW_COMPONENT_ROLE_DELAYED_DATASPACE_REGISTRATION);
     }
   }
 

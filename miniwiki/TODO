@@ -1,8 +1,7 @@
 TODO list:
 
+- import/export of concrete resources (just pass e.g. users:admin or pages:Main Page as dataspace)
 - XML import
-- drop hardcoded header and footer - use solely MW:Layout:*
-- drop external data/* - use solely data/mw/layout/*
 - improve code docs
 - classify standalone pages
 - recent changes page

@@ -74,15 +74,15 @@
     show_install_message()'Importing data from '.$file);
     $status = import($file);
     if ($status === null) {
-      trigger_error("Unable to import $file - is required extension missing?");
+      trigger_error("Unable to import $file - is required extension missing?", E_USER_ERROR);
     } else if ($status !== true) {
-      trigger_error("Error occurred while importing $file: ", $status);
+      trigger_error("Error occurred while importing $file: ", $status, E_USER_ERROR);
     }
   }
   
   import_with_check('data/users.xml');
   import_with_check('data/pages.xml');
-  import_with_check('data/uploads.xml');
+  import_with_check('data/layout.xml');
   
   echo('<p><b>Success</b></p>');
 ?>

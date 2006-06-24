@@ -64,7 +64,7 @@ Available formats:
   $file = array_shift($argv);
   $dataspaces = $argv;
   
-  echo "Exporting to $file..."";
+  echo "Exporting to $file...";
   $status = export($format, $file, $with_history, $dataspaces);
   if ($status === null) {
     echo "\nUnknown format: ", $format, "\n";

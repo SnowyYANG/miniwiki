@@ -11,6 +11,8 @@
 
   define("MW_COMPONENT_ROLE_PAGE", "MW_Page");
   $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
+  define("MW_COMPONENT_ROLE_PAGE_HANDLER", "MW_PageHandler");
+  $registry->add_registry(new MW_PageHandlerComponentRegistry(), MW_COMPONENT_ROLE_PAGE_HANDLER);
 
   function set_current_page(&$page) {
     global $registry;
@@ -71,6 +73,45 @@
     return str_replace(array('%2F', '%2f'), '/', rawurlencode(encode_page_name($name)));
   }
   
+  function page_handler_cmp($a, $b) {
+    return ($a->get_priority()) - ($b->get_priority());
+  }
+  
+  class MW_PageHandlerComponentRegistry extends MW_UniqueComponentRegistry {
+
+    function MW_PageHandlerComponentRegistry() {
+      array_push($this->components, new MW_LastPageHandler());
+    }
+  
+    function register(&$component, $role, $selector = null) {
+      parent::register($component, $role, $selector);
+      $this->initialize_page_handlers();
+    }
+    
+    function unregister(&$component, $role) {
+      # page handlers are linked together, breaking the link is too much work,
+      # because noone needs it
+      die("Unsupported: unregister");
+    }
+
+    /** @private */
+    function initialize_page_handlers() {
+      usort($this->components, "page_handler_cmp");
+      $last = null;
+      for ($i = 0; $i < sizeof($this->components); $i++) {
+        $handler =& $this->components[$i];
+        if ($last !== null) {
+          $last->next =& $handler;
+        }
+        $last =& $handler;
+      }
+      if ($last !== null) {
+        $last->next = null;
+      }
+    }
+  
+  }
+
   class MW_PageHandler {
     var $next;
     function get_priority() {
@@ -90,41 +131,18 @@
     }
   }
   
-  $page_handlers = array(new MW_LastPageHandler());
-  
   function register_page_handler($handler) {
-    global $page_handlers;
-    array_push($page_handlers, $handler);
-    /** @todo maybe later */
-    initialize_page_handlers();
-  }
-  
-  function page_handler_cmp($a, $b) {
-    return ($a->get_priority()) - ($b->get_priority());
-  }
-  
-  function initialize_page_handlers() {
-    global $page_handlers;
-    usort($page_handlers, "page_handler_cmp");
-    $last = null;
-    for ($i = 0; $i < sizeof($page_handlers); $i++) {
-      $handler =& $page_handlers[$i];
-      if ($last !== null) {
-        $last->next =& $handler;
-      }
-      $last =& $handler;
-    }
-    if ($last !== null) {
-      $last->next = null;
-    }
+    global $registry;
+    $registry->register($handler, MW_COMPONENT_ROLE_PAGE_HANDLER);
   }
   
   function new_page_with_tag($tag, $name, $revision) {
     debug("new_page_with_tag: tag=".$tag. ", name=".$name. ", revision=".$revision);
     $name = filter_page_name($name);
-    global $page_handlers;
-    if (sizeof($page_handlers) > 0) {
-      return $page_handlers[0]->get_page($tag, $name, $revision);
+    global $registry;
+    $page_handler = $registry->lookup(MW_COMPONENT_ROLE_PAGE_HANDLER, 0);
+    if ($page_handler !== null) {
+      return $page_handler->get_page($tag, $name, $revision);
     }
     return null;
   }

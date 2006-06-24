@@ -9,6 +9,9 @@
 
   require_once('registry.php');
 
+  /** admin user name */
+  define("MW_USER_NAME_ADMIN", "admin");
+  
   /**
   * returns instance of MW_Auth
   */

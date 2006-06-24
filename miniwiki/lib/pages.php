@@ -9,6 +9,14 @@
 
   require_once('registry.php');
 
+  /** main page name */
+  define("MW_PAGE_NAME_MAIN", "Main Page");
+  /** default page name (if none requested) */
+  define("MW_DEFAULT_PAGE_NAME", MW_PAGE_NAME_MAIN);
+  
+  define("MW_PAGE_TAG_USER", "user");
+  define("MW_PAGE_TAG_UPLOAD", "upload");
+  
   /**
   * returns filtered page name
   * _ is replaced with space

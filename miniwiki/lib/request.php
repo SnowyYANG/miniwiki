@@ -7,6 +7,57 @@
   * support for HTTP requests
   */
 
+  /** view page action (renders Wiki page) */
+  define("MW_ACTION_VIEW", "view");
+  /** view page source action (shows Wiki markup) */
+  define("MW_ACTION_VIEW_SOURCE", "view_source");
+  /** edit page action (shows Wiki editor) */
+  define("MW_ACTION_EDIT", "edit");
+  /** delete page action (really deletes page) */
+  define("MW_ACTION_DELETE", "delete");
+  /** show history action (shows history page) */
+  define("MW_ACTION_HISTORY", "history");
+  /** update page action (really changes Wiki page or shows a preview) */
+  define("MW_ACTION_UPDATE", "update");
+  /** login action (will show login dialog if current credentials are invalid) */
+  define("MW_ACTION_LOGIN", "login");
+  /** relogin action (will show login dialog even if current credentials are valid - needs correct old_user) */
+  define("MW_ACTION_RELOGIN", "relogin");
+  /** change password action (really changes password) */
+  define("MW_ACTION_CHANGE_PASSWORD", "change_password");
+  /** create user action (really creates user with disabled login) */
+  define("MW_ACTION_CREATE_USER", "create_user");
+  /** delete user action (really deletes user, user page is not deleted) */
+  define("MW_ACTION_DELETE_USER", "delete_user");
+  /** upload action */
+  define("MW_ACTION_UPLOAD", "upload");
+  /** default action (if none requested) */
+  define("MW_DEFAULT_ACTION", MW_ACTION_VIEW);
+  /** page name request variable */
+  define("MW_REQVAR_PAGE_NAME", "page_name");
+  /** action request variable */
+  define("MW_REQVAR_ACTION", "action");
+  /** page revision request variable */
+  define("MW_REQVAR_REVISION", "revision");
+  /** HEAD pseudo-revision name (latest revision will be used when talking to database) */
+  define("MW_REVISION_HEAD", "HEAD");
+  /** page content request variable (for update action) */
+  define("MW_REQVAR_CONTENT", "content");
+  /** update message (for update action) */
+  define("MW_REQVAR_MESSAGE", "message");
+  /** preview submit (for update action) */
+  define("MW_REQVAR_PREVIEW", "preview");
+  /** old user request variable (for relogin action) */
+  define("MW_REQVAR_OLD_USER", "old_user");
+  /** user request variable (for create user, delete user and change password actions) */
+  define("MW_REQVAR_USER", "user");
+  /** password request variable (for change password action) */
+  define("MW_REQVAR_PASS", "pass");
+  /** source file (for upload action) */
+  define("MW_REQVAR_SOURCEFILE", "sourcefile");
+  /** destination file (for upload action) */
+  define("MW_REQVAR_DESTFILE", "destfile");
+  
   /**
   * returns instance of MW_Request
   */

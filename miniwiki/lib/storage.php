@@ -9,6 +9,18 @@
 
   require_once('registry.php');
 
+  define("MW_RESOURCE_KEY_NAME", "name");
+  define("MW_RESOURCE_KEY_CONTENT", "content");
+  define("MW_RESOURCE_KEY_CONTENT_LENGTH", "length");
+  define("MW_RESOURCE_KEY_LAST_MODIFIED", "last_modified");
+  define("MW_RESOURCE_KEY_MESSAGE", "message");
+  define("MW_RESOURCE_KEY_AUTHOR", "author");
+  define("MW_RESOURCE_KEY_REVISION", "revision");
+  define("MW_RESOURCE_CONTENT_TYPE_NONE", "none");
+  define("MW_RESOURCE_CONTENT_TYPE_TEXT", "text");
+  define("MW_RESOURCE_CONTENT_TYPE_BINARY", "binary");
+  define("MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT", "text:");
+  
   $storage_class_name = null;
   
   function register_storage_class($class_name) {

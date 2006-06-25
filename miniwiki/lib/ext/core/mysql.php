@@ -473,9 +473,8 @@
     }
 
     function register_dataspace($dataspace_def) {
-      global $install_mode;
       $ds_name = $dataspace_def->get_name();
-      if ($install_mode) {
+      if (config('install_mode')) {
         show_install_message("Dataspace ".$ds_name.": MySQL database ".$this->dbname."@".$this->host.", table ".$ds_name);
         if (!$this->exists_table($ds_name)) {
           $this->create_dataspace_table($dataspace_def);

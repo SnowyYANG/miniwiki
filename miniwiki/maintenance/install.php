@@ -39,8 +39,6 @@
     die("Password is not set - aborting.");
   }
 
-  $install_mode = true;
-  
   include('../userdefs.php');
   include('miniwiki.php');
 
@@ -63,7 +61,7 @@
     
   register_install_handler($install_handler);
   
-  miniwiki_boot();
+  miniwiki_boot(true);
 
   function import_with_check($file) {
     show_install_message()'Importing data from '.$file);

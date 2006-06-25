@@ -66,7 +66,8 @@
   * <p>
   * Will load and initialize extensions.
   */
-  function miniwiki_boot() {
+  function miniwiki_boot($install_mode = false) {
+    set_default_config('install_mode', $install_mode);
     register_shutdown_function('miniwiki_shutdown');
     load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
     initialize_extensions();

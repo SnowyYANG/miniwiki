@@ -115,7 +115,9 @@
         $this->wiki_variables->set('page', $page->name);
         $this->wiki_variables->set('curpage', $page->name);
         $this->wiki_variables->set('revision', $page->revision);
-        $this->wiki_variables->set('last_modified', format_last_modified($page->last_modified));
+        if ($page->last_modified !== null) {
+          $this->wiki_variables->set('last_modified', format_last_modified($page->last_modified));
+        }
         $this->wiki_variables->set('has_content', ($page->has_content ? 'true' : ''));
       }
     }

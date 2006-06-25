@@ -185,7 +185,7 @@
     var $has_content;
     /** raw content (may be empty even if has_content is true) - valid after load() */
     var $raw_content;
-    /** time of last modification (special format) - valid after load() */
+    /** time of last modification (MW_DateTime) - valid after load() */
     var $last_modified;
     /** page revision message (if any) - valid after load() */
     var $message;
@@ -202,7 +202,7 @@
       $this->revision = MW_REVISION_HEAD;
       $this->has_content = false;
       $this->raw_content = '';
-      $this->last_modified = 0;
+      $this->last_modified = null;
       $this->message = '';
       $this->user = '';
       $this->title = '';

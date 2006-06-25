@@ -11,7 +11,7 @@
   
   if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
     header('Content-Type: '.$page->mime_type);
-    if ($page->last_modified != 0) {
+    if ($page->last_modified !== null) {
       header('Last-Modified: '.$page->last_modified->format_php("D, d M Y H:i:s", true).' GMT');
     }
     if ($page->raw_content_length) {

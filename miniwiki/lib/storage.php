@@ -184,13 +184,4 @@
     return $dt;
   }
 
-  /**
-  * returns last modified value returned as YEAR/MONTH/DAY HOUR:MIN:SEC
-  * @param val last modified value (as loaded from database)
-  */
-  function format_last_modified($val) {
-    /** @todo configurable */
-    return $val->format_strftime("%Y/%m/%d %H:%M:%S");
-  }
-  
 ?>

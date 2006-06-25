@@ -24,6 +24,9 @@
   /** whether to let database sort strings according to its settings or according to wanted mw_db_encoding (default is true) */
   $mw_db_use_server_collation = true;
 
+  /** date/time format string (default is %Y/%m/%d %H:%M:%S) */
+  $mw_datetime_format = "%Y/%m/%d %H:%M:%S";
+
   /** whether reading is allowed only for logged users (default is false) */
   $mw_auth_read_logged_only = false;
   /** whether changing pages is allowed only for administrator (default is false) */

@@ -8,6 +8,7 @@
   */
 
   require_once('registry.php');
+  require_once('settings.php');
   
   define("MW_COMPONENT_ROLE_RENDERER", "MW_Renderer");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_RENDERER);
@@ -48,6 +49,16 @@
     return $vars;
   }
 
+  set_default_config('datetime_format', "%Y/%m/%d %H:%M:%S");
+
+  /**
+  * returns MW_DateTime value formatted for UI
+  * @param val MW_DateTime
+  */
+  function format_datetime($val) {
+    return $val->format_strftime(config('datetime_format'));
+  }
+  
   /** wiki variables */
   class MW_Variables {
     # [read-only] attributes
@@ -116,7 +127,7 @@
         $this->wiki_variables->set('curpage', $page->name);
         $this->wiki_variables->set('revision', $page->revision);
         if ($page->last_modified !== null) {
-          $this->wiki_variables->set('last_modified', format_last_modified($page->last_modified));
+          $this->wiki_variables->set('last_modified', format_datetime($page->last_modified));
         }
         $this->wiki_variables->set('has_content', ($page->has_content ? 'true' : ''));
       }

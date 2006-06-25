@@ -18,7 +18,7 @@
       $user_page = new_user_page($hist_page->user);
     }
     echo '<li><a href="', $hist_page->url_for_action(MW_ACTION_VIEW), '">',
-      format_last_modified($hist_page->last_modified), '</a>',
+      format_datetime($hist_page->last_modified), '</a>',
       ((isset ($hist_page->user) && trim($hist_page->user)) ? ' <span class="history-user"> - <a href="'.
         $user_page->url_for_action(MW_ACTION_VIEW).'">'.
         htmlspecialchars($hist_page->user, ENT_NOQUOTES).'</a></span>' : ''),

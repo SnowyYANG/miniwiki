@@ -18,7 +18,7 @@
   require_once('request.php');
   require_once('installation.php');
   require_once('wiki_functions.php');
-  require_once('text.php');
+  require_once('messages.php');
 
   /** miniWiki product name */
   define("MW_NAME", "miniWiki");

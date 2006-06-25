@@ -60,20 +60,6 @@
   /** header layout page name */
   define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
 
-  # assign user-visible texts to action names
-  $mw_texts[MW_ACTION_VIEW] = $mw_texts[MWT_ACTION_VIEW];
-  $mw_texts[MW_ACTION_VIEW_SOURCE] = $mw_texts[MWT_ACTION_VIEW_SOURCE];
-  $mw_texts[MW_ACTION_EDIT] = $mw_texts[MWT_ACTION_EDIT];
-  $mw_texts[MW_ACTION_DELETE] = $mw_texts[MWT_ACTION_DELETE];
-  $mw_texts[MW_ACTION_HISTORY] = $mw_texts[MWT_ACTION_HISTORY];
-  $mw_texts[MW_ACTION_UPDATE] = $mw_texts[MWT_ACTION_UPDATE];
-  $mw_texts[MW_ACTION_LOGIN] = $mw_texts[MWT_ACTION_LOGIN];
-  $mw_texts[MW_ACTION_RELOGIN] = $mw_texts[MWT_ACTION_RELOGIN];
-  $mw_texts[MW_ACTION_CHANGE_PASSWORD] = $mw_texts[MWT_ACTION_CHANGE_PASSWORD];
-  $mw_texts[MW_ACTION_CREATE_USER] = $mw_texts[MWT_ACTION_CREATE_USER];
-  $mw_texts[MW_ACTION_DELETE_USER] = $mw_texts[MWT_ACTION_DELETE_USER];
-  $mw_texts[MW_ACTION_UPLOAD] = $mw_texts[MWT_ACTION_UPLOAD];
-
   /**
   * Initialize miniWiki infrastructure.
   * <p>

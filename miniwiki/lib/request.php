@@ -134,4 +134,28 @@
     }
   }
 
+  define("MW_COMPONENT_ROLE_ACTION", "_action");
+
+  function register_action($action) {
+    global $registry;
+    $registry->register($action, MW_COMPONENT_ROLE_ACTION, $action);
+  }
+  register_action(MW_ACTION_VIEW);
+  register_action(MW_ACTION_VIEW_SOURCE);
+  register_action(MW_ACTION_EDIT);
+  register_action(MW_ACTION_DELETE);
+  register_action(MW_ACTION_HISTORY);
+  register_action(MW_ACTION_UPDATE);
+  register_action(MW_ACTION_LOGIN);
+  register_action(MW_ACTION_RELOGIN);
+  register_action(MW_ACTION_CHANGE_PASSWORD);
+  register_action(MW_ACTION_CREATE_USER);
+  register_action(MW_ACTION_DELETE_USER);
+  register_action(MW_ACTION_UPLOAD);
+
+  function is_valid_action($action) {
+    global $registry;
+    return ($registry->lookup(MW_COMPONENT_ROLE_ACTION, $action) !== null);
+  }
+
 ?>

@@ -52,7 +52,7 @@
     $req =& get_request();
 
     if (!$auth->is_action_permitted($action, $page)) {
-      $action_text = (isset($mw_texts[$action]) ? $mw_texts[$action] : $mw_texts[MWT_UNKNOWN_ACTION]);
+      $action_text = (is_valid_action($action) ? _($action) : _("Unknown action."));
       add_info_text(_('Insufficient user rights. Access denied to action: %0%', $action_text));
       include('header.php');
       include('footer.php');

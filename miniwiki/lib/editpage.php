@@ -5,7 +5,6 @@
 
   /** @file
   * edit Wiki page
-  * @param mw_texts texts array
   */
 
   $page =& get_current_page();
@@ -51,14 +50,14 @@
     echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
   }
   echo '</textarea><br/>', "\n";
-  echo $mw_texts[MWT_EDIT_MESSAGE], ': ';
+  echo _('Edit message'), ': ';
   echo '<input name="', MW_REQVAR_MESSAGE, '" type="text" size="90" value="';
   if ($req->message) {
     echo htmlspecialchars($req->message, ENT_QUOTES);
   }
   echo '"/>', "\n";
-  echo '<input type="submit" name="', MW_REQVAR_PREVIEW, '" value="', $mw_texts[MWT_EDIT_PREVIEW], '"/>', "\n";
-  echo '<input type="submit" value="', $mw_texts[MWT_EDIT_SUBMIT], '"/>', "\n";
+  echo '<input type="submit" name="', MW_REQVAR_PREVIEW, '" value="', _("Preview"), '"/>', "\n";
+  echo '<input type="submit" value="', _('Update Page'), '"/>', "\n";
   echo '</form>', "\n";
   echo '</div>', "\n";
   include('footer.php');

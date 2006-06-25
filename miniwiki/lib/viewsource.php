@@ -5,12 +5,11 @@
 
   /** @file
   * view Wiki page source
-  * @param mw_texts texts array
   */
 
   $page =& get_current_page();
   
-  $title = $mw_texts[MWT_VIEWING] . " " . $page->name;
+  $title = _("Viewing %0%", $page->name);
   include('header.php');
   if ($page->has_content) {
     echo '<div class="page-source"><textarea readonly="readonly" rows="20" cols="120">', "\n";

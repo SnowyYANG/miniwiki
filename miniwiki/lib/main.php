@@ -37,7 +37,7 @@
   set_current_page($page);
   $auth =& get_auth();
   if ($auth->is_invalid()) {
-    add_info_text($mw_texts[MWT_LOGIN_INVALID]);
+    add_info_text(_('Invalid login.'));
   }
 
   /**
@@ -46,18 +46,18 @@
   * returns new action to handle or null
   */
   function handle_action($action) {
-    global $mw_texts, $mw_auth_realm;
+    global $mw_auth_realm;
     $auth =& get_auth();
     $page =& get_current_page();
     $req =& get_request();
 
     if (!$auth->is_action_permitted($action, $page)) {
       $action_text = (isset($mw_texts[$action]) ? $mw_texts[$action] : $mw_texts[MWT_UNKNOWN_ACTION]);
-      add_info_text($mw_texts[MWT_ACCESS_DENIED].$action_text);
+      add_info_text(_('Insufficient user rights. Access denied to action: %0%', $action_text));
       include('header.php');
       include('footer.php');
     } elseif (!$page->has_action($action)) {
-      trigger_error($mw_texts[MWT_UNKNOWN_ACTION], E_USER_ERROR);
+      trigger_error(_("Unknown action."), E_USER_ERROR);
     } else switch ($action) {
       case MW_ACTION_RELOGIN:
       case MW_ACTION_LOGIN:
@@ -67,23 +67,23 @@
           header('HTTP/1.0 401 Unauthorized');
           $auth->is_logged = false;
         } else {
-          add_info_text($mw_texts[MWT_LOGGED_AS].' '.$auth->user);
+          add_info_text(_('Logged as %0%', $auth->user));
         }
         return MW_ACTION_VIEW;
       case MW_ACTION_CREATE_USER:
         $user_page = new_user_page($req->user);
         $user_page->create_user();
-        add_info_text($mw_texts[MWT_USER_CREATED]);
+        add_info_text(_('User was created.'));
         return MW_ACTION_VIEW;
       case MW_ACTION_DELETE_USER:
         $user_page = new_user_page($req->user);
         $user_page->delete_user();
-        add_info_text($mw_texts[MWT_USER_DELETED]);
+        add_info_text(_('User was deleted.'));
         return MW_ACTION_VIEW;
       case MW_ACTION_CHANGE_PASSWORD:
         $user_page = new_user_page($req->user);
         $user_page->change_password($req->pass);
-        add_info_text($mw_texts[MWT_PASSWORD_CHANGED]);
+        add_info_text(_('Password was changed'));
         return MW_ACTION_VIEW;
       case MW_ACTION_VIEW_SOURCE:
       case MW_ACTION_VIEW:
@@ -109,7 +109,7 @@
         break;
       case MW_ACTION_DELETE:
         $page->delete();
-        add_info_text($mw_texts[MWT_PAGE_DELETED]);
+        add_info_text(_("Page deleted."));
         return MW_ACTION_VIEW;
       case MW_ACTION_HISTORY:
         include('history.php');
@@ -120,7 +120,7 @@
           return MW_ACTION_EDIT;
         } else {
           $changed = $page->update($req->content, $req->message);
-          add_info_text($changed ? $mw_texts[MWT_PAGE_UPDATED] : $mw_texts[MWT_PAGE_NOT_UPDATED]);
+          add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
           return MW_ACTION_VIEW;
         }
       case MW_ACTION_UPLOAD:
@@ -134,11 +134,11 @@
         } else {
           $page->update(file_get_contents($req->sourcefile['tmp_name']), $req->message);
         }
-        add_info_text($mw_texts[MWT_FILE_UPLOADED]);
+        add_info_text(_("File uploaded."));
         unlink($req->sourcefile['tmp_name']);
         return MW_ACTION_VIEW;
       default:
-        trigger_error($mw_texts[MWT_UNKNOWN_ACTION], E_USER_ERROR);
+        trigger_error(_("Unknown action."), E_USER_ERROR);
         break;
     }
     return null;

@@ -501,8 +501,7 @@
     */
     function render() {
       if (strlen($this->raw) == 0) {
-        global $mw_texts;
-        echo $mw_texts[MWT_EMPTY_PAGE], "\n";
+        echo _('(empty)'), "\n";
         return;
       }
       $src = str_replace("\r", '', $this->raw);

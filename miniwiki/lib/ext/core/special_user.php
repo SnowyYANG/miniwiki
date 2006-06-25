@@ -126,8 +126,7 @@
         echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CHANGE_PASSWORD), ENT_QUOTES), '">', "\n";
         echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $this->related_user, '"/>', "\n";
         echo '<input type="password" size="40" name="', MW_REQVAR_PASS,'"/>', "\n";
-        global $mw_texts;
-        echo '<input type="submit" value="', htmlspecialchars($mw_texts[MWT_CHANGE_PASSWORD_BUTTON], ENT_QUOTES),'"/>', "\n";
+        echo '<input type="submit" value="', htmlspecialchars(_('Change Password'), ENT_QUOTES),'"/>', "\n";
         echo '</form>', "\n";
       }
       $this->page->render();

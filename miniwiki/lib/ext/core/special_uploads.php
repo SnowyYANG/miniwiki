@@ -59,12 +59,11 @@
       $auth =& get_auth();
       if ($auth->is_action_permitted(MW_ACTION_UPLOAD, $this)) {
         echo '<form enctype="multipart/form-data" action="', htmlspecialchars($this->url_for_action(MW_ACTION_UPLOAD), ENT_QUOTES), '" method="post">'. "\n";
-        global $mw_texts;
-        echo $mw_texts[MWT_SOURCE_FILENAME], '<input type="file" size="40" name="', MW_REQVAR_SOURCEFILE, '"/><br/>', "\n";
-        echo $mw_texts[MWT_DEST_FILENAME], '<input type="text" size="40" name="', MW_REQVAR_DESTFILE, '"/><br/>', "\n";
-        echo $mw_texts[MWT_UPLOAD_MESSAGE], "<br/>\n";
+        echo _("Source filename"), ': <input type="file" size="40" name="', MW_REQVAR_SOURCEFILE, '"/><br/>', "\n";
+        echo _("Destination filename (may be empty)"), ': <input type="text" size="40" name="', MW_REQVAR_DESTFILE, '"/><br/>', "\n";
+        echo _("Upload message"), ": <br/>\n";
         echo '<textarea name="', MW_REQVAR_MESSAGE, '" rows="10" cols="60"/></textarea><br/>', "\n";
-        echo '<input type="submit" value="', htmlspecialchars($mw_texts[MWT_UPLOAD_BUTTON], ENT_QUOTES),'"/><br/>', "\n";
+        echo '<input type="submit" value="', htmlspecialchars(_("Upload"), ENT_QUOTES),'"/><br/>', "\n";
         echo '</form>', "\n";
       }
       echo "<ul>\n";

@@ -181,19 +181,26 @@
     }
 
     function render() {
-      global $mw_texts;
       $renderer =& get_renderer();
       if ($this->is_data_page) {
         trigger_error("INTERNAL: MW_SpecialUploadPage.render(): is_data_page is true", E_USER_ERROR);
       } else {
-        $text = $mw_texts[MWT_UPLOAD_PAGE_TEXT];
         $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;
-        $text = str_replace('%LINK%', $link_prefix.$this->upload_name.($this->revision != MW_REVISION_HEAD ? '$'.$this->revision : ''), $text);
-        $text = str_replace('%MESSAGE%', $this->message, $text);
-        $text = str_replace('%FILENAME%', $this->upload_name, $text);
-        $text = str_replace('%MIMETYPE%', $this->mime_type, $text);
-        $text = str_replace('%LENGTH%', $this->raw_content_length, $text);
-        $renderer->render($this, $text);
+        $renderer->render($this, _("''This page represents uploaded file named '''%FILENAME%''' (of type %MIMETYPE% and size %LENGTH% B).''
+    
+[[%LINK%|Download file %FILENAME%]]
+
+%MESSAGE%
+    
+---
+
+For uploading new version, please, use '''Edit''' link at the bottom.", array (
+          'LINK' => $link_prefix.$this->upload_name.($this->revision != MW_REVISION_HEAD ? '$'.$this->revision : ''),
+          'MESSAGE' => $this->message,
+          'FILENAME' => $this->upload_name,
+          'MIMETYPE' => $this->mime_type,
+          'LENGTH' => $this->raw_content_length
+        )));
       }
     }
 

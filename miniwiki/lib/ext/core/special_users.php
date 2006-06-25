@@ -56,8 +56,7 @@
       if ($auth->is_action_permitted(MW_ACTION_CREATE_USER, $this)) {
         echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CREATE_USER), ENT_QUOTES), '">', "\n";
         echo '<input type="text" size="40" name="', MW_REQVAR_USER,'"/>', "\n";
-        global $mw_texts;
-        echo '<input type="submit" value="', htmlspecialchars($mw_texts[MWT_CREATE_USER_BUTTON], ENT_QUOTES),'"/>', "\n";
+        echo '<input type="submit" value="', htmlspecialchars(_('Create User'), ENT_QUOTES),'"/>', "\n";
         echo '</form>', "\n";
       }
       echo '<ul>', "\n";
@@ -70,8 +69,7 @@
         if ($auth->is_action_permitted(MW_ACTION_DELETE_USER, $this)) {
           echo '<form class="delete-user" method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_DELETE_USER), ENT_QUOTES), '">', "\n";
           echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $name, '"/>', "\n";
-          global $mw_texts;
-          echo '<input type="submit" value="', htmlspecialchars($mw_texts[MWT_DELETE_USER_BUTTON], ENT_QUOTES),'"/>', "\n";
+          echo '<input type="submit" value="', htmlspecialchars(_('Delete User'), ENT_QUOTES),'"/>', "\n";
           echo '</form>', "\n";
         }
         echo "</li>\n";

@@ -38,7 +38,7 @@
     /** @private */
     function translate($message) {
       if (!isset($this->messages[$message])) {
-        trigger_error("Unknown message $message", E_USER_ERROR);
+        debug("Unknown message $message");
         return $message;
       }
       return $this->messages[$message];

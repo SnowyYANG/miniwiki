@@ -57,11 +57,4 @@
   
   set_default_config('encoding', 'utf-8');
   
-  /**
-  * returns information file name for given user (for use by user_info wiki function)
-  */
-  function get_user_info_file($user) {
-    return 'users/'.$user;
-  }
-
 ?>

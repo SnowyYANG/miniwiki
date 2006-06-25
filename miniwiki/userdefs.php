@@ -33,4 +33,14 @@
   $mw_disabled_extensions = array(
   );
 
+  /**
+  * returns information file name for given user (for use by user_info wiki function)
+  */
+  function get_user_info_file($user) {
+    return 'users/'.$user;
+  }
+
+  /** callback which will return location of file with information about user (for use by user_info wiki function; default is null) */
+  $mw_user_info_file_callback = 'get_user_info_file';
+
 ?>

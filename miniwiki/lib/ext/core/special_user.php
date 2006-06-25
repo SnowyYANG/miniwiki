@@ -70,7 +70,7 @@
       $this->page = $page;
       $this->fill_vars();
       $this->related_user = substr($this->name, strlen(MW_PAGE_NAME_PREFIX_USER));
-      $this->last_modified = now_as_last_modified();
+      $this->last_modified = now_as_datetime();
     }
 
     function fill_vars() {

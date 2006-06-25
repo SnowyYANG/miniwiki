@@ -125,8 +125,7 @@
                   $value = base64_encode($value);
                   break;
                 case MW_XML_TYPE_DATETIME:
-                  $ts = last_modified_as_timestamp($value);
-                  $value = strftime("%Y%m%dT%H%M%SZ", $ts);
+                  $value = $value->format_strftime("%Y%m%dT%H%M%SZ", true);
                   break;
               }
               fwrite($out, $this->convert_for_xml($conv_enc_from, $enc, $value, false));

@@ -292,7 +292,7 @@
     function MW_SpecialPage($name) {
       parent::MW_Page($name);
       $this->has_content = true;
-      $this->last_modified = now_as_last_modified();
+      $this->last_modified = now_as_datetime();
     }
 
     function has_action($action) {

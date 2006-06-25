@@ -23,6 +23,7 @@
 
     function initialize() {
       register_storage(new MW_MySQLStorage());
+      register_datetime_class("MW_MySQLDateTime");
       set_default_config('db_host', 'localhost');
       set_default_config('db_user', 'miniwiki');
       set_default_config('db_pass', 'miniwiki');
@@ -37,6 +38,43 @@
   register_extension(new MW_CoreMySQLStorageExtension());
 
   define("MW_RESOURCE_KEY_AUTHOR_0_2", "user");
+
+  class MW_MySQLDateTime extends MW_DateTime {
+
+    /** MySQL formatted timestamp (all formats supported) in GMT */
+    var $mysql_timestamp;
+
+    function MW_MySQLDateTime($mysql_timestamp) {
+      $this->mysql_timestamp = $mysql_timestamp;
+    }
+  
+    function as_unix_timestamp() {
+      # detect whether we have MySQL's "INTERNAL" or "ISO" (or similar) timestamp format - default changed in MySQL 4.1.x
+      if (strlen($this->mysql_timestamp) == 14) {
+        $year = substr($this->mysql_timestamp, 0, 4);
+        $month = substr($this->mysql_timestamp, 4, 2);
+        $day = substr($this->mysql_timestamp, 6, 2);
+        $hour = substr($this->mysql_timestamp, 8, 2);
+        $min = substr($this->mysql_timestamp, 10, 2);
+        $sec = substr($this->mysql_timestamp, 12, 2);
+      } else {
+        $year = substr($this->mysql_timestamp, 0, 4);
+        $month = substr($this->mysql_timestamp, 5, 2);
+        $day = substr($this->mysql_timestamp, 8, 2);
+        $hour = substr($this->mysql_timestamp, 11, 2);
+        $min = substr($this->mysql_timestamp, 14, 2);
+        $sec = substr($this->mysql_timestamp, 17, 2);
+      }
+      return gmmktime($hour, $min, $sec, $month, $day, $year);
+    }
+
+    /** [static] */
+    function &from_unix_timestamp($ts) {
+      $datetime = new MW_MySQLDateTime(gmstrftime("%Y%m%d%H%M%S", $ts));
+      return $datetime;
+    }
+    
+  }
   
   /** database access class */
   class MW_MySQLStorage extends MW_Storage {
@@ -107,17 +145,26 @@
          (!isset($revision) && $is_versioned ? ' order by '.MW_RESOURCE_KEY_REVISION.' desc' : ''),
          $name, $revision);
     }
+
+    /** @private */
+    function &create_resource_object_from_result(&$result) {
+        $res = new MW_Resource();
+        foreach ($result as $key => $value) {
+          if (!is_int($key)) {
+            if ($key === MW_RESOURCE_KEY_LAST_MODIFIED) {
+              $value = new MW_MySQLDateTime($value);
+            }
+            $res->set($key, $value);
+          }
+        }
+        return $res;
+    }
     
     function get_resource($dataspace, $name, $revision, $with_data) {
       $query = $this->get_resource_internal($dataspace, $name, $revision, $with_data);
       $res = null;
       if (($result = $this->fetch_query_result($query))) {
-        $res = new MW_Resource();
-        foreach ($result as $key => $value) {
-          if (!is_int($key)) {
-            $res->set($key, $value);
-          }
-        }
+        $res =& $this->create_resource_object_from_result($result);
       }
       $this->close_query($query);
       return $res;
@@ -177,12 +224,7 @@
       $query = $this->get_resource_internal($dataspace, $name, null, $with_data);
       $ret = array();
       while (($result = $this->fetch_query_result($query))) {
-        $res = new MW_Resource();
-        foreach ($result as $key => $value) {
-          if (!is_int($key)) {
-            $res->set($key, $value);
-          }
-        }
+        $res =& $this->create_resource_object_from_result($result);
         array_push ($ret, $res);
       }
       $this->close_query($query);
@@ -199,6 +241,8 @@
         } else {
           mysql_query("SET NAMES '".config('db_encoding')."'", $this->conn);
         }
+        # try to set time zone to UTC
+        mysql_query("SET time_zone = '+0:0'", $this->conn);
       }
     }
     

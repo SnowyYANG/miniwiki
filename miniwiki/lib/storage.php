@@ -140,28 +140,48 @@
     }
   }
 
-  /**
-  * returns last modified value as UNIX timestamp (see mktime())
-  * @param val last modified value (as loaded from database)
-  */
-  function last_modified_as_timestamp($val) {
-    # detect whether we have MySQL's "INTERNAL" or "ISO" (or similar) timestamp format - default changed in MySQL 4.1.x
-    if (strlen($val) == 14) {
-      $year = substr($val, 0, 4);
-      $month = substr($val, 4, 2);
-      $day = substr($val, 6, 2);
-      $hour = substr($val, 8, 2);
-      $min = substr($val, 10, 2);
-      $sec = substr($val, 12, 2);
-    } else {
-      $year = substr($val, 0, 4);
-      $month = substr($val, 5, 2);
-      $day = substr($val, 8, 2);
-      $hour = substr($val, 11, 2);
-      $min = substr($val, 14, 2);
-      $sec = substr($val, 17, 2);
+  define("MW_COMPONENT_ROLE_DATETIME", "MW_DateTime");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_DATETIME);
+
+  /** [abstract] */
+  class MW_DateTime {
+
+    function as_unix_timestamp() {
+      die("abstract: as_unix_timestamp");
     }
-    return mktime($hour, $min, $sec, $month, $day, $year);
+
+    function format_strftime($fmt, $utc = false) {
+      $ts = $this->as_unix_timestamp();
+      return ($utc ? gmstrftime($fmt, $ts) : strftime($fmt, $ts));
+    }
+
+    function format_php($fmt, $utc = false) {
+      $ts = $this->as_unix_timestamp();
+      return ($utc ? gmdate($fmt, $ts) : date($fmt, $ts));
+    }
+
+    /** [static] */
+    function &from_unix_timestamp($ts) {
+      die("abstract: from_unix_timestamp");
+    }
+    
+  }
+
+  function register_datetime_class($class) {
+    global $registry;
+    $registry->register($class, MW_COMPONENT_ROLE_DATETIME);
+  }
+  
+  function create_datetime_from_unix_timestamp($ts) {
+    global $registry;
+    $datetime_class = $registry->lookup(MW_COMPONENT_ROLE_DATETIME);
+    return call_user_func(array($datetime_class, 'from_unix_timestamp'), $ts);
+  }
+
+  function now_as_datetime() {
+    $ts = mktime();
+    $dt = create_datetime_from_unix_timestamp($ts);
+    return $dt;
   }
 
   /**
@@ -169,16 +189,8 @@
   * @param val last modified value (as loaded from database)
   */
   function format_last_modified($val) {
-    $ts = last_modified_as_timestamp($val);
     /** @todo configurable */
-    return strftime("%Y/%m/%d %H:%M:%S", $ts);
-  }
-  
-  /**
-  * returns current date and time as last modified value
-  */
-  function now_as_last_modified() {
-    return strftime("%Y%m%d%H%M%S");
+    return $val->format_strftime("%Y/%m/%d %H:%M:%S");
   }
   
 ?>

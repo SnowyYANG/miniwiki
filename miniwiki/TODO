@@ -13,7 +13,5 @@ TODO list:
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - #REDIRECT support
 - search
-- convert last_modified value to/from unified format and UTC timezone in the storage
-  - format_last_modified() should convert to current timezone (represented by envvar TZ)
 
 $Id$

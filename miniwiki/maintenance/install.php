@@ -42,20 +42,17 @@
   $install_mode = true;
   
   include('../userdefs.php');
+  include('miniwiki.php');
 
   $real_user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
   $real_pass = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : NULL);
   if (($install_user != $real_user) || ($install_pass != $real_pass)) {
-    header('WWW-Authenticate: Basic realm="'.$mw_auth_realm.' (install/upgrade)"');
+    header('WWW-Authenticate: Basic realm="'.config('auth_realm').' (install/upgrade)"');
     header('HTTP/1.0 401 Unauthorized');
     exit();
   }
 
   echo('<h1>Install/upgrade</h1>');
-    
-  include('settings.php');
-  include('miniwiki.php');
-
   echo('<p>'.MW_NAME.' version: '.MW_VERSION.'</p>');
 
   class MW_WebInstallHandler extends MW_InstallHandler {

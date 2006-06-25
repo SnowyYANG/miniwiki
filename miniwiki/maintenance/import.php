@@ -34,7 +34,6 @@
   }
   
   include('../userdefs.php');
-  include('settings.php');
   include('miniwiki.php');
   miniwiki_boot();
     

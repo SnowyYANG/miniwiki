@@ -556,8 +556,7 @@
         } elseif (strpos($line, '#PAGE') === 0) {
           $output .= $this->process_block_chain($current_chain);
           $current_chain = '';
-          global $mw_encoding;
-          $output .= '<?xml version="1.0" encoding="'.$mw_encoding. '"?>
+          $output .= '<?xml version="1.0" encoding="'.config('encoding'). '"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>'."\n";
         } elseif (strpos($line, '#ENDHEADER') === 0) {
@@ -567,9 +566,8 @@
         } elseif (strpos($line, '#HEADER') === 0) {
           $output .= $this->process_block_chain($current_chain);
           $current_chain = '';
-          global $mw_encoding;
           $output .= '<head>
-  <meta http-equiv="Content-Type" content="text/html; charset='.$mw_encoding. '"/>
+  <meta http-equiv="Content-Type" content="text/html; charset='.config('encoding'). '"/>
   <meta name="generator" content="'. MW_NAME. '/'. MW_VERSION. '"/>'."\n";
         } elseif (strpos($line, '#META') === 0) {
           $output .= $this->process_block_chain($current_chain);

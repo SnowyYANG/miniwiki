@@ -29,7 +29,6 @@
   
   ini_set('include_path', ini_get('include_path').':.');
 
-  include('settings.php');
   include('miniwiki.php');
   miniwiki_boot();
   $req =& get_request();
@@ -46,7 +45,6 @@
   * returns new action to handle or null
   */
   function handle_action($action) {
-    global $mw_auth_realm;
     $auth =& get_auth();
     $page =& get_current_page();
     $req =& get_request();
@@ -63,7 +61,7 @@
       case MW_ACTION_LOGIN:
         # bit hackish
         if ($auth->is_invalid() || ((($action == MW_ACTION_RELOGIN) && ($req->old_user == $auth->user)) || !$auth->has_credentials)) {
-          header('WWW-Authenticate: Basic realm="'.$mw_auth_realm.'"');
+          header('WWW-Authenticate: Basic realm="'.config('auth_realm').'"');
           header('HTTP/1.0 401 Unauthorized');
           $auth->is_logged = false;
         } else {

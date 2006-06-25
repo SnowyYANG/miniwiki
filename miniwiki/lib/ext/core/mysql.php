@@ -23,6 +23,12 @@
 
     function initialize() {
       register_storage(new MW_MySQLStorage());
+      set_default_config('db_host', 'localhost');
+      set_default_config('db_user', 'miniwiki');
+      set_default_config('db_pass', 'miniwiki');
+      set_default_config('db_name', 'miniwiki');
+      set_default_config('db_use_server_collation', true);
+      set_default_config('db_encoding', 'utf8');
       return true;
     }
 
@@ -47,11 +53,10 @@
     
     /** constructor */
     function MW_MySQLStorage() {
-      global $mw_db_host, $mw_db_user, $mw_db_pass, $mw_db_name;
-      $this->host = $mw_db_host;
-      $this->user = $mw_db_user;
-      $this->pass = $mw_db_pass;
-      $this->dbname = $mw_db_name;
+      $this->host = config('db_host');
+      $this->user = config('db_user');
+      $this->pass = config('db_pass');
+      $this->dbname = config('db_name');
     }
 
     /** ordered by name */
@@ -189,11 +194,10 @@
       if (!isset ($this->conn)) {
         $this->conn = mysql_connect($this->host, $this->user, $this->pass) or die ("Can't connect to server : " . mysql_error());
         mysql_select_db($this->dbname, $this->conn) or die ("Can't select database : " . mysql_error());
-        global $mw_db_use_server_collation, $mw_db_encoding;
-        if ($mw_db_use_server_collation) {
-          mysql_query("SET CHARACTER SET '".$mw_db_encoding."'", $this->conn);
+        if (config('db_use_server_collation')) {
+          mysql_query("SET CHARACTER SET '".config('db_encoding')."'", $this->conn);
         } else {
-          mysql_query("SET NAMES '".$mw_db_encoding."'", $this->conn);
+          mysql_query("SET NAMES '".config('db_encoding')."'", $this->conn);
         }
       }
     }

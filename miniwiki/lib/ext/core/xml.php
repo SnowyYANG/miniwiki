@@ -77,9 +77,8 @@
   class MW_XMLExporter extends MW_Exporter {
 
     function export($file, $with_history = true, $dataspaces = array()) {
-      global $mw_encoding;
       $storage =& get_storage();
-      $enc = $mw_encoding;
+      $enc = config('encoding');
       $conv_enc_from = null;
       # convert to UTF-8 if possible
       if (strcasecmp($enc, "utf-8") != 0) {

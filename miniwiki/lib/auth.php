@@ -8,6 +8,7 @@
   */
 
   require_once('registry.php');
+  require_once('settings.php');
 
   /** admin user name */
   define("MW_USER_NAME_ADMIN", "admin");
@@ -17,6 +18,10 @@
   $registry->register(new MW_Auth(), MW_COMPONENT_ROLE_AUTH);
   define("MW_COMPONENT_ROLE_USERS_MANAGER", "MW_UsersManager");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_USERS_MANAGER);
+  
+  set_default_config('auth_realm', 'miniWiki');
+  set_default_config('auth_read_logged_only', false);
+  set_default_config('auth_write_admin_only', false);
   
   /**
   * returns instance of MW_Auth
@@ -111,7 +116,6 @@
     */
     function is_action_permitted($action, $page) {
       $this->init();
-      global $auth_read_logged_only, $auth_write_admin_only;
       $is_logged = $this->is_logged;
       $is_admin = $this->is_logged && ($this->user == MW_USER_NAME_ADMIN);
       $is_related = isset($page->related_user) && $this->is_logged && ($this->user == $page->related_user);
@@ -122,7 +126,7 @@
         case MW_ACTION_VIEW:
         case MW_ACTION_VIEW_SOURCE:
         case MW_ACTION_HISTORY:
-          return ($auth_read_logged_only ? $is_logged : true);
+          return (config('auth_read_logged_only') ? $is_logged : true);
         case MW_ACTION_EDIT:
         case MW_ACTION_DELETE:
         case MW_ACTION_UPDATE:
@@ -133,7 +137,7 @@
           if (strpos($page->name, MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI) === 0) {
             return $is_admin;
           }
-          return ($auth_write_admin_only ? $is_admin : $is_logged);
+          return (config('auth_write_admin_only') ? $is_admin : $is_logged);
         case MW_ACTION_CHANGE_PASSWORD:
           return $is_related || $is_admin;
         case MW_ACTION_CREATE_USER:

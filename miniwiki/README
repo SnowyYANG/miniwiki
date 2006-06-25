@@ -37,6 +37,10 @@ Since version 0.3 UI layout is stored in Wiki pages MW:Layout:* including
 CSS and JS files which were previously in data directory and now are
 stored as uploaded files mw/layout/*.
 
+Since version 0.3 all user settings are prefixed with mw_, that is $auth_read_logged_only
+and $auth_write_admin_only are now called $mw_auth_read_logged_only
+and $mw_auth_write_admin_only respectively.
+
 Setup
 -----
 

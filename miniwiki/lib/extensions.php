@@ -33,8 +33,9 @@
   define("MW_COMPONENT_ROLE_EXTENSION", "MW_Extension");
   
   function register_extension($extension) {
-    global $registry, $disabled_extensions;
-    if (isset($disabled_extensions)) {
+    global $registry;
+    $disabled_extensions = config('disabled_extensions');
+    if ($disabled_extensions !== null) {
       foreach ($disabled_extensions as $disabled_ext) {
         if (is_a($extension, $disabled_ext)) {
           debug("Disabling extension ".$extension->get_name());

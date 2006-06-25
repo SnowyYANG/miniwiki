@@ -11,7 +11,7 @@
   $page =& get_current_page();
   $req =& get_request();
   
-  $title = $mw_texts[MWT_EDITING] . " " . $page->name;
+  $title = _("Editing %0%", $page->name);
   include('header.php');
   if ($req->preview && $page->has_content) {
     echo '<div class="page-content">';

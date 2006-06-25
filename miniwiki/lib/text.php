@@ -27,4 +27,53 @@
     return $registry->lookup(MW_COMPONENT_ROLE_INFO_TEXT);
   }
 
+  define("MW_COMPONENT_ROLE_MESSAGES", "MW_Messages");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_MESSAGES);
+  $registry->register(new MW_Messages(), MW_COMPONENT_ROLE_MESSAGES);
+
+  class MW_Messages {
+
+    var $messages = array();
+
+    /** @private */
+    function translate($message) {
+      if (!isset($this->messages[$message])) {
+        trigger_error("Unknown message $message", E_USER_ERROR);
+        return $message;
+      }
+      return $this->messages[$message];
+    }
+
+    /** @private */
+    function replace($message, $data) {
+      foreach (array_keys($data) as $key) {
+        $message = str_replace("%$key%", $data[$key], $message);
+      }
+      return $message;
+    }
+
+    function format($message, $data = null) {
+      $message = $this->translate($message);
+      if ($data !== null) {
+        $message = $this->replace($message, $data);
+      }
+      return $message;
+    }
+  
+  }
+
+  function _($message) {
+    global $registry;
+    $messages = $registry->lookup(MW_COMPONENT_ROLE_MESSAGES);
+    $data = null;
+    if (func_num_args() > 1) {
+      $data = func_get_args();
+      array_shift($data);
+      if ((sizeof($data) == 1) && is_array($data[0])) {
+        $data = $data[0];
+      }
+    }
+    return $messages->format($message, $data);
+  }
+  
 ?>

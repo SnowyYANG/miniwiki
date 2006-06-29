@@ -33,8 +33,8 @@
   $mw_auth_write_admin_only = false;
 
   /** list of MW_Extension classes which should not be initialized (default is empty) */
-  $mw_disabled_extensions = array(
-  );
+#  $mw_disabled_extensions = array(
+#  );
 
   /**
   * returns information file name for given user (for use by user_info wiki function)

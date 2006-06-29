@@ -459,7 +459,7 @@
       $wiki_func = array_shift($wiki_func_args);
       $wiki_func_args = preg_replace('/(^|\s)\$(\S+)/e', '"$1".$this->wiki_variables->get("$2")', $wiki_func_args);
       $wiki_func_ret = call_wiki_function($wiki_func, $wiki_func_args, $this);
-      if (!($wiki_func_ret === null)) {
+      if ($wiki_func_ret !== null) {
         return $wiki_func_ret;
       }
       return $matches[1];

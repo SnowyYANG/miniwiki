@@ -101,7 +101,7 @@
     */
     function is_permitted($req, $page) {
       $this->init();
-      return $this->is_action_permitted($req->action, $page);
+      return $this->is_action_permitted(get_action($req->action), $page);
     }
     
     /**
@@ -119,7 +119,7 @@
       $is_logged = $this->is_logged;
       $is_admin = $this->is_logged && ($this->user == MW_USER_NAME_ADMIN);
       $is_related = isset($page->related_user) && $this->is_logged && ($this->user == $page->related_user);
-      switch ($action) {
+      switch ($action->get_name()) {
         case MW_ACTION_RELOGIN:
         case MW_ACTION_LOGIN:
           return true;
@@ -172,4 +172,122 @@
     }
   }
 
+  /** login action (will show login dialog if current credentials are invalid) */
+  define("MW_ACTION_LOGIN", "login");
+  /** relogin action (will show login dialog even if current credentials are valid - needs correct old_user) */
+  define("MW_ACTION_RELOGIN", "relogin");
+  
+  class MW_LoginAction extends MW_Action {
+  
+    /** @private */
+    var $name;
+
+    function MW_LoginAction($name) {
+      $this->name = $name;
+    }
+    
+    function get_name() {
+      return $this->name;
+    }
+  
+    function &handle() {
+      $auth =& get_auth();
+      $req =& get_request();
+      # bit hackish
+      if ($auth->is_invalid() || ((($this->get_name() == MW_ACTION_RELOGIN) && ($req->old_user == $auth->user)) || !$auth->has_credentials)) {
+        header('WWW-Authenticate: Basic realm="'.config('auth_realm').'"');
+        header('HTTP/1.0 401 Unauthorized');
+        $auth->is_logged = false;
+      } else {
+        add_info_text(_('Logged as %0%', $auth->user));
+      }
+      return get_default_action();
+    }
+
+    function is_valid() {
+      # always
+      return true;
+    }
+    
+  }
+
+  register_action(new MW_LoginAction(MW_ACTION_LOGIN));
+  register_action(new MW_LoginAction(MW_ACTION_RELOGIN));
+
+  /** change password action (really changes password) */
+  define("MW_ACTION_CHANGE_PASSWORD", "change_password");
+  /** create user action (really creates user with disabled login) */
+  define("MW_ACTION_CREATE_USER", "create_user");
+  /** delete user action (really deletes user, user page is not deleted) */
+  define("MW_ACTION_DELETE_USER", "delete_user");
+
+  class MW_ChangePasswordAction extends MW_Action {
+  
+    function get_name() {
+      return MW_ACTION_CHANGE_PASSWORD;
+    }
+  
+    function &handle() {
+      $req =& get_request();
+      $user_page = new_user_page($req->user);
+      $user_page->change_password($req->pass);
+      add_info_text(_('Password was changed'));
+      return get_default_action();
+    }
+
+    function is_valid() {
+      # always
+      return true;
+    }
+    
+  }
+  
+  register_action(new MW_ChangePasswordAction());
+  
+  class MW_CreateUserAction extends MW_Action {
+  
+    function get_name() {
+      return MW_ACTION_CREATE_USER;
+    }
+  
+    function &handle() {
+      $req =& get_request();
+      $user_page = new_user_page($req->user);
+      $user_page->create_user();
+      add_info_text(_('User was created.'));
+      return get_default_action();
+    }
+
+    function is_valid() {
+      # always
+      return true;
+    }
+    
+  }
+  
+  register_action(new MW_CreateUserAction());
+  
+  class MW_DeleteUserAction extends MW_Action {
+  
+    function get_name() {
+      return MW_ACTION_DELETE_USER;
+    }
+  
+    function &handle() {
+      $req =& get_request();
+      $user_page = new_user_page($req->user);
+      $user_page->delete_user();
+      add_info_text(_('User was deleted.'));
+      return get_default_action();
+    }
+
+    function is_valid() {
+      # always
+      return true;
+    }
+    
+  }
+  
+  register_action(new MW_DeleteUserAction());
+  
 ?>

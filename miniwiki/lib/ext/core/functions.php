@@ -139,7 +139,7 @@
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      return ($page->has_action($action) ? 'true' : '');
+      return ($page->has_action(get_action($action)) ? 'true' : '');
     }
   
     /**
@@ -162,7 +162,7 @@
       }
       $page = new_page($page_name, $revision);
       $auth =& get_auth();
-      return ($auth->is_action_permitted($action, $page) ? 'true' : '');
+      return ($auth->is_action_permitted(get_action($action), $page) ? 'true' : '');
     }
   
     /** returns non-empty string if given page exists */

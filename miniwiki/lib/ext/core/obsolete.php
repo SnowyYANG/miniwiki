@@ -35,7 +35,7 @@
       return -100;
     }
     function get_page($tag, $name, $revision) {
-      if (($tag == null) && (strpos($name, MW_PAGE_NAME_PREFIX_DATA_0_2) === 0)) {
+      if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_DATA_0_2) === 0)) {
         $name = str_replace(MW_PAGE_NAME_PREFIX_DATA_0_2, MW_PAGE_NAME_PREFIX_DATA, $name);
       }
       return $this->next->get_page($tag, $name, $revision);

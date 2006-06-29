@@ -36,7 +36,7 @@
 
   class MW_SpecialUploadPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
-      if ($tag == null) {
+      if ($tag === null) {
         if (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
           return new MW_SpecialUploadPage($name, $revision);
         } elseif (strpos($name, MW_PAGE_NAME_PREFIX_DATA) === 0) {
@@ -111,7 +111,7 @@
     }
 
     function has_action($action) {
-      switch ($action) {
+      switch ($action->get_name()) {
         case MW_ACTION_VIEW_SOURCE:
           return false;
       }

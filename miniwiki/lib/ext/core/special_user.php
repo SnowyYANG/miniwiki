@@ -33,7 +33,7 @@
   class MW_SpecialUserPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
       $overlay = false;
-      if (($tag == null) && (strpos($name, MW_PAGE_NAME_PREFIX_USER) === 0)) {
+      if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_USER) === 0)) {
         $overlay = true;
       }
       if ($tag == MW_PAGE_TAG_USER) {
@@ -122,7 +122,7 @@
     
     function render() {
       $auth =& get_auth();
-      if ($auth->is_action_permitted(MW_ACTION_CHANGE_PASSWORD, $this)) {
+      if ($auth->is_action_permitted(get_action(MW_ACTION_CHANGE_PASSWORD), $this)) {
         echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CHANGE_PASSWORD), ENT_QUOTES), '">', "\n";
         echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $this->related_user, '"/>', "\n";
         echo '<input type="password" size="40" name="', MW_REQVAR_PASS,'"/>', "\n";

@@ -457,7 +457,7 @@
       $ds_name = $dataspace_def->get_name();
       $our_coldef = $this->get_column_definition($dataspace_def, $name);
       $db_coldef = (isset($db_coldefs[$name]) ? $db_coldefs[$name] : null);
-      if ($db_coldef == null) {
+      if ($db_coldef === null) {
         if (($name == MW_RESOURCE_KEY_AUTHOR) && isset($db_coldefs[MW_RESOURCE_KEY_AUTHOR_0_2])) {
           $sql = 'alter table '.$ds_name. ' change '.MW_RESOURCE_KEY_AUTHOR_0_2.' '.$our_coldef;
           show_install_message("Renaming column $ds_name.".MW_RESOURCE_KEY_AUTHOR_0_2." to $ds_name.$name");

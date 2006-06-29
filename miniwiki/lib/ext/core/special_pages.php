@@ -32,7 +32,7 @@
 
   class MW_SpecialPagesPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
-      if (($tag == null) && ($name == MW_PAGE_NAME_PAGES)) {
+      if (($tag === null) && ($name == MW_PAGE_NAME_PAGES)) {
         return new MW_SpecialPagesPage($name);
       }
       return $this->next->get_page($tag, $name, $revision);

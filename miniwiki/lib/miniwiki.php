@@ -7,20 +7,6 @@
   * miniWiki library
   */
 
-  require_once('registry.php');
-  require_once('extensions.php');
-  require_once('exporting.php');
-  require_once('importing.php');
-  require_once('rendering.php');
-  require_once('pages.php');
-  require_once('storage.php');
-  require_once('auth.php');
-  require_once('request.php');
-  require_once('installation.php');
-  require_once('wiki_functions.php');
-  require_once('messages.php');
-  require_once('settings.php');
-
   /** miniWiki product name */
   define("MW_NAME", "miniWiki");
   /** miniWiki version as X.Y string */
@@ -30,6 +16,24 @@
     function stripos($haystack,$needle,$offset = 0) {
       return(strpos(strtolower($haystack),strtolower($needle),$offset));
     }
+  }
+
+  function &null_ref() {
+    $ret = null;
+    return $ret;
+  }
+
+  function to_string(&$value) {
+    if (is_object($value)) {
+      $s = get_class($value);
+      if (method_exists($value, "get_id")) {
+        $s .= ": ".$value->get_id();
+      } elseif (method_exists($value, "get_name")) {
+        $s .= ": ".$value->get_name();
+      }
+      return $s;
+    }
+    return $value;
   }
 
   /** users list special page name */
@@ -61,17 +65,7 @@
   /** header layout page name */
   define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
 
-  /**
-  * Initialize miniWiki infrastructure.
-  * <p>
-  * Will load and initialize extensions.
-  */
-  function miniwiki_boot($install_mode = false) {
-    set_default_config('install_mode', $install_mode);
-    register_shutdown_function('miniwiki_shutdown');
-    load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
-    initialize_extensions();
-  }
+  require_once('registry.php');
 
   define("MW_COMPONENT_ROLE_SHUTDOWN", "_shutdown");
 
@@ -92,6 +86,32 @@
     }
   }
   
+  require_once('extensions.php');
+  require_once('exporting.php');
+  require_once('importing.php');
+  require_once('rendering.php');
+  require_once('pages.php');
+  require_once('storage.php');
+  require_once('auth.php');
+  require_once('request.php');
+  require_once('installation.php');
+  require_once('wiki_functions.php');
+  require_once('messages.php');
+  require_once('settings.php');
+  require_once('actions.php');
+
+  /**
+  * Initialize miniWiki infrastructure.
+  * <p>
+  * Will load and initialize extensions.
+  */
+  function miniwiki_boot($install_mode = false) {
+    set_default_config('install_mode', $install_mode);
+    register_shutdown_function('miniwiki_shutdown');
+    load_extensions(realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."ext"), true);
+    initialize_extensions();
+  }
+
   /**
   * Shutdown miniWiki infrastructure.
   * <p>

@@ -32,7 +32,7 @@
 
   class MW_SpecialUploadsPageHandler extends MW_PageHandler {
     function get_page($tag, $name, $revision) {
-      if (($tag == null) && ($name == MW_PAGE_NAME_UPLOADS)) {
+      if (($tag === null) && ($name == MW_PAGE_NAME_UPLOADS)) {
         return new MW_SpecialUploadsPage($name);
       }
       return $this->next->get_page($tag, $name, $revision);
@@ -48,7 +48,7 @@
     }
 
     function has_action($action) {
-      if ($action == MW_ACTION_UPLOAD) {
+      if ($action->get_name() == MW_ACTION_UPLOAD) {
         return true;
       }
       return parent::has_action($action);
@@ -57,7 +57,7 @@
     function render() {
       echo '<div class="special-uploads">', "\n";
       $auth =& get_auth();
-      if ($auth->is_action_permitted(MW_ACTION_UPLOAD, $this)) {
+      if ($auth->is_action_permitted(get_action(MW_ACTION_UPLOAD), $this)) {
         echo '<form enctype="multipart/form-data" action="', htmlspecialchars($this->url_for_action(MW_ACTION_UPLOAD), ENT_QUOTES), '" method="post">'. "\n";
         echo _("Source filename"), ': <input type="file" size="40" name="', MW_REQVAR_SOURCEFILE, '"/><br/>', "\n";
         echo _("Destination filename (may be empty)"), ': <input type="text" size="40" name="', MW_REQVAR_DESTFILE, '"/><br/>', "\n";

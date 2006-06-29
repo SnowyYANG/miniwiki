@@ -8,6 +8,7 @@
   */
 
   require_once('registry.php');
+  require_once('actions.php');
 
   define("MW_COMPONENT_ROLE_PAGE", "MW_Page");
   $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
@@ -211,7 +212,7 @@
     
     /**
     * [override, returns false] returns true if this page supports given action
-    * @param action action
+    * @param action MW_Action
     */
     function has_action($action) {
       return false;
@@ -296,7 +297,7 @@
     }
 
     function has_action($action) {
-      switch ($action) {
+      switch ($action->get_name()) {
         case MW_ACTION_HISTORY:
         case MW_ACTION_EDIT:
         case MW_ACTION_VIEW_SOURCE:
@@ -320,4 +321,168 @@
     
   }
 
+  /** view page action (renders Wiki page) */
+  define("MW_ACTION_VIEW", "view");
+  /** view page source action (shows Wiki markup) */
+  define("MW_ACTION_VIEW_SOURCE", "view_source");
+  /** edit page action (shows Wiki editor) */
+  define("MW_ACTION_EDIT", "edit");
+  /** delete page action (really deletes page) */
+  define("MW_ACTION_DELETE", "delete");
+  /** show history action (shows history page) */
+  define("MW_ACTION_HISTORY", "history");
+  /** update page action (really changes Wiki page or shows a preview) */
+  define("MW_ACTION_UPDATE", "update");
+  /** upload action */
+  define("MW_ACTION_UPLOAD", "upload");
+
+  class MW_PageAction extends MW_Action {
+  
+    function is_valid() {
+      $page =& get_current_page();
+      return $page->has_action($this);
+    }
+    
+  }
+  
+  class MW_ViewAction extends MW_PageAction {
+
+    /** @private */
+    var $name;
+
+    function MW_ViewAction($name) {
+      $this->name = $name;
+    }
+    
+    function get_name() {
+      return $this->name;
+    }
+  
+    function &handle() {
+      $page =& get_current_page();
+      if ($page->load()) {
+        include(($this->get_name() == MW_ACTION_VIEW_SOURCE) ? 'viewsource.php' : 'viewpage.php');
+        $p = null;
+        return $p;
+      } else if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
+        # missing data page should raise 404 Not Found
+        header ("HTTP/1.0 404 Not Found");
+      }
+      # fallback to edit if page does not exist
+      return get_action(MW_ACTION_EDIT);
+    }
+
+  }
+
+  register_action(new MW_ViewAction(MW_ACTION_VIEW));
+  register_action(new MW_ViewAction(MW_ACTION_VIEW_SOURCE));
+  register_default_action(new MW_ViewAction(MW_ACTION_VIEW));
+
+  class MW_EditAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_EDIT;
+    }
+  
+    function &handle() {
+      $page =& get_current_page();
+      # prevent double-load or preview overwriting
+      if (!$page->has_content) {
+        $page->load();
+      }
+      if (is_a($page, 'MW_SpecialUploadPage')) {
+        include('editupload.php');
+      } else {
+        include('editpage.php');
+      }
+      return null_ref();
+    }
+    
+  }
+
+  register_action(new MW_EditAction());
+
+  class MW_DeleteAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_DELETE;
+    }
+  
+    function &handle() {
+      $page =& get_current_page();
+      $page->delete();
+      add_info_text(_("Page deleted."));
+      return get_default_action();
+    }
+    
+  }
+
+  register_action(new MW_DeleteAction());
+
+  class MW_HistoryAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_HISTORY;
+    }
+  
+    function &handle() {
+      include('history.php');
+      return null_ref();
+    }
+    
+  }
+
+  register_action(new MW_HistoryAction());
+
+  class MW_UpdateAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_UPDATE;
+    }
+  
+    function &handle() {
+      $req =& get_request();
+      $page =& get_current_page();
+      if ($req->preview) {
+        $page->update_for_preview($req->content);
+        return get_action(MW_ACTION_EDIT);
+      } else {
+        $changed = $page->update($req->content, $req->message);
+        add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
+        return get_default_action();
+      }
+    }
+    
+  }
+
+  register_action(new MW_UpdateAction());
+  
+  class MW_UploadAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_UPLOAD;
+    }
+  
+    function &handle() {
+      $req =& get_request();
+      $page =& get_current_page();
+      if (!is_uploaded_file($req->sourcefile['tmp_name'])) {
+        trigger_error('Possible upload attack with file '.$req->sourcefile['name'], E_USER_ERROR);
+        return null_ref();
+      }
+      if (is_a($page, 'MW_SpecialUploadsPage')) {
+        $filename = $req->destfile ? $req->destfile : $req->sourcefile['name'];
+        $page = $page->upload(file_get_contents($req->sourcefile['tmp_name']), $req->message, $filename);
+      } else {
+        $page->update(file_get_contents($req->sourcefile['tmp_name']), $req->message);
+      }
+      add_info_text(_("File uploaded."));
+      unlink($req->sourcefile['tmp_name']);
+      return get_default_action();
+    }
+    
+  }
+
+  register_action(new MW_UploadAction());
+  
 ?>

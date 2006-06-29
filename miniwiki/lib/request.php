@@ -9,30 +9,6 @@
 
   require_once('registry.php');
   
-  /** view page action (renders Wiki page) */
-  define("MW_ACTION_VIEW", "view");
-  /** view page source action (shows Wiki markup) */
-  define("MW_ACTION_VIEW_SOURCE", "view_source");
-  /** edit page action (shows Wiki editor) */
-  define("MW_ACTION_EDIT", "edit");
-  /** delete page action (really deletes page) */
-  define("MW_ACTION_DELETE", "delete");
-  /** show history action (shows history page) */
-  define("MW_ACTION_HISTORY", "history");
-  /** update page action (really changes Wiki page or shows a preview) */
-  define("MW_ACTION_UPDATE", "update");
-  /** login action (will show login dialog if current credentials are invalid) */
-  define("MW_ACTION_LOGIN", "login");
-  /** relogin action (will show login dialog even if current credentials are valid - needs correct old_user) */
-  define("MW_ACTION_RELOGIN", "relogin");
-  /** change password action (really changes password) */
-  define("MW_ACTION_CHANGE_PASSWORD", "change_password");
-  /** create user action (really creates user with disabled login) */
-  define("MW_ACTION_CREATE_USER", "create_user");
-  /** delete user action (really deletes user, user page is not deleted) */
-  define("MW_ACTION_DELETE_USER", "delete_user");
-  /** upload action */
-  define("MW_ACTION_UPLOAD", "upload");
   /** default action (if none requested) */
   define("MW_DEFAULT_ACTION", MW_ACTION_VIEW);
   /** page name request variable */
@@ -132,30 +108,6 @@
       $this->destfile = (isset($req_array[MW_REQVAR_DESTFILE]) ? $req_array[MW_REQVAR_DESTFILE] : NULL);
       $this->is_head = ($_SERVER["REQUEST_METHOD"] == "HEAD");
     }
-  }
-
-  define("MW_COMPONENT_ROLE_ACTION", "_action");
-
-  function register_action($action) {
-    global $registry;
-    $registry->register($action, MW_COMPONENT_ROLE_ACTION, $action);
-  }
-  register_action(MW_ACTION_VIEW);
-  register_action(MW_ACTION_VIEW_SOURCE);
-  register_action(MW_ACTION_EDIT);
-  register_action(MW_ACTION_DELETE);
-  register_action(MW_ACTION_HISTORY);
-  register_action(MW_ACTION_UPDATE);
-  register_action(MW_ACTION_LOGIN);
-  register_action(MW_ACTION_RELOGIN);
-  register_action(MW_ACTION_CHANGE_PASSWORD);
-  register_action(MW_ACTION_CREATE_USER);
-  register_action(MW_ACTION_DELETE_USER);
-  register_action(MW_ACTION_UPLOAD);
-
-  function is_valid_action($action) {
-    global $registry;
-    return ($registry->lookup(MW_COMPONENT_ROLE_ACTION, $action) !== null);
   }
 
 ?>

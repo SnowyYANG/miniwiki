@@ -39,7 +39,7 @@
       return 100;
     }
     function get_page($tag, $name, $revision) {
-      if ($tag == null) {
+      if ($tag === null) {
         return new MW_DBPage($name, $revision);
       }
       return $this->next->get_page($tag, $name, $revision);
@@ -60,7 +60,7 @@
     }
 
     function has_action($action) {
-      if ($action == MW_ACTION_UPLOAD) {
+      if ($action->get_name() == MW_ACTION_UPLOAD) {
         return false;
       }
       return true;

@@ -91,7 +91,7 @@
       if (isset($this->components[$selector])) {
         return $this->components[$selector];
       }
-      return null;
+      return null_ref();
     }
     
     function apply($callback, $role = null, $selector = null) {
@@ -124,6 +124,7 @@
     }
   
     function register(&$component, $role, $selector = null) {
+      debug("MW_DelegatingComponentRegistry: register component ".to_string($component)." with role $role and selector '$selector'");
       $registry =& $this->get_registry($role);
       $registry->register($component, $role, $selector);
     }
@@ -134,6 +135,7 @@
     }
 
     function &lookup($role, $selector = null) {
+      debug("MW_DelegatingComponentRegistry: lookup role $role and selector '$selector'");
       $registry =& $this->get_registry($role);
       return $registry->lookup($role, $selector);
     }

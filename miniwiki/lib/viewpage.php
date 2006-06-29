@@ -8,6 +8,7 @@
   */
 
   $page =& get_current_page();
+  $req =& get_request();
   
   if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
     header('Content-Type: '.$page->mime_type);

@@ -8,7 +8,8 @@ TODO list:
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces)
 - convert Special pages to use Wiki markup
-- allow pages to see custom request parameters
+- allow pages to see custom request parameters (by using request transformators - everyone may
+  ask for specific arguments - request by itself does not tell anything)
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - #REDIRECT support

@@ -1,15 +1,14 @@
 TODO list:
 
+- rework url_for_action support by introducing generic url creator
 - XML import
 - improve code docs
-- classify standalone pages
+- classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page
 - layout page describing how everything looks (not just header and footer)
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces)
 - convert Special pages to use Wiki markup
-- allow pages to see custom request parameters (by using request transformators - everyone may
-  ask for specific arguments - request by itself does not tell anything)
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - #REDIRECT support

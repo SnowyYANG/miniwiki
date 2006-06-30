@@ -8,6 +8,7 @@
   */
 
   require_once('registry.php');
+  require_once('request.php');
   
   define("MW_COMPONENT_ROLE_ACTION", "MW_Action");
   define("MW_COMPONENT_ROLE_DEFAULT_ACTION", "_default_action");
@@ -49,4 +50,27 @@
     return $registry->lookup(MW_COMPONENT_ROLE_DEFAULT_ACTION);
   }
 
+  function is_default_action($action) {
+    $def_action =& get_default_action();
+    return (strcmp($def_action->get_name(), $action->get_name()) === 0);
+  }
+
+  /** action request variable */
+  define("MW_REQVAR_ACTION", "action");
+  
+  class MW_ActionRequest extends MW_Request {
+    /** @private */
+    var $action;
+
+    function MW_ActionRequest($http_request) {
+      $name = $http_request->get_param(MW_REQVAR_ACTION);
+      $this->action = ($name !== null) ? get_action($name) : get_default_action();
+    }
+  
+    function get_action() {
+      return $this->action;
+    }
+    
+  }
+  
 ?>

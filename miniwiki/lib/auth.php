@@ -94,17 +94,6 @@
     }
     
     /**
-    * returns true if current user has permission to execute action specified by request on given page
-    * see is_action_permitted() for more information
-    * @param req MW_Request
-    * @param page MW_Page
-    */
-    function is_permitted($req, $page) {
-      $this->init();
-      return $this->is_action_permitted(get_action($req->action), $page);
-    }
-    
-    /**
     * returns true if current user has permission to execute given action on given page
     * everyone can relogin, login, view, view source and show history
     * logged user can edit, delete and update
@@ -192,9 +181,9 @@
   
     function &handle() {
       $auth =& get_auth();
-      $req =& get_request();
+      $req =& get_request("MW_AuthRequest");
       # bit hackish
-      if ($auth->is_invalid() || ((($this->get_name() == MW_ACTION_RELOGIN) && ($req->old_user == $auth->user)) || !$auth->has_credentials)) {
+      if ($auth->is_invalid() || ((($this->get_name() == MW_ACTION_RELOGIN) && ($req->get_old_user() == $auth->user)) || !$auth->has_credentials)) {
         header('WWW-Authenticate: Basic realm="'.config('auth_realm').'"');
         header('HTTP/1.0 401 Unauthorized');
         $auth->is_logged = false;
@@ -228,9 +217,9 @@
     }
   
     function &handle() {
-      $req =& get_request();
-      $user_page = new_user_page($req->user);
-      $user_page->change_password($req->pass);
+      $req =& get_request("MW_AuthRequest");
+      $user_page = new_user_page($req->get_user());
+      $user_page->change_password($req->get_pass());
       add_info_text(_('Password was changed'));
       return get_default_action();
     }
@@ -251,8 +240,8 @@
     }
   
     function &handle() {
-      $req =& get_request();
-      $user_page = new_user_page($req->user);
+      $req =& get_request("MW_AuthRequest");
+      $user_page = new_user_page($req->get_user());
       $user_page->create_user();
       add_info_text(_('User was created.'));
       return get_default_action();
@@ -274,8 +263,8 @@
     }
   
     function &handle() {
-      $req =& get_request();
-      $user_page = new_user_page($req->user);
+      $req =& get_request("MW_AuthRequest");
+      $user_page = new_user_page($req->get_user());
       $user_page->delete_user();
       add_info_text(_('User was deleted.'));
       return get_default_action();
@@ -289,5 +278,40 @@
   }
   
   register_action(new MW_DeleteUserAction());
+  
+  /** old user request variable (for relogin action) */
+  define("MW_REQVAR_OLD_USER", "old_user");
+  /** user request variable (for create user, delete user and change password actions) */
+  define("MW_REQVAR_USER", "user");
+  /** password request variable (for change password action) */
+  define("MW_REQVAR_PASS", "pass");
+  
+  class MW_AuthRequest extends MW_Request {
+    /** @private */
+    var $user;
+    /** @private */
+    var $old_user;
+    /** @private */
+    var $pass;
+
+    function MW_AuthRequest($http_request) {
+      $this->user = $http_request->get_param(MW_REQVAR_USER);
+      $this->old_user = $http_request->get_param(MW_REQVAR_OLD_USER);
+      $this->pass = $http_request->get_param(MW_REQVAR_PASS);
+    }
+  
+    function get_user() {
+      return $this->user;
+    }
+    
+    function get_old_user() {
+      return $this->old_user;
+    }
+    
+    function get_pass() {
+      return $this->pass;
+    }
+    
+  }
   
 ?>

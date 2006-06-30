@@ -38,13 +38,14 @@
   * returns new MW_Variables with prefilled global values
   */
   function new_global_wiki_variables() {
-    $req =& get_request();
+    $req =& get_request("MW_ActionRequest");
     $auth =& get_auth();
     $vars = new MW_Variables(null);
     $vars->set('version', MW_VERSION);
     $vars->set('user', ($auth->is_logged ? $auth->user : ''));
     $vars->set('main_page', MW_PAGE_NAME_MAIN);
-    $vars->set('req_action', $req->action);
+    $action = $req->get_action();
+    $vars->set('req_action', $action->get_name());
     $vars->set('self_link_dir', $_SERVER['SCRIPT_NAME'].'/../');
     return $vars;
   }

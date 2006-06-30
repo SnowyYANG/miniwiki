@@ -8,11 +8,11 @@
   */
 
   $page =& get_current_page();
-  $req =& get_request();
+  $req =& get_request("MW_UpdateRequest");
   
   $title = _("Editing %0%", $page->name);
   include('header.php');
-  if ($req->preview && $page->has_content) {
+  if ($req->is_preview() && $page->has_content) {
     echo '<div class="page-content">';
     $page->render();
     echo '</div>', "\n";
@@ -52,8 +52,8 @@
   echo '</textarea><br/>', "\n";
   echo _('Edit message'), ': ';
   echo '<input name="', MW_REQVAR_MESSAGE, '" type="text" size="90" value="';
-  if ($req->message) {
-    echo htmlspecialchars($req->message, ENT_QUOTES);
+  if ($req->get_message() !== null) {
+    echo htmlspecialchars($req->get_message(), ENT_QUOTES);
   }
   echo '"/>', "\n";
   echo '<input type="submit" name="', MW_REQVAR_PREVIEW, '" value="', _("Preview"), '"/>', "\n";

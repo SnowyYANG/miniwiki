@@ -31,15 +31,19 @@
 
   include('miniwiki.php');
   miniwiki_boot();
-  $req =& get_request();
-  $page = new_page($req->page_name, $req->revision);
+  $req =& get_request("MW_PageRequest");
+  $page = $req->get_page();
   set_current_page($page);
   $auth =& get_auth();
   if ($auth->is_invalid()) {
     add_info_text(_('Invalid login.'));
   }
 
-  $action =& get_action($req->action);
+  $req =& get_request("MW_ActionRequest");
+  $action = $req->get_action();
+  if ($action === null) {
+    trigger_error(_("Unknown action."), E_USER_ERROR);
+  }
   while ($action !== null) {
     if (!$action->is_valid()) {
       trigger_error(_("Unknown action."), E_USER_ERROR);
@@ -50,7 +54,7 @@
       include('footer.php');
       break;
     }
-    $action =& $action->handle();
+    $action = $action->handle();
   }
 
 ?>

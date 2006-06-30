@@ -267,7 +267,7 @@
       }
       $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode_page_name($this->name);
       $in_query = false;
-      if ($action != MW_DEFAULT_ACTION) {
+      if (!is_default_action(get_action($action))) {
         $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . rawurlencode($action);
         $in_query = true;
       }
@@ -441,13 +441,13 @@
     }
   
     function &handle() {
-      $req =& get_request();
+      $req =& get_request("MW_UpdateRequest");
       $page =& get_current_page();
-      if ($req->preview) {
-        $page->update_for_preview($req->content);
+      if ($req->is_preview()) {
+        $page->update_for_preview($req->get_content());
         return get_action(MW_ACTION_EDIT);
       } else {
-        $changed = $page->update($req->content, $req->message);
+        $changed = $page->update($req->get_content(), $req->get_message());
         add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
         return get_default_action();
       }
@@ -464,25 +464,105 @@
     }
   
     function &handle() {
-      $req =& get_request();
+      $req =& get_request("MW_UpdateRequest");
       $page =& get_current_page();
-      if (!is_uploaded_file($req->sourcefile['tmp_name'])) {
-        trigger_error('Possible upload attack with file '.$req->sourcefile['name'], E_USER_ERROR);
-        return null_ref();
-      }
       if (is_a($page, 'MW_SpecialUploadsPage')) {
-        $filename = $req->destfile ? $req->destfile : $req->sourcefile['name'];
-        $page = $page->upload(file_get_contents($req->sourcefile['tmp_name']), $req->message, $filename);
+        $page = $page->upload($req->get_content(), $req->get_message(), $req->get_destname());
+        set_current_page($page);
       } else {
-        $page->update(file_get_contents($req->sourcefile['tmp_name']), $req->message);
+        $page->update($req->get_content(), $req->get_message());
       }
       add_info_text(_("File uploaded."));
-      unlink($req->sourcefile['tmp_name']);
       return get_default_action();
     }
     
   }
 
   register_action(new MW_UploadAction());
+
+  /** page name request variable */
+  define("MW_REQVAR_PAGE_NAME", "page_name");
+  /** page revision request variable */
+  define("MW_REQVAR_REVISION", "revision");
   
+  class MW_PageRequest extends MW_Request {
+    /** @private */
+    var $page;
+
+    function MW_PageRequest($http_request) {
+      $path_info = $http_request->get_path_info();
+      $page_name = MW_DEFAULT_PAGE_NAME;
+      if ($path_info !== null) {
+        $page_name = $path_info;
+      } elseif ($http_request->has_param(MW_REQVAR_PAGE_NAME)) {
+        $page_name = $http_request->get_param(MW_REQVAR_PAGE_NAME);
+      }
+      $page_name = filter_page_name(decode_page_name($page_name));
+      $revision = $http_request->get_param(MW_REQVAR_REVISION, MW_REVISION_HEAD);
+      $this->page = new_page($page_name, $revision);
+    }
+  
+    function get_page() {
+      return $this->page;
+    }
+    
+  }
+
+  /** page content request variable (for update action) */
+  define("MW_REQVAR_CONTENT", "content");
+  /** update message (for update action) */
+  define("MW_REQVAR_MESSAGE", "message");
+  /** preview submit (for update action) */
+  define("MW_REQVAR_PREVIEW", "preview");
+  /** source file (for upload action) */
+  define("MW_REQVAR_SOURCEFILE", "sourcefile");
+  /** destination file (for upload action) */
+  define("MW_REQVAR_DESTFILE", "destfile");
+  
+  class MW_UpdateRequest extends MW_Request {
+    /** @private */
+    var $content;
+    /** @private */
+    var $message;
+    /** @private */
+    var $preview;
+    /** @private */
+    var $sourcefile;
+    /** @private */
+    var $destname;
+
+    function MW_UpdateRequest($http_request) {
+      $this->content = $http_request->get_param(MW_REQVAR_CONTENT);
+      $this->message = $http_request->get_param(MW_REQVAR_MESSAGE);
+      $this->preview = $http_request->has_param(MW_REQVAR_PREVIEW);
+      $this->sourcefile = $http_request->get_file(MW_REQVAR_SOURCEFILE);
+      $this->destname = $http_request->get_param(MW_REQVAR_DESTFILE);
+      if (($this->sourcefile !== null) && ($this->destname === null)) {
+        $this->destname = $this->sourcefile['name'];
+      }
+    }
+
+    function get_content() {
+      if ($this->sourcefile !== null) {
+        $file = $this->sourcefile['tmp_name'];
+        $this->content = file_get_contents($file);
+        unlink($file);
+      }
+      return $this->content;
+    }
+
+    function get_message() {
+      return $this->message;
+    }
+
+    function is_preview() {
+      return $this->preview;
+    }
+
+    function get_destname() {
+      return $this->destname;
+    }
+  
+  }
+
 ?>

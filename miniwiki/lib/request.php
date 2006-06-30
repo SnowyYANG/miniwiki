@@ -9,104 +9,117 @@
 
   require_once('registry.php');
   
-  /** default action (if none requested) */
-  define("MW_DEFAULT_ACTION", MW_ACTION_VIEW);
-  /** page name request variable */
-  define("MW_REQVAR_PAGE_NAME", "page_name");
-  /** action request variable */
-  define("MW_REQVAR_ACTION", "action");
-  /** page revision request variable */
-  define("MW_REQVAR_REVISION", "revision");
-  /** page content request variable (for update action) */
-  define("MW_REQVAR_CONTENT", "content");
-  /** update message (for update action) */
-  define("MW_REQVAR_MESSAGE", "message");
-  /** preview submit (for update action) */
-  define("MW_REQVAR_PREVIEW", "preview");
-  /** old user request variable (for relogin action) */
-  define("MW_REQVAR_OLD_USER", "old_user");
-  /** user request variable (for create user, delete user and change password actions) */
-  define("MW_REQVAR_USER", "user");
-  /** password request variable (for change password action) */
-  define("MW_REQVAR_PASS", "pass");
-  /** source file (for upload action) */
-  define("MW_REQVAR_SOURCEFILE", "sourcefile");
-  /** destination file (for upload action) */
-  define("MW_REQVAR_DESTFILE", "destfile");
-  
+  define("MW_COMPONENT_ROLE_HTTP_REQUEST", "MW_HTTPRequest");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_HTTP_REQUEST);
+  $registry->register(new MW_HTTPRequest(), MW_COMPONENT_ROLE_HTTP_REQUEST);
   define("MW_COMPONENT_ROLE_REQUEST", "MW_Request");
-  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_REQUEST);
-  $registry->register(new MW_Request(), MW_COMPONENT_ROLE_REQUEST);
+
+  class MW_Request {
+
+    function MW_Request($http_request) {
+      die("abstract: constructor");
+    }
+  
+  }
   
   /**
-  * returns instance of MW_Request
+  * returns instance of MW_Request of given type
   */
-  function &get_request() {
+  function &get_request($type) {
     global $registry;
-    return $registry->lookup(MW_COMPONENT_ROLE_REQUEST);
+    $req =& $registry->lookup(MW_COMPONENT_ROLE_REQUEST, $type);
+    if ($req === null) {
+      $raw_request =& $registry->lookup(MW_COMPONENT_ROLE_HTTP_REQUEST);
+      $req =& new $type($raw_request);
+      $registry->register($req, MW_COMPONENT_ROLE_REQUEST, $type);
+    }
+    return $req;
+  }
+
+  class MW_BasicRequest extends MW_Request {
+    /** @private */
+    var $is_head;
+
+    function MW_BasicRequest($http_request) {
+      $this->is_head = (strcmp($http_request->get_method(), "HEAD") === 0);
+    }
+  
+    function is_head() {
+      return $this->is_head;
+    }
+    
   }
 
   /**
   * HTTP request class
   */
-  class MW_Request {
-    # [read-only] attributes
-    /** MW_REQVAR_PAGE_NAME */
-    var $page_name;
-    /** MW_REQVAR_ACTION */
-    var $action;
-    /** MW_REQVAR_REVISION */
-    var $revision;
-    /** MW_REQVAR_CONTENT */
-    var $content;
-    /** MW_REQVAR_MESSAGE */
-    var $message;
-    /** MW_REQVAR_PREVIEW */
-    var $preview;
-    /** MW_REQVAR_OLD_USER */
-    var $old_user;
-    /** MW_REQVAR_USER */
-    var $user;
-    /** MW_REQVAR_PASS */
-    var $pass;
-    /** MW_REQVAR_SOURCEFILE (as associative array with keys name, type, size and tmp_name) */
-    var $sourcefile;
-    /** MW_REQVAR_DESTFILE */
-    var $destfile;
-    /** whether this is head request */
-    var $is_head;
+  class MW_HTTPRequest {
+
+    /** @private */
+    var $method;
+    /** @private */
+    var $path_info;
+    /** @private */
+    var $params;
+    /** @private */
+    var $files;
+
+    function get_method() {
+      return $this->method;
+    }
+  
+    function get_param($name, $default = null) {
+      if ($this->has_param($name)) {
+        return $this->params[$name];
+      }
+      return $default;
+    }
+
+    function has_param($name) {
+      return isset($this->params[$name]);
+    }
+
+    function get_path_info() {
+      return $this->path_info;
+    }
+
+    function get_file($name) {
+      if (isset($this->files[$name])) {
+        return $this->files[$name];
+      }
+      return null;
+    }
 
     /** @protected constructor (do not use directly, use get_request()) */
-    function MW_Request() {
-      $req_array = $_REQUEST;
-      if (get_magic_quotes_gpc()) {
-        $req_array = array_map("stripslashes", $req_array);
-      }
-      $path_info = '';
+    function MW_HTTPRequest() {
+      
+      $this->method = $_SERVER["REQUEST_METHOD"];
+      
+      $this->path_info = '';
       if (isset($_SERVER['FILEPATH_INFO'])) {
-        $path_info = $_SERVER['FILEPATH_INFO'];
+        $this->path_info = $_SERVER['FILEPATH_INFO'];
       } elseif (isset($_SERVER['PATH_INFO'])) {
-        $path_info = $_SERVER['PATH_INFO'];
+        $this->path_info = $_SERVER['PATH_INFO'];
       }
-      $this->page_name = MW_DEFAULT_PAGE_NAME;
-      if (strlen(trim($path_info)) > 0) {
-        $path_info = preg_replace('/^\/+/', '', $path_info);
-        $this->page_name = $path_info;
-      } elseif (isset($req_array[MW_REQVAR_PAGE_NAME])) {
-        $this->page_name = $req_array[MW_REQVAR_PAGE_NAME];
+      if (strlen(trim($this->path_info)) > 0) {
+        $this->path_info = preg_replace('/^\/+/', '', $this->path_info);
+      } else {
+        $this->path_info = null;
       }
-      $this->page_name = filter_page_name(decode_page_name($this->page_name));
-      $this->action = (isset($req_array[MW_REQVAR_ACTION]) ? $req_array[MW_REQVAR_ACTION] : MW_DEFAULT_ACTION);
-      $this->revision = (isset($req_array[MW_REQVAR_REVISION]) ? $req_array[MW_REQVAR_REVISION] : MW_REVISION_HEAD);
-      $this->content = (isset($req_array[MW_REQVAR_CONTENT]) ? $req_array[MW_REQVAR_CONTENT] : NULL);
-      $this->message = (isset($req_array[MW_REQVAR_MESSAGE]) ? $req_array[MW_REQVAR_MESSAGE] : NULL);
-      $this->preview = (isset($req_array[MW_REQVAR_PREVIEW]) ? $req_array[MW_REQVAR_PREVIEW] : NULL);
-      $this->old_user = (isset($req_array[MW_REQVAR_OLD_USER]) ? $req_array[MW_REQVAR_OLD_USER] : NULL);
-      $this->user = (isset($req_array[MW_REQVAR_USER]) ? $req_array[MW_REQVAR_USER] : NULL);
-      $this->pass = (isset($req_array[MW_REQVAR_PASS]) ? $req_array[MW_REQVAR_PASS] : NULL);
-      $this->sourcefile = (isset($_FILES[MW_REQVAR_SOURCEFILE]) ? $_FILES[MW_REQVAR_SOURCEFILE] : NULL);
-      $this->destfile = (isset($req_array[MW_REQVAR_DESTFILE]) ? $req_array[MW_REQVAR_DESTFILE] : NULL);
-      $this->is_head = ($_SERVER["REQUEST_METHOD"] == "HEAD");
+      
+      $this->params = $_REQUEST;
+      if (get_magic_quotes_gpc()) {
+        $this->params = array_map("stripslashes", $this->params);
+      }
+
+      $this->files = array();
+      foreach ($_FILES as $name => $file) {
+        if (!is_uploaded_file($file['tmp_name'])) {
+          trigger_error(_('Possible upload attack'), E_USER_ERROR);
+        } else {
+          $this->files[$name] = $file;
+        }
+      }
     }
   }
 

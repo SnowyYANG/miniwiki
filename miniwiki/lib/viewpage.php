@@ -8,7 +8,7 @@
   */
 
   $page =& get_current_page();
-  $req =& get_request();
+  $req =& get_request("MW_BasicRequest");
   
   if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
     header('Content-Type: '.$page->mime_type);
@@ -18,7 +18,7 @@
     if ($page->raw_content_length) {
       header('Content-Length: '.$page->raw_content_length);
     }
-    if (!$req->is_head) {
+    if (!$req->is_head()) {
       $page->load_with_raw_content();
       echo $page->raw_content;
     }

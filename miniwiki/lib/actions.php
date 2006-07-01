@@ -103,6 +103,9 @@
 
   function url_for_action($action_name, $in_attr = false, $fragment = null) {
     $action = get_action($action_name);
+    if ($action === null) {
+      $action = get_default_action();
+    }
     $link = $action->link();
     if ($fragment !== null) {
       $link->set_fragment($fragment);

@@ -628,6 +628,9 @@
 
   function url_for_page_action($page, $action_name, $in_attr = false, $fragment = null) {
     $action = get_action($action_name);
+    if ($action === null) {
+      $action = get_default_action();
+    }
     $link = $action->link();
     $link->set_page($page);
     if ($fragment !== null) {

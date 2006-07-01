@@ -130,7 +130,7 @@
     * and page (set to page variable if omitted)
     */
     function wiki_fn_has_action($args, $renderer_state) {
-      $action = array_shift($args);
+      $action_name = array_shift($args);
       $revision = array_shift($args);
       if ($revision === null) {
         $revision = $renderer_state->wiki_variables->get('revision');
@@ -143,7 +143,8 @@
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      return ($page->has_action(get_action($action)) ? 'true' : '');
+      $action = get_action($action_name);
+      return (($action !== null) && $page->has_action($action) ? 'true' : '');
     }
   
     /**
@@ -152,7 +153,7 @@
     * and page (set to page variable if omitted)
     */
     function wiki_fn_is_action_permitted($args, $renderer_state) {
-      $action = array_shift($args);
+      $action_name = array_shift($args);
       $revision = array_shift($args);
       if ($revision === null) {
         $revision = $renderer_state->wiki_variables->get('revision');
@@ -166,7 +167,8 @@
       }
       $page = new_page($page_name, $revision);
       $auth =& get_auth();
-      return ($auth->is_action_permitted(get_action($action), $page) ? 'true' : '');
+      $action = get_action($action_name);
+      return (($action !== null) && $auth->is_action_permitted($action, $page) ? 'true' : '');
     }
   
     /** returns non-empty string if given page exists */

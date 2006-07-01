@@ -81,6 +81,12 @@
       return str_replace(' ', '_', $name);
     }
 
+    function escape_quotes($value) {
+      $value = str_replace('"', '&quot;', $value);
+      $value = str_replace("'", '&#039;', $value);
+      return $value;
+    }
+
     /** @private
     * returns HTML code for link to internal Wiki page
     * @param name page name
@@ -119,10 +125,10 @@
       $link_action = ($link_exists) ? MW_ACTION_VIEW : MW_ACTION_EDIT;
       $link_type = ($link_exists) ? ($is_image ? 'image' : 'view-link') : 'edit-link';
       return '<a href="'.url_for_page_action($linked_page, $link_action, true, $fragment)
-        .'" class="'.$link_type.'">'
+        .'" class="'.$this->escape_quotes($link_type).'">'
         .($is_image && $link_exists
           ? '<img src="'.url_for_page_action($data_page, $link_action, true).'"'
-            .' alt="'.$title.'"'
+            .' alt="'.$this->escape_quotes($title).'"'
             .' longdesc="'.url_for_page_action($linked_page, $link_action, true).'"'
             .'/>'
           : $title)
@@ -188,7 +194,7 @@
     function process_inline_cb_external_link($matches) {
       $url = $matches[1];
       $title = ((count($matches) > 2) ? $matches[2] : $url);
-      return '<a href="'.htmlspecialchars(resolve_url($url), ENT_QUOTES).'">'.$title.'</a>';
+      return '<a href="'.$this->escape_quotes(resolve_url($url)).'">'.$title.'</a>';
     }
 
     /** @private sub-callback for preg_replace_callback in process_inline() */
@@ -205,7 +211,7 @@
     function process_inline_cb_form($matches) {
       $method = $matches[1];
       $action = $matches[2];
-      return '<form method="'.$method. '" action="'.$action.'">';
+      return '<form method="'.$this->escape_quotes($method). '" action="'.$this->escape_quotes($action).'">';
     }
 
     /** @private sub-callback for preg_replace_callback in process_inline() */
@@ -223,11 +229,11 @@
           } else {
             $param_name = $param_value = $param;
           }
-          $add_params .= ' '.$param_name.'="'.$param_value.'"';
+          $add_params .= ' '.$param_name.'="'.$this->escape_quotes($param_value).'"';
         }
       }
       if ($type == 'option') {
-        $ret = '<select'.(($name != '#') ? ' name="'.$name.'"' : '').$add_params.'>'."\n";
+        $ret = '<select'.(($name != '#') ? ' name="'.$this->escape_quotes($name).'"' : '').$add_params.'>'."\n";
         $options = explode('|', $value);
         foreach ($options as $option) {
           $opt_value = '';
@@ -246,7 +252,7 @@
           }
           $ret .= '<option';
           if ($opt_value != '') {
-            $ret .= ' value="'.$opt_value.'"';
+            $ret .= ' value="'.$this->escape_quotes($opt_value).'"';
           }
           if ($opt_selected) {
             $ret .= ' selected="selected"';
@@ -261,9 +267,9 @@
         $ret .= '</select>';
         return $ret;
       } else {
-        return '<input type="'.$type.'"'
-          .(($name != '#') ? ' name="'.$name.'"' : '')
-          .(($value != '') ? ' value="'.$value.'"' : '')
+        return '<input type="'.$this->escape_quotes($type).'"'
+          .(($name != '#') ? ' name="'.$this->escape_quotes($name).'"' : '')
+          .(($value != '') ? ' value="'.$this->escape_quotes($value).'"' : '')
           .$add_params.'/>';
       }
     }
@@ -278,9 +284,9 @@
       $name = $matches[1];
       if ($name[0] == '#') {
         $name = substr($name, 1);
-        return '<div id="'.$name. '">';
+        return '<div id="'.$this->escape_quotes($name). '">';
       }
-      return '<div class="'.$name. '">';
+      return '<div class="'.$this->escape_quotes($name). '">';
     }
 
     /** @private
@@ -316,7 +322,7 @@
       $h_name = $matches[2];
       $h_anchor = $this->make_anchor_name($h_name);
       $this->add_heading($h_level, $h_name, $h_anchor);
-      return '<h'.$h_level. '><a name="'.$h_anchor.'">'.$this->process_inline($h_name).'</a></h'.$h_level.'>';
+      return '<h'.$h_level. '><a name="'.$this->escape_quotes($h_anchor).'">'.$this->process_inline($h_name).'</a></h'.$h_level.'>';
     }
     
     /** @private

@@ -551,6 +551,7 @@
   class MW_PageLink extends MW_ActionLink {
 
     function MW_PageLink() {
+      parent::MW_ActionLink();
       $this->set_page(get_current_page());
     }
 
@@ -582,10 +583,6 @@
   }
 
   class MW_UpdatePageLink extends MW_PageLink {
-
-    function MW_UpdatePageLink() {
-      parent::MW_PageLink();
-    }
 
     function get_content_param_name() {
       return MW_REQVAR_CONTENT;

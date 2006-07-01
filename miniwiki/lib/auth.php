@@ -345,10 +345,6 @@
   
   class MW_LoginLink extends MW_PageLink {
 
-    function MW_LoginLink() {
-      parent::MW_PageLink();
-    }
-
     function get_old_user_param_name() {
       return MW_REQVAR_OLD_USER;
     }
@@ -360,10 +356,6 @@
   }
 
   class MW_UserLink extends MW_PageLink {
-
-    function MW_UserLink() {
-      parent::MW_PageLink();
-    }
 
     function get_user_param_name() {
       return MW_REQVAR_USER;

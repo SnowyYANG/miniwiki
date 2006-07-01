@@ -125,11 +125,18 @@
       $action = get_action(MW_ACTION_CHANGE_PASSWORD);
       if ($auth->is_action_permitted($action, $this)) {
         $link = $action->link();
-        echo '<form method="post" action="', $link->to_url(true), '">', "\n";
-        echo '<input type="hidden" name="', $link->get_user_param_name(),'" value="', $this->related_user, '"/>', "\n";
-        echo '<input type="password" size="40" name="', $link->get_pass_param_name(),'"/>', "\n";
-        echo '<input type="submit" value="', htmlspecialchars(_('Change Password'), ENT_QUOTES),'"/>', "\n";
-        echo '</form>', "\n";
+        $renderer =& get_renderer();
+        $renderer->render($this, _("<form post {{&action_link|%ACTION%}}>
+  <form-field %PARAM_USER% hidden %USER%>
+  <form-field %PARAM_PASS% password>
+  <form-field # submit %BUTTON%>
+</form>", array (
+          'ACTION' => MW_ACTION_CHANGE_PASSWORD,
+          'PARAM_USER' => $link->get_user_param_name(),
+          'USER' => $this->related_user,
+          'PARAM_PASS' => $link->get_pass_param_name(),
+          'BUTTON' => _('Change Password')
+        )));
       }
       $this->page->render();
     }

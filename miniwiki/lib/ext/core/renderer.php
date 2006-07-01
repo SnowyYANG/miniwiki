@@ -213,8 +213,21 @@
       $name = $matches[1];
       $type = $matches[2];
       $value = ((count($matches) > 3) ? $matches[3] : '');
+      $add_params = '';
+      if (strpos($type, '|') !== false) {
+        $params = explode('|', $type);
+        $type = array_shift($params);
+        foreach ($params as $param) {
+          if (strpos($param, '=') !== false) {
+            list($param_name, $param_value) = explode('=', $param);
+          } else {
+            $param_name = $param_value = $param;
+          }
+          $add_params .= ' '.$param_name.'="'.$param_value.'"';
+        }
+      }
       if ($type == 'option') {
-        $ret = '<select'.(($name != '#') ? ' name="'.$name.'"' : '').'>'."\n";
+        $ret = '<select'.(($name != '#') ? ' name="'.$name.'"' : '').$add_params.'>'."\n";
         $options = explode('|', $value);
         foreach ($options as $option) {
           $opt_value = '';
@@ -251,7 +264,7 @@
         return '<input type="'.$type.'"'
           .(($name != '#') ? ' name="'.$name.'"' : '')
           .(($value != '') ? ' value="'.$value.'"' : '')
-          .'/>';
+          .$add_params.'/>';
       }
     }
 

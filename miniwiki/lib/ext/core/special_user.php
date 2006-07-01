@@ -128,7 +128,7 @@
         $renderer =& get_renderer();
         $renderer->render($this, _("<form post {{&action_link|%ACTION%}}>
   <form-field %PARAM_USER% hidden %USER%>
-  <form-field %PARAM_PASS% password>
+  <form-field %PARAM_PASS% password|size=40>
   <form-field # submit %BUTTON%>
 </form>", array (
           'ACTION' => MW_ACTION_CHANGE_PASSWORD,

@@ -117,13 +117,13 @@
       }
       $link_action = ($link_exists) ? MW_ACTION_VIEW : MW_ACTION_EDIT;
       $link_type = ($link_exists) ? ($is_image ? 'image' : 'view-link') : 'edit-link';
-      return '<a href="'.htmlspecialchars($linked_page->url_for_action($link_action), ENT_QUOTES)
+      return '<a href="'.url_for_page_action($linked_page, $link_action, true)
         .(($fragment != null) ? '#'.$fragment : '')
         .'" class="'.$link_type.'">'
         .($is_image && $link_exists
-          ? '<img src="'.htmlspecialchars($data_page->url_for_action($link_action), ENT_QUOTES).'"'
+          ? '<img src="'.url_for_page_action($data_page, $link_action, true).'"'
             .' alt="'.$title.'"'
-            .' longdesc="'.htmlspecialchars($linked_page->url_for_action($link_action), ENT_QUOTES).'"'
+            .' longdesc="'.url_for_page_action($linked_page, $link_action, true).'"'
             .'/>'
           : $title)
         .'</a>';
@@ -489,7 +489,7 @@
         # [[page]]
         $link = substr($link, 2, strlen($link) - 4);
         $linked_page = new_page($link, MW_REVISION_HEAD);
-        $link = $linked_page->url_for_action(MW_ACTION_VIEW);
+        $link = url_for_page_action($linked_page, MW_ACTION_VIEW);
       }
       return htmlspecialchars($link, ENT_QUOTES);
     }
@@ -602,7 +602,7 @@
           # we must override current actions we are rendered with
           $page =& get_current_page();
           echo '<li class="toc-level-', $heading["level"] - 1, '"><a href="'
-            .htmlspecialchars($page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES)
+            .url_for_page_action($page, MW_ACTION_VIEW, true)
             .'#', $heading['anchor'], '">', $heading['number'], ' ', $heading['title'], '</a></li>', "\n";
         }
         echo '</ul>', "\n";

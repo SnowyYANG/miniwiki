@@ -9,6 +9,7 @@
 
   require_once('registry.php');
   require_once('request.php');
+  require_once('links.php');
   
   define("MW_COMPONENT_ROLE_ACTION", "MW_Action");
   define("MW_COMPONENT_ROLE_DEFAULT_ACTION", "_default_action");
@@ -26,6 +27,17 @@
 
     function is_valid() {
       die("abstract: is_valid");
+    }
+
+    function link() {
+      $link = $this->_link();
+      $link->set_action($this);
+      return $link;
+    }
+
+    /** @protected */
+    function _link() {
+      return new MW_ActionLink();
     }
     
   }
@@ -73,4 +85,26 @@
     
   }
   
+  class MW_ActionLink extends MW_Link {
+
+    function get_action_param_name() {
+      return MW_REQVAR_ACTION;
+    }
+
+    function set_action($action) {
+      if (!is_default_action($action)) {
+        $this->set_param(MW_REQVAR_ACTION, $action->get_name());
+      } else {
+        $this->unset_param(MW_REQVAR_ACTION);
+      }
+    }
+  
+  }
+
+  function url_for_action($action_name, $in_attr = false) {
+    $action = get_action($action_name);
+    $link = $action->link();
+    return $link->to_url($in_attr);
+  }
+
 ?>

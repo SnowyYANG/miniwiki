@@ -57,12 +57,14 @@
     function render() {
       echo '<div class="special-uploads">', "\n";
       $auth =& get_auth();
-      if ($auth->is_action_permitted(get_action(MW_ACTION_UPLOAD), $this)) {
-        echo '<form enctype="multipart/form-data" action="', htmlspecialchars($this->url_for_action(MW_ACTION_UPLOAD), ENT_QUOTES), '" method="post">'. "\n";
-        echo _("Source filename"), ': <input type="file" size="40" name="', MW_REQVAR_SOURCEFILE, '"/><br/>', "\n";
-        echo _("Destination filename (may be empty)"), ': <input type="text" size="40" name="', MW_REQVAR_DESTFILE, '"/><br/>', "\n";
+      $action = get_action(MW_ACTION_UPLOAD);
+      if ($auth->is_action_permitted($action, $this)) {
+        $link = $action->link();
+        echo '<form enctype="multipart/form-data" action="', $link->to_url(true), '" method="post">'. "\n";
+        echo _("Source filename"), ': <input type="file" size="40" name="', $link->get_sourcefile_param_name(), '"/><br/>', "\n";
+        echo _("Destination filename (may be empty)"), ': <input type="text" size="40" name="', $link->get_destfile_param_name(), '"/><br/>', "\n";
         echo _("Upload message"), ": <br/>\n";
-        echo '<textarea name="', MW_REQVAR_MESSAGE, '" rows="10" cols="60"/></textarea><br/>', "\n";
+        echo '<textarea name="', $link->get_message_param_name(), '" rows="10" cols="60"/></textarea><br/>', "\n";
         echo '<input type="submit" value="', htmlspecialchars(_("Upload"), ENT_QUOTES),'"/><br/>', "\n";
         echo '</form>', "\n";
       }
@@ -71,7 +73,7 @@
       $names = $storage->get_resource_names(MW_DS_UPLOADS);
       foreach ($names as $name) {
         $page = new_upload_page($name, MW_REVISION_HEAD);
-        echo '<li><a href="', htmlspecialchars($page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES), '">',
+        echo '<li><a href="', url_for_page_action($page, MW_ACTION_VIEW, true), '">',
           htmlspecialchars($page->name, ENT_NOQUOTES), "</a></li>\n";
       }
       echo "</ul></div>\n";

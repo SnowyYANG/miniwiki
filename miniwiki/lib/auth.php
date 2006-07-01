@@ -197,6 +197,20 @@
       # always
       return true;
     }
+
+    function link() {
+      $link = parent::link();
+      if ($this->get_name() == MW_ACTION_RELOGIN) {
+        $auth =& get_auth();
+        $link->set_old_user($auth->user);
+      }
+      return $link;
+    }
+
+    /** @protected */
+    function _link() {
+      return new MW_LoginLink();
+    }
     
   }
 
@@ -229,8 +243,13 @@
       return true;
     }
     
+    /** @protected */
+    function _link() {
+      return new MW_UserLink();
+    }
+    
   }
-  
+
   register_action(new MW_ChangePasswordAction());
   
   class MW_CreateUserAction extends MW_Action {
@@ -250,6 +269,11 @@
     function is_valid() {
       # always
       return true;
+    }
+    
+    /** @protected */
+    function _link() {
+      return new MW_UserLink();
     }
     
   }
@@ -273,6 +297,11 @@
     function is_valid() {
       # always
       return true;
+    }
+    
+    /** @protected */
+    function _link() {
+      return new MW_UserLink();
     }
     
   }
@@ -314,4 +343,44 @@
     
   }
   
+  class MW_LoginLink extends MW_PageLink {
+
+    function MW_LoginLink() {
+      parent::MW_PageLink();
+    }
+
+    function get_old_user_param_name() {
+      return MW_REQVAR_OLD_USER;
+    }
+
+    function set_old_user($old_user) {
+      $this->set_param(MW_REQVAR_OLD_USER, $old_user);
+    }
+
+  }
+
+  class MW_UserLink extends MW_PageLink {
+
+    function MW_UserLink() {
+      parent::MW_PageLink();
+    }
+
+    function get_user_param_name() {
+      return MW_REQVAR_USER;
+    }
+
+    function set_user($user) {
+      $this->set_param(MW_REQVAR_USER, $user);
+    }
+
+    function get_pass_param_name() {
+      return MW_REQVAR_PASS;
+    }
+
+    function set_pass($pass) {
+      $this->set_param(MW_REQVAR_PASS, $pass);
+    }
+
+  }
+
 ?>

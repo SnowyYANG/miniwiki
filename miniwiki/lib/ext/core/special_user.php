@@ -122,18 +122,16 @@
     
     function render() {
       $auth =& get_auth();
-      if ($auth->is_action_permitted(get_action(MW_ACTION_CHANGE_PASSWORD), $this)) {
-        echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CHANGE_PASSWORD), ENT_QUOTES), '">', "\n";
-        echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $this->related_user, '"/>', "\n";
-        echo '<input type="password" size="40" name="', MW_REQVAR_PASS,'"/>', "\n";
+      $action = get_action(MW_ACTION_CHANGE_PASSWORD);
+      if ($auth->is_action_permitted($action, $this)) {
+        $link = $action->link();
+        echo '<form method="post" action="', $link->to_url(true), '">', "\n";
+        echo '<input type="hidden" name="', $link->get_user_param_name(),'" value="', $this->related_user, '"/>', "\n";
+        echo '<input type="password" size="40" name="', $link->get_pass_param_name(),'"/>', "\n";
         echo '<input type="submit" value="', htmlspecialchars(_('Change Password'), ENT_QUOTES),'"/>', "\n";
         echo '</form>', "\n";
       }
       $this->page->render();
-    }
-    
-    function url_for_action($action) {
-      return $this->page->url_for_action($action);
     }
     
     function get_all_revisions() {

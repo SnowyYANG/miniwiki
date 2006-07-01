@@ -95,7 +95,7 @@
     * and page (set to page variable if omitted)
     */
     function wiki_fn_action_link($args, $renderer_state) {
-      $action = array_shift($args);
+      $action_name = array_shift($args);
       $revision = array_shift($args);
       if ($revision === null) {
         $revision = $renderer_state->wiki_variables->get('revision');
@@ -108,10 +108,7 @@
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      if ($action == MW_ACTION_RELOGIN) {
-        return $page->url_for_action($action).'&'.MW_REQVAR_OLD_USER.'='.$renderer_state->wiki_variables->get('user');
-      }
-      return $page->url_for_action($action);
+      return url_for_page_action($page, $action_name);
     }
   
     /** returns non-empty string if two values are equal (as strings), empty otherwise */

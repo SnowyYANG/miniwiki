@@ -53,7 +53,7 @@
       $names = $storage->get_resource_names(MW_DS_PAGES);
       foreach ($names as $name) {
         $page = new_page($name, MW_REVISION_HEAD);
-        echo '<li><a href="', htmlspecialchars($page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES), '">',
+        echo '<li><a href="', url_for_page_action($page, MW_ACTION_VIEW, true), '">',
           htmlspecialchars($page->name, ENT_NOQUOTES), "</a></li>\n";
       }
       echo "</ul></div>\n";

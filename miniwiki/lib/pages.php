@@ -64,16 +64,6 @@
     return str_replace(array('+', '_'), ' ', $name);
   }
 
-  /**
-  * returns urlencoded page name
-  * does not encode forward slash as %2F
-  * see encode_page_name for more
-  * @param name page name
-  */
-  function urlencode_page_name($name) {
-    return str_replace(array('%2F', '%2f'), '/', rawurlencode(encode_page_name($name)));
-  }
-  
   function page_handler_cmp($a, $b) {
     return ($a->get_priority()) - ($b->get_priority());
   }
@@ -257,28 +247,6 @@
     }
     
     /**
-    * returns URL for this page and given action
-    * @param action action name
-    * @param rev revision - defaults to current
-    */
-    function url_for_action($action, $rev = null) {
-      if ($rev === null) {
-        $rev = $this->revision;
-      }
-      $ret = $_SERVER['SCRIPT_NAME'] . '/' . urlencode_page_name($this->name);
-      $in_query = false;
-      if (!is_default_action(get_action($action))) {
-        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_ACTION . '=' . rawurlencode($action);
-        $in_query = true;
-      }
-      if ($rev != MW_REVISION_HEAD) {
-        $ret .= ($in_query ? '&' : '?') . MW_REQVAR_REVISION . '=' . rawurlencode($rev);
-        $in_query = true;
-      }
-      return $ret;
-    }
-    
-    /**
     * [override, returns empty array] returns array of MW_Page instances representing all revisions including current one
     * returned array is ordered by revision in descending order (HEAD first)
     */
@@ -343,8 +311,13 @@
       return $page->has_action($this);
     }
     
+    /** @protected */
+    function _link() {
+      return new MW_PageLink();
+    }
+    
   }
-  
+
   class MW_ViewAction extends MW_PageAction {
 
     /** @private */
@@ -453,6 +426,11 @@
       }
     }
     
+    /** @protected */
+    function _link() {
+      return new MW_UpdatePageLink();
+    }
+    
   }
 
   register_action(new MW_UpdateAction());
@@ -474,6 +452,11 @@
       }
       add_info_text(_("File uploaded."));
       return get_default_action();
+    }
+    
+    /** @protected */
+    function _link() {
+      return new MW_UpdatePageLink();
     }
     
   }
@@ -563,6 +546,94 @@
       return $this->destname;
     }
   
+  }
+
+  class MW_PageLink extends MW_ActionLink {
+
+    function MW_PageLink() {
+      $this->set_page(get_current_page());
+    }
+
+    function set_page($page) {
+      $this->set_page_name($page->name);
+      $this->set_revision($page->revision);
+    }
+
+    function get_page_name_param_name() {
+      return MW_REQVAR_PAGE_NAME;
+    }
+
+    function set_page_name($page_name) {
+      $this->set_path_info(encode_page_name($page_name));
+    }
+
+    function get_revision_param_name() {
+      return MW_REQVAR_REVISION;
+    }
+
+    function set_revision($revision) {
+      if ($revision !== MW_REVISION_HEAD) {
+        $this->set_param(MW_REQVAR_REVISION, $revision);
+      } else {
+        $this->unset_param(MW_REQVAR_REVISION);
+      }
+    }
+  
+  }
+
+  class MW_UpdatePageLink extends MW_PageLink {
+
+    function MW_UpdatePageLink() {
+      parent::MW_PageLink();
+    }
+
+    function get_content_param_name() {
+      return MW_REQVAR_CONTENT;
+    }
+
+    function set_content($content) {
+      $this->set_param(MW_REQVAR_CONTENT, $content);
+    }
+  
+    function get_message_param_name() {
+      return MW_REQVAR_MESSAGE;
+    }
+  
+    function set_message($message) {
+      $this->set_param(MW_REQVAR_MESSAGE, $message);
+    }
+  
+    function get_preview_param_name() {
+      return MW_REQVAR_PREVIEW;
+    }
+  
+    function set_preview($preview) {
+      $this->set_param(MW_REQVAR_PREVIEW, $preview);
+    }
+  
+    function get_sourcefile_param_name() {
+      return MW_REQVAR_SOURCEFILE;
+    }
+  
+    function set_sourcefile($sourcefile) {
+      $this->set_param(MW_REQVAR_SOURCEFILE, $sourcefile);
+    }
+  
+    function get_destfile_param_name() {
+      return MW_REQVAR_DESTFILE;
+    }
+  
+    function set_destfile($destfile) {
+      $this->set_param(MW_REQVAR_DESTFILE, $destfile);
+    }
+  
+  }
+
+  function url_for_page_action($page, $action_name, $in_attr = false) {
+    $action = get_action($action_name);
+    $link = $action->link();
+    $link->set_page($page);
+    return $link->to_url($in_attr);
   }
 
 ?>

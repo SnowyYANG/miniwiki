@@ -18,7 +18,9 @@
     echo '</div>', "\n";
   }
   echo '<div class="page-edit">', "\n";
-  echo '<form method="post" action="', htmlspecialchars($page->url_for_action(MW_ACTION_UPDATE), ENT_QUOTES), '">', "\n";
+  $action = get_action(MW_ACTION_UPDATE);
+  $link = $action->link();
+  echo '<form method="post" action="', $link->to_url(true), '">', "\n";
   /** generate edit button
   * label: button label
   * text: text inserted on current cursor position into textarea with id "editarea" if button is pressed
@@ -45,18 +47,18 @@
   generate_button('<span class="link-like">http:</span>', "[http:%]", 'e');
   generate_button('<span class="list-like">abc</span>', "*", 'l');
   generate_button('<span class="pre-like">PRE</span>', "\\n\\n<pre>\\n%\\n</pre>\\n\\n", 'p');
-  echo '<textarea id="editarea" name="', MW_REQVAR_CONTENT, '" rows="20" cols="120">', "\n";
+  echo '<textarea id="editarea" name="', $link->get_content_param_name(), '" rows="20" cols="120">', "\n";
   if ($page->has_content) {
     echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
   }
   echo '</textarea><br/>', "\n";
   echo _('Edit message'), ': ';
-  echo '<input name="', MW_REQVAR_MESSAGE, '" type="text" size="90" value="';
+  echo '<input name="', $link->get_message_param_name(), '" type="text" size="90" value="';
   if ($req->get_message() !== null) {
     echo htmlspecialchars($req->get_message(), ENT_QUOTES);
   }
   echo '"/>', "\n";
-  echo '<input type="submit" name="', MW_REQVAR_PREVIEW, '" value="', _("Preview"), '"/>', "\n";
+  echo '<input type="submit" name="', $link->get_preview_param_name(), '" value="', _("Preview"), '"/>', "\n";
   echo '<input type="submit" value="', _('Update Page'), '"/>', "\n";
   echo '</form>', "\n";
   echo '</div>', "\n";

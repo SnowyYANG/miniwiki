@@ -53,9 +53,11 @@
     function render() {
       echo '<div class="special-users">', "\n";
       $auth =& get_auth();
-      if ($auth->is_action_permitted(get_action(MW_ACTION_CREATE_USER), $this)) {
-        echo '<form method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_CREATE_USER), ENT_QUOTES), '">', "\n";
-        echo '<input type="text" size="40" name="', MW_REQVAR_USER,'"/>', "\n";
+      $create_action = get_action(MW_ACTION_CREATE_USER);
+      if ($auth->is_action_permitted($create_action, $this)) {
+        $create_link = $create_action->link();
+        echo '<form method="post" action="', $create_link->to_url(true), '">', "\n";
+        echo '<input type="text" size="40" name="', $create_link->get_user_param_name(),'"/>', "\n";
         echo '<input type="submit" value="', htmlspecialchars(_('Create User'), ENT_QUOTES),'"/>', "\n";
         echo '</form>', "\n";
       }
@@ -64,11 +66,14 @@
       $users = $users_mgr->get_all_usernames();
       foreach ($users as $name) {
         $page = new_user_page($name);
-        echo '<li><a href="', htmlspecialchars($page->url_for_action(MW_ACTION_VIEW), ENT_QUOTES), '">',
+        echo '<li><a href="', url_for_page_action($page, MW_ACTION_VIEW, true), '">',
           htmlspecialchars($page->name, ENT_NOQUOTES), "</a>";
-        if ($auth->is_action_permitted(get_action(MW_ACTION_DELETE_USER), $this)) {
-          echo '<form class="delete-user" method="post" action="', htmlspecialchars($this->url_for_action(MW_ACTION_DELETE_USER), ENT_QUOTES), '">', "\n";
-          echo '<input type="hidden" name="', MW_REQVAR_USER,'" value="', $name, '"/>', "\n";
+        $delete_action = get_action(MW_ACTION_DELETE_USER);
+        if ($auth->is_action_permitted($delete_action, $this)) {
+          $delete_link = $delete_action->link();
+          $delete_link->set_page($page);
+          echo '<form class="delete-user" method="post" action="', $delete_link->to_url(true), '">', "\n";
+          echo '<input type="hidden" name="', $delete_link->get_user_param_name(),'" value="', $name, '"/>', "\n";
           echo '<input type="submit" value="', htmlspecialchars(_('Delete User'), ENT_QUOTES),'"/>', "\n";
           echo '</form>', "\n";
         }

@@ -1,11 +1,12 @@
 TODO list:
 
-- rework url_for_action support by introducing generic url creator
+- introduce support for external links and for url fragments
 - XML import
 - improve code docs
 - classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page
 - layout page describing how everything looks (not just header and footer)
+- layout param to MW_PageLink (layout is MW:Layout:<layout>)
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces)
 - convert Special pages to use Wiki markup

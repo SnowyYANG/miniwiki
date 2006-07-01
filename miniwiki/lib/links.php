@@ -15,6 +15,12 @@
     var $params = array();
     /** @private */
     var $path_info = null;
+    /** @private */
+    var $link_base;
+
+    function MW_Link() {
+      $this->unset_link_base();
+    }
 
     function to_url($in_attr = false) {
       $url = $this->_to_url();
@@ -26,7 +32,7 @@
 
     /** @private */
     function _to_url() {
-      $url = $_SERVER['SCRIPT_NAME'];
+      $url = $this->link_base;
       if ($this->path_info !== null) {
         $url .= '/' . str_replace(array('%2F', '%2f'), '/', rawurlencode($this->path_info));
       }
@@ -61,6 +67,24 @@
       $this->path_info = null;
     }
 
+    function set_link_base($link_base) {
+      $this->link_base = $link_base;
+    }
+
+    function unset_link_base() {
+      $this->link_base = $_SERVER['SCRIPT_NAME'];
+    }
+
+  }
+
+  function resolve_url($url) {
+    # relative link
+    if (strpos($url, ":") === false) {
+      if ($url[0] != "/") {
+        $url = $_SERVER['SCRIPT_NAME'].'/../'.$url;
+      }
+    }
+    return $url;
   }
 
 ?>

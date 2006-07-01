@@ -188,13 +188,7 @@
     function process_inline_cb_external_link($matches) {
       $url = $matches[1];
       $title = ((count($matches) > 2) ? $matches[2] : $url);
-      # relative link
-      if (strpos($url, ":") === false) {
-        if ($url[0] != "/") {
-          $url = $_SERVER['SCRIPT_NAME'].'/../'.$url;
-        }
-      }
-      return '<a href="'.$url.'">'.$title.'</a>';
+      return '<a href="'.htmlspecialchars(resolve_url($url), ENT_QUOTES).'">'.$title.'</a>';
     }
 
     /** @private sub-callback for preg_replace_callback in process_inline() */

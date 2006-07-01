@@ -46,7 +46,6 @@
     $vars->set('main_page', MW_PAGE_NAME_MAIN);
     $action = $req->get_action();
     $vars->set('req_action', $action->get_name());
-    $vars->set('self_link_dir', $_SERVER['SCRIPT_NAME'].'/../');
     return $vars;
   }
 

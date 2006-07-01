@@ -41,20 +41,10 @@
     return ((float)$usec + (float)$sec);
   }
 
-  /** users list special page name */
-  define("MW_PAGE_NAME_USERS", "Special:Users");
-  /** pages list special page name */
-  define("MW_PAGE_NAME_PAGES", "Special:Pages");
-  /** user page name prefix */
-  define("MW_PAGE_NAME_PREFIX_USER", "User:");
-  /** uploads list special page name */
-  define("MW_PAGE_NAME_UPLOADS", "Special:Uploads");
   /** upload page prefix */
   define("MW_PAGE_NAME_PREFIX_UPLOAD", "Upload:");
   /** data page prefix (raw uploaded file) */
   define("MW_PAGE_NAME_PREFIX_DATA", "data/");
-  /** data page prefix (raw uploaded file) from miniWiki 0.2 */
-  define("MW_PAGE_NAME_PREFIX_DATA_0_2", "Data:");
   /** default MIME type for uploaded files */
   define("MW_DEFAULT_MIME_TYPE", "application/octet-stream");
   /** image link page prefix (will render image directly) */

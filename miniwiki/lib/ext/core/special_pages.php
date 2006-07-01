@@ -7,6 +7,9 @@
   * extension Core Special:Pages (bundled)
   */
 
+  /** pages list special page name */
+  define("MW_PAGE_NAME_PAGES", "Special:Pages");
+  
   class MW_CoreSpecialPagesExtension extends MW_Extension {
 
     function get_name() {

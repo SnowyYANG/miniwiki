@@ -7,6 +7,9 @@
   * extension Core Obsolete (bundled)
   */
 
+  /** data page prefix (raw uploaded file) from miniWiki 0.2 */
+  define("MW_PAGE_NAME_PREFIX_DATA_0_2", "Data:");
+  
   class MW_CoreObsoleteExtension extends MW_Extension {
 
     function get_name() {

@@ -7,6 +7,9 @@
   * extension Core Special:Uploads (bundled)
   */
 
+  /** uploads list special page name */
+  define("MW_PAGE_NAME_UPLOADS", "Special:Uploads");
+  
   class MW_CoreSpecialUploadsExtension extends MW_Extension {
 
     function get_name() {

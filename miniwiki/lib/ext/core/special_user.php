@@ -7,6 +7,9 @@
   * extension Core Special User (bundled)
   */
 
+  /** user page name prefix */
+  define("MW_PAGE_NAME_PREFIX_USER", "User:");
+  
   class MW_CoreSpecialUserExtension extends MW_Extension {
 
     function get_name() {

@@ -17,6 +17,8 @@
     var $path_info = null;
     /** @private */
     var $link_base;
+    /** @private */
+    var $fragment = null;
 
     function MW_Link() {
       $this->unset_link_base();
@@ -47,6 +49,9 @@
           $in_query = true;
         }
       }
+      if ($this->fragment !== null) {
+        $url .= '#' . rawurlencode($this->fragment);
+      }
       return $url;
       
     }
@@ -73,6 +78,14 @@
 
     function unset_link_base() {
       $this->link_base = $_SERVER['SCRIPT_NAME'];
+    }
+
+    function set_fragment($fragment) {
+      $this->fragment = $fragment;
+    }
+
+    function unset_fragment() {
+      $this->fragment = null;
     }
 
   }

@@ -101,9 +101,12 @@
   
   }
 
-  function url_for_action($action_name, $in_attr = false) {
+  function url_for_action($action_name, $in_attr = false, $fragment = null) {
     $action = get_action($action_name);
     $link = $action->link();
+    if ($fragment !== null) {
+      $link->set_fragment($fragment);
+    }
     return $link->to_url($in_attr);
   }
 

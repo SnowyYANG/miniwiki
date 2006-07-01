@@ -91,6 +91,7 @@
       $fragment = null;
       if (!(strpos($name, '#') === false)) {
         list($name, $fragment) = explode('#', $name, 2);
+        $fragment = $this->make_anchor_name($fragment);
       }
       $revision = MW_REVISION_HEAD;
       if (!(strpos($name, '$') === false)) {
@@ -117,8 +118,7 @@
       }
       $link_action = ($link_exists) ? MW_ACTION_VIEW : MW_ACTION_EDIT;
       $link_type = ($link_exists) ? ($is_image ? 'image' : 'view-link') : 'edit-link';
-      return '<a href="'.url_for_page_action($linked_page, $link_action, true)
-        .(($fragment != null) ? '#'.$fragment : '')
+      return '<a href="'.url_for_page_action($linked_page, $link_action, true, $fragment)
         .'" class="'.$link_type.'">'
         .($is_image && $link_exists
           ? '<img src="'.url_for_page_action($data_page, $link_action, true).'"'
@@ -596,8 +596,8 @@
           # we must override current actions we are rendered with
           $page =& get_current_page();
           echo '<li class="toc-level-', $heading["level"] - 1, '"><a href="'
-            .url_for_page_action($page, MW_ACTION_VIEW, true)
-            .'#', $heading['anchor'], '">', $heading['number'], ' ', $heading['title'], '</a></li>', "\n";
+            .url_for_page_action($page, MW_ACTION_VIEW, true, $heading['anchor'])
+            , '">', $heading['number'], ' ', $heading['title'], '</a></li>', "\n";
         }
         echo '</ul>', "\n";
         echo '</div>', "\n";

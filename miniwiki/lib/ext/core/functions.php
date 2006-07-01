@@ -9,6 +9,12 @@
 
   class MW_CoreFunctionsExtension extends MW_Extension {
 
+    var $start_time;
+
+    function MW_CoreFunctionsExtension() {
+      $this->start_time = microtime_float();
+    }
+
     function get_name() {
       return "Core Functions";
     }
@@ -33,6 +39,7 @@
       register_wiki_function('has_action', array($this, 'wiki_fn_has_action'));
       register_wiki_function('is_action_permitted', array($this, 'wiki_fn_is_action_permitted'));
       register_wiki_function('exists', array($this, 'wiki_fn_exists'));
+      register_wiki_function('process_time', array($this, 'wiki_fn_process_time'));
       return true;
     }
 
@@ -167,6 +174,10 @@
       $page_name = array_shift($args);
       $page = new_page($page_name, MW_REVISION_HEAD);
       return ($page->exists() ? 'true' : '');
+    }
+
+    function wiki_fn_process_time($args, $renderer_state) {
+      return microtime_float() - $this->start_time;
     }
   }
 

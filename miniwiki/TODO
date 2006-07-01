@@ -1,6 +1,5 @@
 TODO list:
 
-- report time spent on page processing (through Wiki var)
 - XML import
 - improve code docs
 - classify standalone pages (use layout pages and for now fake them with PHP code)

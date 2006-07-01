@@ -36,6 +36,11 @@
     return $value;
   }
 
+  function microtime_float() {
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+  }
+
   /** users list special page name */
   define("MW_PAGE_NAME_USERS", "Special:Users");
   /** pages list special page name */

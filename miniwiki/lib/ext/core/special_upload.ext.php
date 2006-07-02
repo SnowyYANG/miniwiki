@@ -8,6 +8,7 @@
   */
 
   define("MW_DS_UPLOADS", "uploads");
+  define("MW_LAYOUT_UPLOAD_PAGE", "UploadPage");
   
   class MW_CoreSpecialUploadExtension extends MW_Extension {
 
@@ -184,22 +185,15 @@
       if ($this->is_data_page) {
         return "[[".$this->name."]]";
       } else {
-        $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;
-        return _("''This page represents uploaded file named '''%FILENAME%''' (of type %MIMETYPE% and size %LENGTH% B).''
-    
-[[%LINK%|Download file %FILENAME%]]
-
-%MESSAGE%
-    
----
-
-For uploading new version, please, use '''Edit''' link at the bottom.", array (
-          'LINK' => $link_prefix.$this->upload_name.($this->revision != MW_REVISION_HEAD ? '$'.$this->revision : ''),
-          'MESSAGE' => $this->message,
-          'FILENAME' => $this->upload_name,
-          'MIMETYPE' => $this->mime_type,
-          'LENGTH' => $this->raw_content_length
-        ));
+        $layout_page = load_layout_page(MW_LAYOUT_UPLOAD_PAGE);
+        if ($layout_page !== null) {
+          $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;
+          return wiki_include($layout_page, array(
+            'download_link' => $link_prefix.$this->upload_name.($this->revision != MW_REVISION_HEAD ? '$'.$this->revision : ''),
+            'filename' => $this->upload_name,
+            'mimetype' => $this->mime_type
+          ), false, false);
+        }
       }
     }
 

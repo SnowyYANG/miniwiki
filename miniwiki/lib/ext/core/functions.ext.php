@@ -40,6 +40,7 @@
       register_wiki_function('is_action_permitted', array($this, 'wiki_fn_is_action_permitted'));
       register_wiki_function('exists', array($this, 'wiki_fn_exists'));
       register_wiki_function('process_time', array($this, 'wiki_fn_process_time'));
+      register_wiki_function('include_layout', array($this, 'wiki_fn_include_layout'));
       return true;
     }
 
@@ -74,13 +75,19 @@
     /** returns raw content of page specified by first argument */
     function wiki_fn_include($args, $renderer_state) {
       $inc_page_name = array_shift($args);
-      $inc_args_str = '';
-      if (count($args) > 0) {
-        $inc_args_str = '|' . join('|', $args);
-      }
       $inc_page = new_page($inc_page_name, MW_REVISION_HEAD);
       if ($inc_page->load()) {
-        return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .$inc_args_str .'}}'.str_replace("\r", '', $inc_page->get_wiki_content()).'{{&pop_vars}}';
+        return wiki_include($inc_page, $args, true);
+      }
+      return '[['.$inc_page_name .']]';
+    }
+
+    /** returns raw content of layout page specified by first argument */
+    function wiki_fn_include_layout($args, $renderer_state) {
+      $inc_page_name = array_shift($args);
+      $inc_page = load_layout_page($inc_page_name);
+      if ($inc_page !== null) {
+        return wiki_include($inc_page, $args, true);
       }
       return '[['.$inc_page_name .']]';
     }

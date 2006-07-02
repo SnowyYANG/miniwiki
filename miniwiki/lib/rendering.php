@@ -134,6 +134,15 @@
           $this->wiki_variables->set('last_modified', format_datetime($page->last_modified));
         }
         $this->wiki_variables->set('has_content', ($page->has_content ? 'true' : ''));
+        if ($page->raw_content_length !== null) {
+          $this->wiki_variables->set('content_length', $page->raw_content_length);
+        }
+        if ($page->message !== null) {
+          $this->wiki_variables->set('revision_message', $page->message);
+        }
+        if ($page->user !== null) {
+          $this->wiki_variables->set('revision_author', $page->user);
+        }
       }
     }
 
@@ -172,6 +181,27 @@
       die ("abstract: render");
     }
     
+  }
+
+  function wiki_include($page, $args = null, $flat_args = false, $as_current = true) {
+    $ret = '{{&push_vars}}';
+    if ($as_current) {
+      $ret .= '{{&set|curpage|'.$page->name.'}}';
+    }
+    if (($args !== null) && (count($args) > 0)) {
+      $args_str = '';
+      if ($flat_args) {
+        $args_str = '|'.join('|', $args);
+      } else {
+        foreach ($args as $name => $value) {
+          $args_str .= '|'.$name.'|'.$value;
+        }
+      }
+      $ret .= '{{&set'.$args_str .'}}';
+    }
+    $ret .= str_replace("\r", '', $page->get_wiki_content());
+    $ret .= '{{&pop_vars}}';
+    return $ret;
   }
 
 ?>

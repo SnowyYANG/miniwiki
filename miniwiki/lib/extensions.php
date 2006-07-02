@@ -56,7 +56,7 @@
       if ($recurse && is_dir($f)) {
         load_extensions($f, false);
       }
-      if ((is_file($f) || is_link($f)) && preg_match('/\.php$/i', $entry)) {
+       if ((is_file($f) || is_link($f)) && preg_match('/\.ext\.php$/i', $entry)) {
         include($f);
         debug("Loaded extension: $f");
       }

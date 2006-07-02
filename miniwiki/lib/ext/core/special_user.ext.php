@@ -9,6 +9,7 @@
 
   /** user page name prefix */
   define("MW_PAGE_NAME_PREFIX_USER", "User:");
+  define("MW_LAYOUT_SPECIAL_USER", "SpecialUser");
   
   class MW_CoreSpecialUserExtension extends MW_Extension {
 
@@ -124,24 +125,13 @@
     }
     
     function get_wiki_content() {
-      $auth =& get_auth();
-      $action = get_action(MW_ACTION_CHANGE_PASSWORD);
-      $content = '';
-      if ($auth->is_action_permitted($action, $this)) {
-        $link = $action->link();
-        $content .= _("<form post {{&action_link|%ACTION%}}>
-  <form-field %PARAM_USER% hidden %USER%>
-  <form-field %PARAM_PASS% password|size=40>
-  <form-field # submit %BUTTON%>
-</form>", array (
-          'ACTION' => MW_ACTION_CHANGE_PASSWORD,
-          'PARAM_USER' => $link->get_user_param_name(),
-          'USER' => $this->related_user,
-          'PARAM_PASS' => $link->get_pass_param_name(),
-          'BUTTON' => _('Change Password')
-        ));
+      $layout_page = load_layout_page(MW_LAYOUT_SPECIAL_USER);
+      if ($layout_page !== null) {
+        return wiki_include($layout_page, array(
+          'related_user' => $this->related_user,
+          'user_page_content' => $this->page->get_wiki_content()
+        ), false, false);
       }
-      return $content . $this->page->get_wiki_content();
     }
     
     function get_all_revisions() {

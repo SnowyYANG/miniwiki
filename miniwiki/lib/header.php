@@ -15,7 +15,7 @@
     $title = $page->title;
   }
 
-  $layout_header = new_page(MW_PAGE_NAME_LAYOUT_HEADER, MW_REVISION_HEAD);
+  $layout_header = new_layout_page(MW_LAYOUT_HEADER);
   if ($layout_header->load()) {
     $vars = new_global_wiki_variables();
     $vars->set('title', $title);

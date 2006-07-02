@@ -53,12 +53,10 @@
   define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW:");
   /** internal miniWiki namespace prefix for uploads */
   define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "mw/");
-  /** layout page prefix */
-  define("MW_PAGE_NAME_PREFIX_LAYOUT", MW_PAGE_NAME_PREFIX_MINIWIKI . "Layout:");
-  /** footer layout page name */
-  define("MW_PAGE_NAME_LAYOUT_FOOTER", MW_PAGE_NAME_PREFIX_LAYOUT . "Footer");
-  /** header layout page name */
-  define("MW_PAGE_NAME_LAYOUT_HEADER", MW_PAGE_NAME_PREFIX_LAYOUT . "Header");
+  /** footer layout name */
+  define("MW_LAYOUT_FOOTER", "Footer");
+  /** header layout name */
+  define("MW_LAYOUT_HEADER", "Header");
 
   require_once('registry.php');
 

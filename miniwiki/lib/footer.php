@@ -10,7 +10,7 @@
   $page =& get_current_page();
   $renderer =& get_renderer();
   
-  $layout_footer = new_page(MW_PAGE_NAME_LAYOUT_FOOTER, MW_REVISION_HEAD);
+  $layout_footer = new_layout_page(MW_LAYOUT_FOOTER);
   if ($layout_footer->load()) {
     $renderer->render($page, $layout_footer->raw_content);
   } else {

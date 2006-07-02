@@ -57,7 +57,7 @@
       return parent::has_action($action);
     }
     
-    function render() {
+    function render($vars = null) {
       echo '<div class="special-uploads">', "\n";
       $auth =& get_auth();
       $action = get_action(MW_ACTION_UPLOAD);

@@ -241,9 +241,19 @@
     */
     function update_for_preview($content) {
     }
-    
-    /** [override] render page (with revision) content (must be loaded first) to output */
-    function render() {
+
+    function get_wiki_content() {
+      return $this->raw_content;
+    }
+
+    /** render page (with revision) content (must be loaded first) to output */
+    function render($vars = null) {
+      $renderer =& get_renderer();
+      $page =& get_current_page();
+      if ($page == null) {
+        $page = $this;
+      }
+      $renderer->render($page, $this->get_wiki_content(), $vars, $this);
     }
     
     /**
@@ -285,6 +295,11 @@
     function load() {
       $this->title = $this->name;
       return true;
+    }
+    
+    function get_wiki_content() {
+      # simple and safe
+      return "[[".$this->name."]]";
     }
     
   }

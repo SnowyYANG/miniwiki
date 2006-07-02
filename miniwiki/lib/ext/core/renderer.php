@@ -43,9 +43,10 @@
     * @param page MW_Page or null
     * @param raw raw text to render
     * @param super_wiki_variables super MW_Variables to use
+    * @param curpage MW_Page or null for the same value as page
     */
-    function MW_CoreRendererState($renderer, $page, $raw, $super_wiki_variables) {
-      parent::MW_RendererState($renderer, $page, $raw, $super_wiki_variables);
+    function MW_CoreRendererState($renderer, $page, $raw, $super_wiki_variables, $curpage = null) {
+      parent::MW_RendererState($renderer, $page, $raw, $super_wiki_variables, $curpage);
       $this->headings = array();
       $this->headings_counter = '';
     }
@@ -636,12 +637,13 @@
     * @param page MW_Page (may be null)
     * @param raw raw text (empty message is output if raw text is empty)
     * @param vars (optional): MW_Variables to be used as global variables
+    * @param curpage (optional): MW_Page (may be null)
     */
-    function render($page, $raw, $vars = null) {
+    function render($page, $raw, $vars = null, $curpage = null) {
       if ($vars === null) {
         $vars = new_global_wiki_variables();
       }
-      $state = new MW_CoreRendererState($this, $page, $raw, $vars);
+      $state = new MW_CoreRendererState($this, $page, $raw, $vars, $curpage);
       $state->render();
     }
     

@@ -117,14 +117,18 @@
     * @param page MW_Page or null
     * @param raw raw text to render
     * @param super_wiki_variables: super MW_Variables to use
+    * @param curpage MW_Page or null for the same value as page
     */
-    function MW_RendererState($renderer, $page, $raw, $super_wiki_variables) {
+    function MW_RendererState($renderer, $page, $raw, $super_wiki_variables, $curpage = null) {
       $this->renderer = $renderer;
       $this->raw = $raw;
       $this->wiki_variables = new_wiki_variables($super_wiki_variables);
       if ($page !== null) {
+        if ($curpage === null) {
+          $curpage = $page;
+        }
         $this->wiki_variables->set('page', $page->name);
-        $this->wiki_variables->set('curpage', $page->name);
+        $this->wiki_variables->set('curpage', $curpage->name);
         $this->wiki_variables->set('revision', $page->revision);
         if ($page->last_modified !== null) {
           $this->wiki_variables->set('last_modified', format_datetime($page->last_modified));
@@ -162,8 +166,9 @@
     * @param page MW_Page (may be null)
     * @param raw raw text (empty message is output if raw text is empty)
     * @param vars (optional) MW_Variables to be used as global variables
+    * @param curpage (optional): MW_Page (may be null)
     */
-    function render($page, $raw, $vars = null) {
+    function render($page, $raw, $vars = null, $curpage = null) {
       die ("abstract: render");
     }
     

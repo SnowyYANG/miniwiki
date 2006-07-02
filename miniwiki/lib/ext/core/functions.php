@@ -80,7 +80,7 @@
       }
       $inc_page = new_page($inc_page_name, MW_REVISION_HEAD);
       if ($inc_page->load()) {
-        return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .$inc_args_str .'}}'.str_replace("\r", '', $inc_page->raw_content).'{{&pop_vars}}';
+        return '{{&push_vars}}{{&set|curpage|'.$inc_page_name .$inc_args_str .'}}'.str_replace("\r", '', $inc_page->get_wiki_content()).'{{&pop_vars}}';
       }
       return '[['.$inc_page_name .']]';
     }

@@ -35,11 +35,7 @@
       if (count($info_text) > 0) {
         $vars->set('info_text', implode(' ', $info_text));
       }
-      if (method_exists($layout_page, "render_ui")) {
-        $layout_page->render_ui($vars);
-      } else {
-        $renderer->render($page, $layout_page->raw_content, $vars);
-      }
+      $layout_page->render($vars);
     } else {
       trigger_error("Required layout page ".$layout_page->name." is missing", E_USER_ERROR);
     }

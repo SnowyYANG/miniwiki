@@ -53,7 +53,7 @@
       parent::MW_SpecialPage($name);
     }
 
-    function render() {
+    function render($vars = null) {
       echo '<div class="special-users">', "\n";
       $auth =& get_auth();
       $create_action = get_action(MW_ACTION_CREATE_USER);

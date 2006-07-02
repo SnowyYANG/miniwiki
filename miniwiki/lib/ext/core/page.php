@@ -133,10 +133,9 @@
       $this->has_content = true;
       $this->process_content();
     }
-    
-    function render() {
-      $renderer =& get_renderer();
-      $renderer->render($this, $this->raw_content);
+
+    function get_wiki_content() {
+      return $this->raw_content;
     }
     
     function get_all_revisions() {

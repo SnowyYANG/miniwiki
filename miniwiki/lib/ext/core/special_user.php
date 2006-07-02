@@ -123,13 +123,13 @@
       $this->fill_vars();
     }
     
-    function render() {
+    function get_wiki_content() {
       $auth =& get_auth();
       $action = get_action(MW_ACTION_CHANGE_PASSWORD);
+      $content = '';
       if ($auth->is_action_permitted($action, $this)) {
         $link = $action->link();
-        $renderer =& get_renderer();
-        $renderer->render($this, _("<form post {{&action_link|%ACTION%}}>
+        $content .= _("<form post {{&action_link|%ACTION%}}>
   <form-field %PARAM_USER% hidden %USER%>
   <form-field %PARAM_PASS% password|size=40>
   <form-field # submit %BUTTON%>
@@ -139,9 +139,9 @@
           'USER' => $this->related_user,
           'PARAM_PASS' => $link->get_pass_param_name(),
           'BUTTON' => _('Change Password')
-        )));
+        ));
       }
-      $this->page->render();
+      return $content . $this->page->get_wiki_content();
     }
     
     function get_all_revisions() {

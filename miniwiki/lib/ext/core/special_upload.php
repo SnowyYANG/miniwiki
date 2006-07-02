@@ -180,13 +180,12 @@
       return true;
     }
 
-    function render() {
-      $renderer =& get_renderer();
+    function get_wiki_content() {
       if ($this->is_data_page) {
-        trigger_error("INTERNAL: MW_SpecialUploadPage.render(): is_data_page is true", E_USER_ERROR);
+        return "[[".$this->name."]]";
       } else {
         $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;
-        $renderer->render($this, _("''This page represents uploaded file named '''%FILENAME%''' (of type %MIMETYPE% and size %LENGTH% B).''
+        return _("''This page represents uploaded file named '''%FILENAME%''' (of type %MIMETYPE% and size %LENGTH% B).''
     
 [[%LINK%|Download file %FILENAME%]]
 
@@ -200,7 +199,7 @@ For uploading new version, please, use '''Edit''' link at the bottom.", array (
           'FILENAME' => $this->upload_name,
           'MIMETYPE' => $this->mime_type,
           'LENGTH' => $this->raw_content_length
-        )));
+        ));
       }
     }
 

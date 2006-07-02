@@ -50,8 +50,8 @@
       break;
     } elseif (!$auth->is_action_permitted($action, $page)) {
       add_info_text(_('Insufficient user rights. Access denied to action: %0%', _($action->get_name())));
-      include('header.php');
-      include('footer.php');
+      render_ui(MW_LAYOUT_HEADER);
+      render_ui(MW_LAYOUT_FOOTER);
       break;
     }
     $action = $action->handle();

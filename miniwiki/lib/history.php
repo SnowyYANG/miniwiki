@@ -9,8 +9,7 @@
 
   $page =& get_current_page();
   
-  $title = $page->name;
-  include('header.php');
+  render_ui(MW_LAYOUT_HEADER);
   echo '<div class="history"><ul>',"\n";
   $hist_pages = $page->get_all_revisions();
   foreach ($hist_pages as $hist_page) {
@@ -27,5 +26,5 @@
       '</li>', "\n";
   }
   echo '</ul></div>',"\n";
-  include('footer.php');
+  render_ui(MW_LAYOUT_FOOTER);
 ?>

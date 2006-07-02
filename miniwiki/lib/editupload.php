@@ -9,8 +9,7 @@
 
   $page =& get_current_page();
   
-  $title = _("Editing", $page->name);
-  include('header.php');
+  render_ui(MW_LAYOUT_HEADER, _("Editing", $page->name));
   echo '<div class="upload-edit">', "\n";
   $action = get_action(MW_ACTION_UPLOAD);
   $link = $action->link();
@@ -21,5 +20,5 @@
   echo '<input type="submit" value="', htmlspecialchars(_("Upload"), ENT_QUOTES),'"/><br/>', "\n";
   echo '</form>', "\n";
   echo '</div>', "\n";
-  include('footer.php');
+  render_ui(MW_LAYOUT_FOOTER);
 ?>

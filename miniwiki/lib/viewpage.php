@@ -23,12 +23,12 @@
       echo $page->raw_content;
     }
   } else {
-    include('header.php');
+    render_ui(MW_LAYOUT_HEADER);
     if ($page->has_content) {
       echo '<div class="page-content">';
       $page->render();
       echo '</div>', "\n";
     }
-    include('footer.php');
+    render_ui(MW_LAYOUT_FOOTER);
   }
 ?>

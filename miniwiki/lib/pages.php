@@ -32,7 +32,6 @@
   
   define("MW_PAGE_TAG_USER", "user");
   define("MW_PAGE_TAG_UPLOAD", "upload");
-  define("MW_PAGE_TAG_LAYOUT", "layout");
   
   /**
   * returns filtered page name
@@ -162,10 +161,6 @@
   */
   function new_upload_page($name, $revision) {
     return new_page_with_tag(MW_PAGE_TAG_UPLOAD, $name, $revision);
-  }
-
-  function new_layout_page($name) {
-    return new_page_with_tag(MW_PAGE_TAG_LAYOUT, $name, MW_REVISION_HEAD);
   }
 
   /**

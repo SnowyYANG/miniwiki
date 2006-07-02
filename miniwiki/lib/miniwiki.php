@@ -53,10 +53,6 @@
   define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW:");
   /** internal miniWiki namespace prefix for uploads */
   define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "mw/");
-  /** footer layout name */
-  define("MW_LAYOUT_FOOTER", "Footer");
-  /** header layout name */
-  define("MW_LAYOUT_HEADER", "Header");
 
   require_once('registry.php');
 
@@ -92,6 +88,7 @@
   require_once('messages.php');
   require_once('settings.php');
   require_once('actions.php');
+  require_once('ui.php');
 
   /**
   * Initialize miniWiki infrastructure.

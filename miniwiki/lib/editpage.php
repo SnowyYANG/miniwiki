@@ -10,8 +10,7 @@
   $page =& get_current_page();
   $req =& get_request("MW_UpdateRequest");
   
-  $title = _("Editing %0%", $page->name);
-  include('header.php');
+  render_ui(MW_LAYOUT_HEADER, _("Editing %0%", $page->name));
   if ($req->is_preview() && $page->has_content) {
     echo '<div class="page-content">';
     $page->render();
@@ -62,5 +61,5 @@
   echo '<input type="submit" value="', _('Update Page'), '"/>', "\n";
   echo '</form>', "\n";
   echo '</div>', "\n";
-  include('footer.php');
+  render_ui(MW_LAYOUT_FOOTER);
 ?>

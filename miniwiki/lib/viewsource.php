@@ -9,12 +9,11 @@
 
   $page =& get_current_page();
   
-  $title = _("Viewing %0%", $page->name);
-  include('header.php');
+  render_ui(MW_LAYOUT_HEADER, _("Viewing %0%", $page->name));
   if ($page->has_content) {
     echo '<div class="page-source"><textarea readonly="readonly" rows="20" cols="120">', "\n";
     echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
     echo '</textarea></div>', "\n";
   }
-  include('footer.php');
+  render_ui(MW_LAYOUT_FOOTER);
 ?>

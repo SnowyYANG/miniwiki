@@ -9,7 +9,7 @@
 
   $page =& get_current_page();
   
-  render_ui(MW_LAYOUT_HEADER, _("Editing", $page->name));
+  render_ui(MW_LAYOUT_HEADER, _("Editing %0%", $page->name));
   echo '<div class="upload-edit">', "\n";
   $action = get_action(MW_ACTION_UPLOAD);
   $link = $action->link();

@@ -297,6 +297,9 @@
 
     /** this page will still point to the old name */
     function rename($new_name, $with_redirect = true) {
+      if (empty($new_name) || ($this->name === $new_name)) {
+        return false;
+      }
       $success = $this->_rename($new_name);
       if ($success && $with_redirect) {
         $this->update("#REDIRECT $new_name\n", _("Renamed to ".$new_name));
@@ -552,6 +555,8 @@
 
   register_action(new MW_UploadAction());
 
+  define("MW_SPECIAL_PAGE_RENAME", "Rename");
+
   class MW_RenameAction extends MW_PageAction {
   
     function get_name() {
@@ -562,8 +567,18 @@
       $req =& get_request("MW_RenameRequest");
       $page =& get_current_page();
       $new_name = $req->get_new_name();
-      $success = $page->rename($new_name);
-      add_info_text($success ? _("Page renamed.") : _("Page renaming failed."));
+      if ($new_name === null) {
+        $special_page = load_special_page(MW_SPECIAL_PAGE_RENAME);
+        if ($special_page !== null) {
+          render_ui(MW_LAYOUT_HEADER, _("Renaming %0%", $page->name));
+          $special_page->render();
+          render_ui(MW_LAYOUT_FOOTER);
+          return null_ref();
+        }
+      } else {
+        $success = $page->rename($new_name);
+        add_info_text($success ? _("Page renamed.") : _("Page not renamed."));
+      }
       return get_default_action();
     }
     

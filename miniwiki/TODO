@@ -1,6 +1,5 @@
 TODO list:
 
-- UI for page renaming
 - multi-line {{...}}
 - XML import
 - improve code docs
@@ -14,5 +13,8 @@ TODO list:
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - search
+- wiki function _()
+- support for arrays (#FOREACH, array, item, set_item)
+- support for structures (variable contains another set of variables, $x.y.z)
 
 $Id$

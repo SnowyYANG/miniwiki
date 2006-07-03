@@ -59,7 +59,7 @@
     }
   }
     
-  register_install_handler($install_handler);
+  register_install_handler(new MW_WebInstallHandler());
   
   miniwiki_boot(true);
 

@@ -20,7 +20,7 @@
 
   function show_install_message($msg) {
     global $registry;
-    $install_handler =& $registry->lookup(MW_COMPONENT_ROLE_STORAGE);
+    $install_handler =& $registry->lookup(MW_COMPONENT_ROLE_INSTALL_HANDLER);
     $install_handler->show_install_message($msg);
   }
 

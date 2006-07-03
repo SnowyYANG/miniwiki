@@ -19,23 +19,23 @@
     var $settings = array();
 
     function set_default($name, $value) {
-      $defaults[$name] = $value;
+      $this->defaults[$name] = $value;
     }
 
     function set($name, $value) {
-      $settings[$name] = $value;
+      $this->settings[$name] = $value;
     }
 
     function get($name) {
-      if (isset($settings[$name])) {
+      if (isset($this->settings[$name])) {
         debug("MW_Settings: $name set from inside");
-        return $settings[$name];
+        return $this->settings[$name];
       } elseif (isset($GLOBALS[MW_GLOBAL_SETTINGS_VARIABLE_PREFIX.$name])) {
         debug("MW_Settings: $name set from outside");
         return $GLOBALS[MW_GLOBAL_SETTINGS_VARIABLE_PREFIX.$name];
-      } elseif (isset($defaults[$name])) {
+      } elseif (isset($this->defaults[$name])) {
         debug("MW_Settings: $name from defaults");
-        return $defaults[$name];
+        return $this->defaults[$name];
       }
       debug("MW_Settings: $name not found");
       return null;
@@ -45,13 +45,13 @@
 
   function config($name) {
     global $registry;
-    $settings = $registry->lookup(MW_COMPONENT_ROLE_SETTINGS);
+    $settings =& $registry->lookup(MW_COMPONENT_ROLE_SETTINGS);
     return $settings->get($name);
   }
 
   function set_default_config($name, $value) {
     global $registry;
-    $settings = $registry->lookup(MW_COMPONENT_ROLE_SETTINGS);
+    $settings =& $registry->lookup(MW_COMPONENT_ROLE_SETTINGS);
     $settings->set_default($name, $value);
   }
   

@@ -41,6 +41,7 @@
       register_wiki_function('exists', array($this, 'wiki_fn_exists'));
       register_wiki_function('process_time', array($this, 'wiki_fn_process_time'));
       register_wiki_function('include_layout', array($this, 'wiki_fn_include_layout'));
+      register_wiki_function('noredir_link', array($this, 'wiki_fn_noredir_link'));
       return true;
     }
 
@@ -188,6 +189,15 @@
     function wiki_fn_process_time($args, $renderer_state) {
       return microtime_float() - $this->start_time;
     }
+    
+    function wiki_fn_noredir_link($args, $renderer_state) {
+      $page_name = array_shift($args);
+      $page = new_page($page_name, MW_REVISION_HEAD);
+      $link = link_for_page_action($page, MW_ACTION_VIEW);
+      $link->set_redirect(false);
+      return $link->to_url();
+    }
+  
   }
 
   register_extension(new MW_CoreFunctionsExtension());

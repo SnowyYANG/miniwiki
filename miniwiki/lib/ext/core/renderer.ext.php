@@ -598,6 +598,11 @@
             $meta_value = $this->process_header_link($meta_value);
             $output .= '  <script type="text/javascript" src="'.$meta_value .'"></script>'."\n";
           }
+        } elseif (strpos($line, '#REDIRECT') === 0) {
+          $tokens = explode(' ', $line, 2);
+          if (count($tokens) > 1) {
+            $output .= '<div class="redirect-link">'.$this->process_internal_link($tokens[1], $tokens[1]).'</div>'."\n";
+          }
         } elseif (strpos($line, '#') === 0) {
           # omit directives
         } elseif (!(strpos($line, '{{') === false)) {

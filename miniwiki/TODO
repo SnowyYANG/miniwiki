@@ -1,5 +1,6 @@
 TODO list:
 
+- page renaming and use it for MainPage -> Main Page transition
 - multi-line {{...}}
 - XML import
 - improve code docs
@@ -12,7 +13,6 @@ TODO list:
 - convert Special pages to use layout pages
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
-- #REDIRECT support
 - search
 
 $Id$

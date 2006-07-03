@@ -14,6 +14,8 @@
   $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
   define("MW_COMPONENT_ROLE_PAGE_HANDLER", "MW_PageHandler");
   $registry->add_registry(new MW_PageHandlerComponentRegistry(), MW_COMPONENT_ROLE_PAGE_HANDLER);
+  define("MW_COMPONENT_ROLE_REDIRECTED_PAGE", "MW_Page:redirected_page");
+  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_REDIRECTED_PAGE);
 
   function set_current_page(&$page) {
     global $registry;
@@ -23,6 +25,16 @@
   function &get_current_page() {
     global $registry;
     return $registry->lookup(MW_COMPONENT_ROLE_PAGE);
+  }
+  
+  function set_redirected_page(&$page) {
+    global $registry;
+    $registry->register($page, MW_COMPONENT_ROLE_REDIRECTED_PAGE);
+  }
+  
+  function &get_redirected_page() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_REDIRECTED_PAGE);
   }
   
   /** main page name */
@@ -263,6 +275,11 @@
     function get_all_revisions() {
       return array();
     }
+
+    /** @returns null or page this page is redirected to */
+    function get_redirected_page() {
+      return null;
+    }
   }
   
   /** [abstract] special page */
@@ -349,7 +366,27 @@
     function &handle() {
       $page =& get_current_page();
       if ($page->load()) {
-        include(($this->get_name() == MW_ACTION_VIEW_SOURCE) ? 'viewsource.php' : 'viewpage.php');
+        if ($this->get_name() == MW_ACTION_VIEW_SOURCE) {
+          include('viewsource.php');
+        } else {
+          $req =& get_request("MW_ViewRequest");
+          if ($req->get_redirect()) {
+            $redirected = array($page->name);
+            $redir_page = $page->get_redirected_page();
+            while (($redir_page !== null) && $redir_page->load()) {
+              # those "labels" instead of "references" are real pain...
+              $_redir_page = $redir_page;
+              set_redirected_page($page);
+              set_current_page($_redir_page);
+              $redir_page = $redir_page->get_redirected_page();
+              if (($redir_page === null) || in_array($redir_page->name, $redirected)) {
+                break;
+              }
+              array_unshift($redirected, $redir_page->name);
+            }
+          }
+          include('viewpage.php');
+        }
         $p = null;
         return $p;
       } else if (is_a($page, 'MW_SpecialUploadPage') && $page->is_data_page) {
@@ -360,6 +397,11 @@
       return get_action(MW_ACTION_EDIT);
     }
 
+    /** @protected */
+    function _link() {
+      return new MW_ViewPageLink();
+    }
+    
   }
 
   register_action(new MW_ViewAction(MW_ACTION_VIEW));
@@ -482,7 +524,7 @@
   define("MW_REQVAR_PAGE_NAME", "page_name");
   /** page revision request variable */
   define("MW_REQVAR_REVISION", "revision");
-  
+
   class MW_PageRequest extends MW_Request {
     /** @private */
     var $page;
@@ -499,9 +541,27 @@
       $revision = $http_request->get_param(MW_REQVAR_REVISION, MW_REVISION_HEAD);
       $this->page = new_page($page_name, $revision);
     }
-  
+
     function get_page() {
       return $this->page;
+    }
+
+  }
+
+  /** page redirection variable */
+  define("MW_REQVAR_REDIRECT", "redirect");
+  define("MW_NO_REDIRECT_VALUE", "no");
+  
+  class MW_ViewRequest extends MW_Request {
+    /** @private */
+    var $redirect;
+
+    function MW_ViewRequest($http_request) {
+      $this->redirect = ($http_request->get_param(MW_REQVAR_REDIRECT) !== MW_NO_REDIRECT_VALUE);
+    }
+  
+    function get_redirect() {
+      return $this->redirect;
     }
     
   }
@@ -641,12 +701,34 @@
   
   }
 
-  function url_for_page_action($page, $action_name, $in_attr = false, $fragment = null) {
+  class MW_ViewPageLink extends MW_PageLink {
+
+    function get_redirect_param_name() {
+      return MW_REQVAR_REDIRECT;
+    }
+
+    function set_redirect($redirect) {
+      if ($redirect) {
+        $this->unset_param(MW_REQVAR_REDIRECT);
+      } else {
+        $this->set_param(MW_REQVAR_REDIRECT, MW_NO_REDIRECT_VALUE);
+      }
+    }
+    
+  }
+
+  function link_for_page_action($page, $action_name) {
     $action = get_action($action_name);
     if ($action === null) {
       $action = get_default_action();
     }
     $link = $action->link();
+    $link->set_page($page);
+    return $link;
+  }
+
+  function url_for_page_action($page, $action_name, $in_attr = false, $fragment = null) {
+    $link = link_for_page_action($page, $action_name);
     $link->set_page($page);
     if ($fragment !== null) {
       $link->set_fragment($fragment);

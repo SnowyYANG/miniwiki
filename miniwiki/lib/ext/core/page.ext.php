@@ -48,6 +48,9 @@
 
   /** regular Wiki page */
   class MW_DBPage extends MW_Page {
+
+    /** @private */
+    var $redirected_page = null;
     
     /** @protected
     * constructor (do not use directly, use new_page())
@@ -78,6 +81,10 @@
         if (preg_match_all("/(?:^|\n)#TITLE\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $this->title = $matches[1][count($matches[1]) - 1];
           $this->title = str_replace("\r", '', $this->title);
+        } elseif (preg_match_all("/(?:^|\n)#REDIRECT\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
+          $redir_name = $matches[1][count($matches[1]) - 1];
+          $redir_name = str_replace("\r", '', $redir_name);
+          $this->redirected_page = new_page($redir_name, MW_REVISION_HEAD);
         }
       }
     }
@@ -157,7 +164,11 @@
       }
       return $ret;
     }
-    
+
+    /** @returns null or page this page is redirected to */
+    function get_redirected_page() {
+      return $this->redirected_page;
+    }
   }
 
 ?>

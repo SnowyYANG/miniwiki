@@ -47,6 +47,10 @@
       if (count($info_text) > 0) {
         $vars->set('info_text', implode(' ', $info_text));
       }
+      $redirected_page =& get_redirected_page();
+      if ($redirected_page !== null) {
+        $vars->set('redir_page', $redirected_page->name);
+      }
       $layout_page->render($vars);
     }
   }

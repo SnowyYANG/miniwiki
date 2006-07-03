@@ -280,6 +280,21 @@
     function get_redirected_page() {
       return null;
     }
+
+    /** this page will still point to the old name */
+    function rename($new_name, $with_redirect = true) {
+      $success = $this->_rename($new_name);
+      if ($success && $with_redirect) {
+        $this->update("#REDIRECT $new_name\n", _("Renamed to ".$new_name));
+      }
+      return $success;
+    }
+
+    /** @protected */
+    function _rename($new_name) {
+      return false;
+    }
+    
   }
   
   /** [abstract] special page */
@@ -299,6 +314,7 @@
         case MW_ACTION_DELETE:
         case MW_ACTION_UPDATE:
         case MW_ACTION_UPLOAD;
+        case MW_ACTION_RENAME;
           return false;
         default:
           return true;
@@ -335,6 +351,8 @@
   define("MW_ACTION_UPDATE", "update");
   /** upload action */
   define("MW_ACTION_UPLOAD", "upload");
+  /** rename action */
+  define("MW_ACTION_RENAME", "rename");
 
   class MW_PageAction extends MW_Action {
   
@@ -520,6 +538,25 @@
 
   register_action(new MW_UploadAction());
 
+  class MW_RenameAction extends MW_PageAction {
+  
+    function get_name() {
+      return MW_ACTION_RENAME;
+    }
+  
+    function &handle() {
+      $req =& get_request("MW_RenameRequest");
+      $page =& get_current_page();
+      $new_name = $req->get_new_name();
+      $success = $page->rename($new_name);
+      add_info_text($success ? _("Page renamed.") : _("Page renaming failed."));
+      return get_default_action();
+    }
+    
+  }
+
+  register_action(new MW_RenameAction());
+
   /** page name request variable */
   define("MW_REQVAR_PAGE_NAME", "page_name");
   /** page revision request variable */
@@ -621,6 +658,22 @@
       return $this->destname;
     }
   
+  }
+
+  define("MW_REQVAR_NEW_NAME", "new_name");
+  
+  class MW_RenameRequest extends MW_Request {
+    /** @private */
+    var $new_name;
+
+    function MW_RenameRequest($http_request) {
+      $this->new_name = $http_request->get_param(MW_REQVAR_NEW_NAME);
+    }
+  
+    function get_new_name() {
+      return $this->new_name;
+    }
+    
   }
 
   class MW_PageLink extends MW_ActionLink {

@@ -121,6 +121,10 @@
     function create_resource($dataspace, $resource) {
       die("abstract: create_resource");
     }
+
+    function rename_resource($dataspace, $old_name, $new_name) {
+      die("abstract: rename_resource");
+    }
     
     /** ordered by revision from last to first */
     function get_resource_history($dataspace, $name, $with_data) {

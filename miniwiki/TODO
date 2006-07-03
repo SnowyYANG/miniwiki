@@ -1,6 +1,6 @@
 TODO list:
 
-- page renaming and use it for MainPage -> Main Page transition
+- UI for page renaming
 - multi-line {{...}}
 - XML import
 - improve code docs

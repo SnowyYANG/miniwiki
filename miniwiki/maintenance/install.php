@@ -63,8 +63,17 @@
   
   miniwiki_boot(true);
 
+  $old_main_page = new_page("MainPage", MW_REVISION_HEAD);
+  if ($old_main_page->exists()) {
+    $main_page = new_page(MW_PAGE_NAME_MAIN, MW_REVISION_HEAD);
+    if (!$main_page->exists()) {
+      show_install_message('Renaming old main page '.$old_main_page->name.' to '.$main_page->name);
+      $old_main_page->rename($main_page->name);
+    }
+  }
+
   function import_with_check($file) {
-    show_install_message()'Importing data from '.$file);
+    show_install_message('Importing data from '.$file);
     $status = import($file);
     if ($status === null) {
       trigger_error("Unable to import $file - is required extension missing?", E_USER_ERROR);

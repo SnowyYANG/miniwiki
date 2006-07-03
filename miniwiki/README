@@ -30,8 +30,8 @@ from inside the script (stored in variables $install_user and $install_pass).
 Script will then upgrade the storage. Finally, do not forget to close access
 to install.php in maintenance/.htaccess.
 
-Since version 0.3 main page name is Main Page and not MainPage. This
-is not handled by upgrade process and transition must be done by hand.
+Since version 0.3 main page name is Main Page and not MainPage. It will get renamed
+during upgrade and MainPage will be redirected to new page.
 
 Since version 0.3 UI layout is stored in Wiki pages MW:Layout:* including
 CSS and JS files which were previously in data directory and now are

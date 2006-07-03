@@ -171,7 +171,12 @@
     }
     
     function delete_resource($dataspace, $name) {
-      $this->exec_statement('delete from '.$dataspace. ' where '.MW_RESOURCE_KEY_NAME.'=?', $name);
+      return $this->exec_statement('delete from '.$dataspace. ' where '.MW_RESOURCE_KEY_NAME.'=?', $name);
+    }
+    
+    function rename_resource($dataspace, $old_name, $new_name) {
+      # hack last_modified=last_modified makes MySQL to preserve current value and not set it to current time
+      return $this->exec_statement('update '.$dataspace. ' set '.MW_RESOURCE_KEY_NAME.'=?, '. MW_RESOURCE_KEY_LAST_MODIFIED.'='.MW_RESOURCE_KEY_LAST_MODIFIED.' where '.MW_RESOURCE_KEY_NAME.'=?', $new_name, $old_name);
     }
     
     function create_resource($dataspace, $resource) {
@@ -202,7 +207,7 @@
         $cols[$key] = $value;
       }
       if ($is_versioned || $should_create) {
-        $this->exec_statement('insert into '.$dataspace.
+        return $this->exec_statement('insert into '.$dataspace.
           ' ('.implode(', ', $keys).
           ') values ('.implode(', ', $placeholders).')',
           array_values($cols));
@@ -211,7 +216,7 @@
         foreach ($keys as $key) {
           array_push($set, $key. '=?');
         }
-        $this->exec_statement('update '.$dataspace.
+        return $this->exec_statement('update '.$dataspace.
           ' set '.implode(', ', $set).
           ' where '.MW_RESOURCE_KEY_NAME.'=?',
           array_values($cols),

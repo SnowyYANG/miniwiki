@@ -169,6 +169,12 @@
     function get_redirected_page() {
       return $this->redirected_page;
     }
+  
+    function _rename($new_name) {
+      $storage =& get_storage();
+      return $storage->rename_resource(MW_DS_PAGES, $this->name, $new_name);
+    }
+  
   }
 
 ?>

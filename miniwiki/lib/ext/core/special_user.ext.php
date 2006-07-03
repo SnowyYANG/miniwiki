@@ -9,7 +9,7 @@
 
   /** user page name prefix */
   define("MW_PAGE_NAME_PREFIX_USER", "User:");
-  define("MW_LAYOUT_SPECIAL_USER", "SpecialUser");
+  define("MW_SPECIAL_PAGE_USER", "User");
   
   class MW_CoreSpecialUserExtension extends MW_Extension {
 
@@ -125,9 +125,9 @@
     }
     
     function get_wiki_content() {
-      $layout_page = load_layout_page(MW_LAYOUT_SPECIAL_USER);
-      if ($layout_page !== null) {
-        return wiki_include($layout_page, array(
+      $special_page = load_special_page(MW_SPECIAL_PAGE_USER);
+      if ($special_page !== null) {
+        return wiki_include($special_page, array(
           'related_user' => $this->related_user,
           'user_page_content' => $this->page->get_wiki_content()
         ), false, false);

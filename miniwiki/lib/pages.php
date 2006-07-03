@@ -44,6 +44,7 @@
   
   define("MW_PAGE_TAG_USER", "user");
   define("MW_PAGE_TAG_UPLOAD", "upload");
+  define("MW_PAGE_TAG_SPECIAL", "special");
   
   /**
   * returns filtered page name
@@ -175,6 +176,19 @@
     return new_page_with_tag(MW_PAGE_TAG_UPLOAD, $name, $revision);
   }
 
+  function new_special_page($name) {
+    return new_page_with_tag(MW_PAGE_TAG_SPECIAL, $name, MW_REVISION_HEAD);
+  }
+
+  function load_special_page($name) {
+    $special_page = new_special_page($name);
+    if (!$special_page->load()) {
+      trigger_error(_("Required special page %0% is missing", $special_page->name), E_USER_ERROR);
+      return null;
+    }
+    return $special_page;
+  }
+  
   /**
   * [abstract] Wiki page
   */

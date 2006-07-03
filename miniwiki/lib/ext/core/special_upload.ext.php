@@ -8,7 +8,7 @@
   */
 
   define("MW_DS_UPLOADS", "uploads");
-  define("MW_LAYOUT_SPECIAL_UPLOAD", "SpecialUpload");
+  define("MW_SPECIAL_PAGE_UPLOAD", "Upload");
   
   class MW_CoreSpecialUploadExtension extends MW_Extension {
 
@@ -185,7 +185,7 @@
       if ($this->is_data_page) {
         return "[[".$this->name."]]";
       } else {
-        $layout_page = load_layout_page(MW_LAYOUT_SPECIAL_UPLOAD);
+        $layout_page = load_special_page(MW_SPECIAL_PAGE_UPLOAD);
         if ($layout_page !== null) {
           $link_prefix = (strpos($this->mime_type, "image/") === 0) ? MW_LINK_NAME_PREFIX_IMAGE : MW_PAGE_NAME_PREFIX_DATA;
           return wiki_include($layout_page, array(

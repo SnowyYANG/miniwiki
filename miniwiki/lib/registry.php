@@ -71,7 +71,7 @@
       if ($selector === null) {
         array_push($this->components, $component);
       } elseif (isset($this->components[$selector])) {
-        trigger_error("Component for role $role is already registered as ".$this->components[$selector].", ignoring $component ", E_USER_ERROR);
+        trigger_error("Component for role $role is already registered as ".to_string($this->components[$selector]).", ignoring ".to_string($component), E_USER_ERROR);
       } else {
         $this->components[$selector] =& $component;
       }

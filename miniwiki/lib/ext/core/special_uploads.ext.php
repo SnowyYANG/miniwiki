@@ -51,7 +51,7 @@
     }
 
     function has_action($action) {
-      if ($action->get_name() == MW_ACTION_UPLOAD) {
+      if ($action->get_name() == MW_ACTION_EDIT) {
         return true;
       }
       return parent::has_action($action);
@@ -60,7 +60,7 @@
     function render($vars = null) {
       echo '<div class="special-uploads">', "\n";
       $auth =& get_auth();
-      $action = get_action(MW_ACTION_UPLOAD);
+      $action = get_action(MW_ACTION_EDIT);
       if ($auth->is_action_permitted($action, $this)) {
         $link = $action->link();
         echo '<form enctype="multipart/form-data" action="', $link->to_url(true), '" method="post">'. "\n";

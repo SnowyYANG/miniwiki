@@ -8,7 +8,7 @@
   */
 
   $page =& get_current_page();
-  $req =& get_request("MW_UpdateRequest");
+  $req =& get_request("MW_EditRequest");
   
   render_ui(MW_LAYOUT_HEADER, _("Editing %0%", $page->name));
   if ($req->is_preview() && $page->has_content) {
@@ -17,7 +17,7 @@
     echo '</div>', "\n";
   }
   echo '<div class="page-edit">', "\n";
-  $action = get_action(MW_ACTION_UPDATE);
+  $action = get_action(MW_ACTION_EDIT);
   $link = $action->link();
   echo '<form method="post" action="', $link->to_url(true), '">', "\n";
   /** generate edit button

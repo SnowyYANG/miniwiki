@@ -63,9 +63,6 @@
     }
 
     function has_action($action) {
-      if ($action->get_name() == MW_ACTION_UPLOAD) {
-        return false;
-      }
       return true;
     }
     

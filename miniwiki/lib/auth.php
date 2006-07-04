@@ -117,8 +117,6 @@
           return (config('auth_read_logged_only') ? $is_logged : true);
         case MW_ACTION_EDIT:
         case MW_ACTION_DELETE:
-        case MW_ACTION_UPDATE:
-        case MW_ACTION_UPLOAD:
         case MW_ACTION_RENAME:
           if (strpos($page->name, MW_PAGE_NAME_PREFIX_MINIWIKI) === 0) {
             return $is_admin;

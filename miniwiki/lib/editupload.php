@@ -11,7 +11,7 @@
   
   render_ui(MW_LAYOUT_HEADER, _("Editing %0%", $page->name));
   echo '<div class="upload-edit">', "\n";
-  $action = get_action(MW_ACTION_UPLOAD);
+  $action = get_action(MW_ACTION_EDIT);
   $link = $action->link();
   echo '<form enctype="multipart/form-data" action="', $link->to_url(true), '" method="post">'. "\n";
   echo _("Source filename"), ': <input type="file" size="40" name="', $link->get_sourcefile_param_name(), '"/><br/>', "\n";

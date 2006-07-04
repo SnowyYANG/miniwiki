@@ -40,12 +40,10 @@
       MW_ACTION_EDIT => 'Edit',
       MW_ACTION_DELETE => 'Delete',
       MW_ACTION_HISTORY => 'History',
-      MW_ACTION_UPDATE => 'Edit',
       MW_ACTION_LOGIN => 'Login',
       MW_ACTION_CHANGE_PASSWORD => 'Change Password',
       MW_ACTION_CREATE_USER => 'Create User',
       MW_ACTION_DELETE_USER => 'Delete User',
-      MW_ACTION_UPLOAD => "Upload",
     );
 
     /** @private */

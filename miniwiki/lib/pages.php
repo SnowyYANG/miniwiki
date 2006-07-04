@@ -329,8 +329,6 @@
         case MW_ACTION_EDIT:
         case MW_ACTION_VIEW_SOURCE:
         case MW_ACTION_DELETE:
-        case MW_ACTION_UPDATE:
-        case MW_ACTION_UPLOAD;
         case MW_ACTION_RENAME;
           return false;
         default:
@@ -358,16 +356,12 @@
   define("MW_ACTION_VIEW", "view");
   /** view page source action (shows Wiki markup) */
   define("MW_ACTION_VIEW_SOURCE", "view_source");
-  /** edit page action (shows Wiki editor) */
+  /** edit page action (shows Wiki editor, optionally with preview or really changes a file or page or uploads new file) */
   define("MW_ACTION_EDIT", "edit");
   /** delete page action (really deletes page) */
   define("MW_ACTION_DELETE", "delete");
   /** show history action (shows history page) */
   define("MW_ACTION_HISTORY", "history");
-  /** update page action (really changes Wiki page or shows a preview) */
-  define("MW_ACTION_UPDATE", "update");
-  /** upload action */
-  define("MW_ACTION_UPLOAD", "upload");
   /** rename action */
   define("MW_ACTION_RENAME", "rename");
 
@@ -451,6 +445,26 @@
   
     function &handle() {
       $page =& get_current_page();
+      $req =& get_request("MW_EditRequest");
+      if ($req->is_update()) {
+        if (is_a($page, 'MW_SpecialUploadsPage')) {
+          $uploaded = $page->upload($req->get_content(), $req->get_message(), $req->get_destname());
+          set_current_page($uploaded);
+          add_info_text(_("File uploaded."));
+          return get_default_action();
+        } elseif ($req->is_preview()) {
+          $page->update_for_preview($req->get_content());
+          # falls through to plain edit
+        } else {
+          $changed = $page->update($req->get_content(), $req->get_message());
+          if (is_a($page, 'MW_SpecialUploadPage')) {
+            add_info_text($changed ? _("File uploaded.") : _("No changes. File was not uploaded."));
+          } else {
+            add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
+          }
+          return get_default_action();
+        }
+      }
       # prevent double-load or preview overwriting
       if (!$page->has_content) {
         $page->load();
@@ -461,6 +475,11 @@
         include('editpage.php');
       }
       return null_ref();
+    }
+    
+    /** @protected */
+    function _link() {
+      return new MW_EditPageLink();
     }
     
   }
@@ -498,62 +517,6 @@
   }
 
   register_action(new MW_HistoryAction());
-
-  class MW_UpdateAction extends MW_PageAction {
-  
-    function get_name() {
-      return MW_ACTION_UPDATE;
-    }
-  
-    function &handle() {
-      $req =& get_request("MW_UpdateRequest");
-      $page =& get_current_page();
-      if ($req->is_preview()) {
-        $page->update_for_preview($req->get_content());
-        return get_action(MW_ACTION_EDIT);
-      } else {
-        $changed = $page->update($req->get_content(), $req->get_message());
-        add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
-        return get_default_action();
-      }
-    }
-    
-    /** @protected */
-    function _link() {
-      return new MW_UpdatePageLink();
-    }
-    
-  }
-
-  register_action(new MW_UpdateAction());
-  
-  class MW_UploadAction extends MW_PageAction {
-  
-    function get_name() {
-      return MW_ACTION_UPLOAD;
-    }
-  
-    function &handle() {
-      $req =& get_request("MW_UpdateRequest");
-      $page =& get_current_page();
-      if (is_a($page, 'MW_SpecialUploadsPage')) {
-        $page = $page->upload($req->get_content(), $req->get_message(), $req->get_destname());
-        set_current_page($page);
-      } else {
-        $page->update($req->get_content(), $req->get_message());
-      }
-      add_info_text(_("File uploaded."));
-      return get_default_action();
-    }
-    
-    /** @protected */
-    function _link() {
-      return new MW_UpdatePageLink();
-    }
-    
-  }
-
-  register_action(new MW_UploadAction());
 
   define("MW_SPECIAL_PAGE_RENAME", "Rename");
 
@@ -632,18 +595,18 @@
     
   }
 
-  /** page content request variable (for update action) */
+  /** page content request variable (for edit action) */
   define("MW_REQVAR_CONTENT", "content");
-  /** update message (for update action) */
+  /** update message (for edit action) */
   define("MW_REQVAR_MESSAGE", "message");
-  /** preview submit (for update action) */
+  /** preview submit (for edit action) */
   define("MW_REQVAR_PREVIEW", "preview");
-  /** source file (for upload action) */
+  /** source file (for edit action) */
   define("MW_REQVAR_SOURCEFILE", "sourcefile");
-  /** destination file (for upload action) */
+  /** destination file (for edit action) */
   define("MW_REQVAR_DESTFILE", "destfile");
   
-  class MW_UpdateRequest extends MW_Request {
+  class MW_EditRequest extends MW_Request {
     /** @private */
     var $content;
     /** @private */
@@ -654,16 +617,23 @@
     var $sourcefile;
     /** @private */
     var $destname;
+    /** @private */
+    var $is_update;
 
-    function MW_UpdateRequest($http_request) {
+    function MW_EditRequest($http_request) {
       $this->content = $http_request->get_param(MW_REQVAR_CONTENT);
       $this->message = $http_request->get_param(MW_REQVAR_MESSAGE);
       $this->preview = $http_request->has_param(MW_REQVAR_PREVIEW);
       $this->sourcefile = $http_request->get_file(MW_REQVAR_SOURCEFILE);
       $this->destname = $http_request->get_param(MW_REQVAR_DESTFILE);
-      if (($this->sourcefile !== null) && ($this->destname === null)) {
+      if (($this->sourcefile !== null) && empty($this->destname)) {
         $this->destname = $this->sourcefile['name'];
       }
+      $this->is_update = $http_request->has_param(MW_REQVAR_CONTENT) || ($this->sourcefile !== null);
+    }
+
+    function is_update() {
+      return $this->is_update;
     }
 
     function get_content() {
@@ -739,7 +709,7 @@
   
   }
 
-  class MW_UpdatePageLink extends MW_PageLink {
+  class MW_EditPageLink extends MW_PageLink {
 
     function get_content_param_name() {
       return MW_REQVAR_CONTENT;

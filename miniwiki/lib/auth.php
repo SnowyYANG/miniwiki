@@ -95,7 +95,7 @@
     
     /**
     * returns true if current user has permission to execute given action on given page
-    * everyone can relogin, login, view, view source and show history
+    * everyone can login, view, view source and show history
     * logged user can edit, delete and update
     * only admin or same user can change password
     * only admin can create or delete user
@@ -109,7 +109,6 @@
       $is_admin = $this->is_logged && ($this->user == MW_USER_NAME_ADMIN);
       $is_related = isset($page->related_user) && $this->is_logged && ($this->user == $page->related_user);
       switch ($action->get_name()) {
-        case MW_ACTION_RELOGIN:
         case MW_ACTION_LOGIN:
           return true;
         case MW_ACTION_VIEW:
@@ -162,11 +161,9 @@
     }
   }
 
-  /** login action (will show login dialog if current credentials are invalid) */
+  /** login action (will show login dialog if current credentials are invalid or if old_user is the same as logged user) */
   define("MW_ACTION_LOGIN", "login");
-  /** relogin action (will show login dialog even if current credentials are valid - needs correct old_user) */
-  define("MW_ACTION_RELOGIN", "relogin");
-  
+
   class MW_LoginAction extends MW_Action {
   
     /** @private */
@@ -184,7 +181,7 @@
       $auth =& get_auth();
       $req =& get_request("MW_AuthRequest");
       # bit hackish
-      if ($auth->is_invalid() || ((($this->get_name() == MW_ACTION_RELOGIN) && ($req->get_old_user() == $auth->user)) || !$auth->has_credentials)) {
+      if ($auth->is_invalid() || ($req->get_old_user() == $auth->user) || !$auth->has_credentials) {
         header('WWW-Authenticate: Basic realm="'.config('auth_realm').'"');
         header('HTTP/1.0 401 Unauthorized');
         $auth->is_logged = false;
@@ -201,8 +198,8 @@
 
     function link() {
       $link = parent::link();
-      if ($this->get_name() == MW_ACTION_RELOGIN) {
-        $auth =& get_auth();
+      $auth =& get_auth();
+      if ($auth->is_logged) {
         $link->set_old_user($auth->user);
       }
       return $link;
@@ -216,7 +213,6 @@
   }
 
   register_action(new MW_LoginAction(MW_ACTION_LOGIN));
-  register_action(new MW_LoginAction(MW_ACTION_RELOGIN));
 
   /** change password action (really changes password) */
   define("MW_ACTION_CHANGE_PASSWORD", "change_password");
@@ -309,7 +305,7 @@
   
   register_action(new MW_DeleteUserAction());
   
-  /** old user request variable (for relogin action) */
+  /** old user request variable (for (re)login action) */
   define("MW_REQVAR_OLD_USER", "old_user");
   /** user request variable (for create user, delete user and change password actions) */
   define("MW_REQVAR_USER", "user");

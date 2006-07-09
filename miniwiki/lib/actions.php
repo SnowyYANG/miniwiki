@@ -29,6 +29,12 @@
       die("abstract: is_valid");
     }
 
+    function is_permitted() {
+      $auth =& get_auth();
+      $page =& get_current_page();
+      return $auth->is_action_permitted($this, $page);
+    }
+
     function link() {
       $link = $this->_link();
       $link->set_action($this);

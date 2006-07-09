@@ -545,6 +545,20 @@
       return get_default_action();
     }
     
+    function is_permitted() {
+      $auth =& get_auth();
+      $page =& get_current_page();
+      $req =& get_request("MW_RenameRequest");
+      $new_name = $req->get_new_name();
+      if ($new_name !== null) {
+        $new_page = new_page($new_name, MW_REVISION_HEAD);
+        if (!$auth->is_action_permitted($this, $new_page)) {
+          return false;
+        }
+      }
+      return parent::is_permitted();
+    }
+    
   }
 
   register_action(new MW_RenameAction());
@@ -667,6 +681,9 @@
 
     function MW_RenameRequest($http_request) {
       $this->new_name = $http_request->get_param(MW_REQVAR_NEW_NAME);
+      if ($this->new_name !== null) {
+        $this->new_name = filter_page_name(decode_page_name($this->new_name));
+      }
     }
   
     function get_new_name() {

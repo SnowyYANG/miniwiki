@@ -48,7 +48,7 @@
     if (!$action->is_valid()) {
       trigger_error(_("Unknown action."), E_USER_ERROR);
       break;
-    } elseif (!$auth->is_action_permitted($action, $page)) {
+    } elseif (!$action->is_permitted()) {
       add_info_text(_('Insufficient user rights. Access denied to action: %0%', _($action->get_name())));
       render_ui(MW_LAYOUT_HEADER);
       render_ui(MW_LAYOUT_FOOTER);

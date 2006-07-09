@@ -16,5 +16,9 @@ TODO list:
 - wiki function _()
 - support for arrays (#FOREACH, array, item, set_item)
 - support for structures (variable contains another set of variables, $x.y.z)
+- filesystem storage
+- Subversion storage (including support for Subversion-based users management)
+  - unified pages and uploads hierarchies
+  - treat / and : equally as directory separator
 
 $Id$

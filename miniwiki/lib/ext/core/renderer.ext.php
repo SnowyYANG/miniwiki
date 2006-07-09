@@ -626,9 +626,14 @@
               }
               array_push($for_lines, $for_line);
             }
-            foreach ($array_value as $item) {
-              $lines = array_merge($for_lines, $lines);
-              array_unshift($lines, '{{&set|'.$index_var.'|'.$item.'}}');
+            if (count($for_lines) > 0) {
+              $all_for_lines = array();
+              foreach ($array_value as $item) {
+                $new_for_lines = $for_lines;
+                $new_for_lines[0] = '{{&set|'.$index_var.'|'.$item.'}}'.$new_for_lines[0];
+                $all_for_lines = array_merge($all_for_lines, $new_for_lines);
+              }
+              $lines = array_merge($all_for_lines, $lines);
             }
           }
         } elseif (strpos($line, '#') === 0) {

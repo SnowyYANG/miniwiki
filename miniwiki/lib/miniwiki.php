@@ -91,7 +91,6 @@
   require_once('ui.php');
 
   set_default_config('enabled_extensions', array(
-    'MW_CoreSpecialPagesExtension',
     'MW_CoreSpecialUploadExtension',
     'MW_CoreSpecialUploadsExtension',
     'MW_CoreSpecialUserExtension',

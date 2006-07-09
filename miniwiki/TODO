@@ -9,13 +9,11 @@ TODO list:
 - layout param to MW_PageLink (layout is MW:Layout:<layout>)
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces)
-- convert Special pages to use layout pages
+- convert Special pages to MW:Special:*
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - search
 - wiki function _()
-- support for arrays (#FOREACH, array, item, set_item)
-- support for structures (variable contains another set of variables, $x.y.z)
 - filesystem storage
 - Subversion storage (including support for Subversion-based users management)
   - unified pages and uploads hierarchies

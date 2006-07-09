@@ -45,6 +45,7 @@
       register_wiki_function('item', array($this, 'wiki_fn_item'));
       register_wiki_function('set_item', array($this, 'wiki_fn_set_item'));
       register_wiki_function('import', array($this, 'wiki_fn_import'));
+      register_wiki_function('list_pages', array($this, 'wiki_fn_list_pages'));
       return true;
     }
 
@@ -236,6 +237,11 @@
         }
       }
       return '';
+    }
+
+    function wiki_fn_list_pages($args, $renderer_state) {
+      $storage =& get_storage();
+      return $storage->get_resource_names(MW_DS_PAGES);
     }
 
   }

@@ -34,16 +34,17 @@
   
   function register_extension($extension) {
     global $registry;
-    $disabled_extensions = config('disabled_extensions');
-    if ($disabled_extensions !== null) {
-      foreach ($disabled_extensions as $disabled_ext) {
-        if (is_a($extension, $disabled_ext)) {
-          debug("Disabling extension ".$extension->get_name());
+    $enabled_extensions = config('enabled_extensions');
+    if ($enabled_extensions !== null) {
+      foreach ($enabled_extensions as $enabled_ext) {
+        if (is_a($extension, $enabled_ext)) {
+          debug("Enabling extension ".$extension->get_name());
+          $registry->register($extension, MW_COMPONENT_ROLE_EXTENSION);
           return;
         }
       }
     }
-    $registry->register($extension, MW_COMPONENT_ROLE_EXTENSION);
+    debug("Disabling extension ".$extension->get_name());
   }
 
   function load_extensions($path, $recurse) {

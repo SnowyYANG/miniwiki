@@ -32,8 +32,8 @@
   /** whether changing pages is allowed only for administrator (default is false) */
   $mw_auth_write_admin_only = false;
 
-  /** list of MW_Extension classes which should not be initialized (default is empty) */
-#  $mw_disabled_extensions = array(
+  /** list of MW_Extension classes which should be initialized (for default see lib/miniwiki.php) */
+#  $mw_enabled_extensions = array(
 #  );
 
   /**

@@ -42,6 +42,9 @@
       register_wiki_function('process_time', array($this, 'wiki_fn_process_time'));
       register_wiki_function('include_layout', array($this, 'wiki_fn_include_layout'));
       register_wiki_function('noredir_link', array($this, 'wiki_fn_noredir_link'));
+      register_wiki_function('item', array($this, 'wiki_fn_item'));
+      register_wiki_function('set_item', array($this, 'wiki_fn_set_item'));
+      register_wiki_function('import', array($this, 'wiki_fn_import'));
       return true;
     }
 
@@ -198,6 +201,43 @@
       return $link->to_url();
     }
   
+    function wiki_fn_item($args, $renderer_state) {
+      $name = array_shift($args);
+      $index = array_shift($args);
+      $var = $renderer_state->wiki_variables->get($name);
+      if (is_array($var)) {
+        return $var[$index];
+      }
+      return '';
+    }
+  
+    function wiki_fn_set_item($args, $renderer_state) {
+      $name = array_shift($args);
+      $index = array_shift($args);
+      $value = array_shift($args);
+      $var = $renderer_state->wiki_variables->get($name);
+      if ($var === null) {
+        $var = array();
+      }
+      if (is_array($var)) {
+        $var[$index] = $value;
+        # copy of array is used - we must set it back
+        $renderer_state->wiki_variables->set($name, $var);
+      }
+      return '';
+    }
+  
+    function wiki_fn_import($args, $renderer_state) {
+      $name = array_shift($args);
+      $var = $renderer_state->wiki_variables->get($name);
+      if (is_array($var)) {
+        foreach ($var as $key => $value) {
+          $renderer_state->wiki_variables->set($key, $value);
+        }
+      }
+      return '';
+    }
+
   }
 
   register_extension(new MW_CoreFunctionsExtension());

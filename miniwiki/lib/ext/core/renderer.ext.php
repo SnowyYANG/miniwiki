@@ -507,7 +507,7 @@
       }
       return htmlspecialchars($link, ENT_QUOTES);
     }
-    
+
     /**
     * render Wiki markup to output
     * raw text is split into blocks (separated by empty lines) and then rendered,
@@ -602,6 +602,34 @@
           $tokens = explode(' ', $line, 2);
           if (count($tokens) > 1) {
             $output .= '<div class="redirect-link">'.$this->process_internal_link($tokens[1], $tokens[1]).'</div>'."\n";
+          }
+        } elseif (strpos($line, '#FOREACH') === 0) {
+          $tokens = explode(' ', $line, 3);
+          if (count($tokens) > 2) {
+            $array_var = $tokens[1];
+            $index_var = $tokens[2];
+            $array_value = $this->wiki_variables->get($array_var);
+            if (!is_array($array_value)) {
+              $array_value = array();
+            }
+            $for_counter = 1;
+            $for_lines = array();
+            while (count($lines) > 0) {
+              $for_line = array_shift($lines);
+              if (strpos($for_line, '#FOREACH') === 0) {
+                $for_counter++;
+              } elseif (strpos($for_line, '#ENDFOR') === 0) {
+                $for_counter--;
+              }
+              if ($for_counter === 0) {
+                break;
+              }
+              array_push($for_lines, $for_line);
+            }
+            foreach ($array_value as $item) {
+              $lines = array_merge($for_lines, $lines);
+              array_unshift($lines, '{{&set|'.$index_var.'|'.$item.'}}');
+            }
           }
         } elseif (strpos($line, '#') === 0) {
           # omit directives

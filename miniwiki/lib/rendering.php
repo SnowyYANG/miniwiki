@@ -184,6 +184,10 @@
   }
 
   function wiki_include($page, $args = null, $flat_args = false, $as_current = true) {
+    $auth =& get_auth();
+    if (!$auth->is_action_permitted(get_action(MW_ACTION_VIEW), $page)) {
+      return '[['.$page->name.']]';
+    }
     $ret = '{{&push_vars}}';
     if ($as_current) {
       $ret .= '{{&set|curpage|'.$page->name.'}}';

@@ -38,10 +38,17 @@
       return 50;
     }
     function get_page($tag, $name, $revision) {
+      $wrap = false;
       if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_SPECIAL) === 0)) {
+        $wrap_name = $name;
         $name = MW_PAGE_NAME_PREFIX_MINIWIKI . $name;
+        $wrap = true;
       }
-      return $this->next->get_page($tag, $name, $revision);
+      $page = $this->next->get_page($tag, $name, $revision);
+      if ($wrap) {
+        $page = new MW_SpecialPageWrapper($wrap_name, $page);
+      }
+      return $page;
     }
   }
 
@@ -56,6 +63,30 @@
       }
       return $this->next->get_page($tag, $name, $revision);
     }
+  }
+
+  class MW_SpecialPageWrapper extends MW_SpecialPage {
+
+    /** @private */
+    var $wrapped;
+
+    function MW_SpecialPageWrapper($name, $wrapped) {
+      parent::MW_SpecialPage($name);
+      $this->wrapped = $wrapped;
+    }
+
+    function exists() {
+      return $this->wrapped->exists();
+    }
+
+    function load() {
+      return $this->wrapped->load();
+    }
+
+    function get_wiki_content() {
+      return $this->wrapped->get_wiki_content();
+    }
+    
   }
 
 ?>

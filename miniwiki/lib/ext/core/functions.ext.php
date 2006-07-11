@@ -48,6 +48,7 @@
       register_wiki_function('list_pages', array($this, 'wiki_fn_list_pages'));
       register_wiki_function('list_users', array($this, 'wiki_fn_list_users'));
       register_wiki_function('list_uploads', array($this, 'wiki_fn_list_uploads'));
+      register_wiki_function('is_special', array($this, 'wiki_fn_is_special'));
       return true;
     }
 
@@ -256,6 +257,11 @@
       return $users_mgr->get_all_usernames();
     }
 
+    function wiki_fn_is_special($args, $renderer_state) {
+      $page_name = array_shift($args);
+      return (strpos($page_name, MW_PAGE_NAME_PREFIX_SPECIAL) === 0 ? 'true' : '');
+    }
+  
   }
 
   register_extension(new MW_CoreFunctionsExtension());

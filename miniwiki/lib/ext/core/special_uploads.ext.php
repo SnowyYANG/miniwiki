@@ -56,32 +56,17 @@
       }
       return parent::has_action($action);
     }
-    
-    function render($vars = null) {
-      echo '<div class="special-uploads">', "\n";
-      $auth =& get_auth();
-      $action = get_action(MW_ACTION_EDIT);
-      if ($auth->is_action_permitted($action, $this)) {
-        $link = $action->link();
-        echo '<form enctype="multipart/form-data" action="', $link->to_url(true), '" method="post">'. "\n";
-        echo _("Source filename"), ': <input type="file" size="40" name="', $link->get_sourcefile_param_name(), '"/><br/>', "\n";
-        echo _("Destination filename (may be empty)"), ': <input type="text" size="40" name="', $link->get_destfile_param_name(), '"/><br/>', "\n";
-        echo _("Upload message"), ": <br/>\n";
-        echo '<textarea name="', $link->get_message_param_name(), '" rows="10" cols="60"/></textarea><br/>', "\n";
-        echo '<input type="submit" value="', htmlspecialchars(_("Upload"), ENT_QUOTES),'"/><br/>', "\n";
-        echo '</form>', "\n";
-      }
-      echo "<ul>\n";
-      $storage =& get_storage();
-      $names = $storage->get_resource_names(MW_DS_UPLOADS);
-      foreach ($names as $name) {
-        $page = new_upload_page($name, MW_REVISION_HEAD);
-        echo '<li><a href="', url_for_page_action($page, MW_ACTION_VIEW, true), '">',
-          htmlspecialchars($page->name, ENT_NOQUOTES), "</a></li>\n";
-      }
-      echo "</ul></div>\n";
-    }
 
+    function get_wiki_content() {
+      # can not use load_special_page() because of infinite loop
+      $special_page = new_page(MW_PAGE_NAME_PREFIX_MINIWIKI.$this->name, MW_REVISION_HEAD);
+      if (!$special_page->load()) {
+        trigger_error(_("Required special page %0% is missing", $special_page->name), E_USER_ERROR);
+        return null;
+      }
+      return $special_page->get_wiki_content();
+    }
+    
     /**
     * upload new file
     * @param content new content

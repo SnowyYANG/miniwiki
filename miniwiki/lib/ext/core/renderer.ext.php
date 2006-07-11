@@ -212,7 +212,10 @@
     function process_inline_cb_form($matches) {
       $method = $matches[1];
       $action = $matches[2];
-      return '<form method="'.$this->escape_quotes($method). '" action="'.$this->escape_quotes($action).'">';
+      $enctype = ((count($matches) > 3) ? $matches[3] : '');
+      return '<form method="'.$this->escape_quotes($method).'"'
+        .(($enctype != '') ? ' enctype="'.$this->escape_quotes($enctype).'"' : '')
+        .' action="'.$this->escape_quotes($action).'">';
     }
 
     /** @private sub-callback for preg_replace_callback in process_inline() */
@@ -267,6 +270,10 @@
         }
         $ret .= '</select>';
         return $ret;
+      } elseif ($type == 'textarea') {
+        return '<textarea '
+          .(($name != '#') ? ' name="'.$this->escape_quotes($name).'"' : '')
+          .$add_params.'>'.$this->escape_quotes($value).'</textarea>';
       } else {
         return '<input type="'.$this->escape_quotes($type).'"'
           .(($name != '#') ? ' name="'.$this->escape_quotes($name).'"' : '')
@@ -305,7 +312,7 @@
               '/\[([^\]]*?)\s+([^\]].*?)\]/',
               '/\[([^\]]*?)\]/',
               '/&lt;[Bb][Rr]&gt;/',
-              '/&lt;form\s+(.+?)\s+(.+?)\s*&gt;/',
+              '/&lt;form\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/',
               '/&lt;form-field\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/',
               ',&lt;/form.*?&gt;,',
               '/&lt;box\s+(.+?)\s*&gt;/',

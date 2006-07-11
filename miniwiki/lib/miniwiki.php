@@ -94,7 +94,6 @@
     'MW_CoreSpecialUploadExtension',
     'MW_CoreSpecialUploadsExtension',
     'MW_CoreSpecialUserExtension',
-    'MW_CoreSpecialUsersExtension',
     'MW_CoreUsersManagerExtension',
     'MW_CoreXMLImportExportExtension',
     'MW_UserInfoExtension',

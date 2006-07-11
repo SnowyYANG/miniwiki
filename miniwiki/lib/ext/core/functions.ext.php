@@ -46,6 +46,7 @@
       register_wiki_function('set_item', array($this, 'wiki_fn_set_item'));
       register_wiki_function('import', array($this, 'wiki_fn_import'));
       register_wiki_function('list_pages', array($this, 'wiki_fn_list_pages'));
+      register_wiki_function('list_users', array($this, 'wiki_fn_list_users'));
       return true;
     }
 
@@ -242,6 +243,11 @@
     function wiki_fn_list_pages($args, $renderer_state) {
       $storage =& get_storage();
       return $storage->get_resource_names(MW_DS_PAGES);
+    }
+
+    function wiki_fn_list_users($args, $renderer_state) {
+      $users_mgr =& get_users_manager();
+      return $users_mgr->get_all_usernames();
     }
 
   }

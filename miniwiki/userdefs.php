@@ -7,6 +7,7 @@
    * user definitions
    */
   
+  /** database settings for MySQL storage (extension MW_CoreMySQLStorageExtension, enabled by default) */
   /** database host name (default is localhost) */
   $mw_db_host = 'localhost';
   /** database user name (default is miniwiki) */
@@ -23,6 +24,9 @@
   $mw_db_encoding = 'latin2';
   /** whether to let database sort strings according to its settings or according to wanted mw_db_encoding (default is true) */
   $mw_db_use_server_collation = true;
+
+  /** root directory for filesystem storage (extension MW_CoreFilesystemStorageExtension, disabled by default) */
+#  $mw_fs_root_dir = '';
 
   /** date/time format string (default is %Y/%m/%d %H:%M:%S) */
   $mw_datetime_format = "%Y/%m/%d %H:%M:%S";

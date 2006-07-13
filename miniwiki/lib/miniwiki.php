@@ -103,7 +103,8 @@
     'MW_CoreObsoleteExtension',
     'MW_CorePageExtension',
     'MW_CoreRendererExtension',
-    'MW_CoreSpecialPageRedirectorExtension'
+    'MW_CoreSpecialPageRedirectorExtension',
+#    'MW_CoreFilesystemStorageExtension',
   ));
 
   /**

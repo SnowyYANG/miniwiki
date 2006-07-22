@@ -36,9 +36,9 @@
   /** whether changing pages is allowed only for administrator (default is false) */
   $mw_auth_write_admin_only = false;
 
-  /** list of MW_Extension classes which should be initialized (for default see lib/miniwiki.php) */
-#  $mw_enabled_extensions = array(
-#  );
+  /** list of MW_Extension classes which should be enabled or disabled (for default see lib/miniwiki.php) */
+#  $mw_enabled_MW_CoreMySQLStorageExtension = false;
+#  $mw_enabled_MW_CoreFilesystemStorageExtension = true;
 
   /**
   * returns information file name for given user (for use by user_info wiki function)

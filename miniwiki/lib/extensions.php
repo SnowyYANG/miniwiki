@@ -34,15 +34,10 @@
   
   function register_extension($extension) {
     global $registry;
-    $enabled_extensions = config('enabled_extensions');
-    if ($enabled_extensions !== null) {
-      foreach ($enabled_extensions as $enabled_ext) {
-        if (is_a($extension, $enabled_ext)) {
-          debug("Enabling extension ".$extension->get_name());
-          $registry->register($extension, MW_COMPONENT_ROLE_EXTENSION);
-          return;
-        }
-      }
+    if (config('enabled_'.get_class($extension))) {
+      debug("Enabling extension ".$extension->get_name());
+      $registry->register($extension, MW_COMPONENT_ROLE_EXTENSION);
+      return;
     }
     debug("Disabling extension ".$extension->get_name());
   }

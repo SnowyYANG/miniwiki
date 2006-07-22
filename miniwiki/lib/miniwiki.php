@@ -90,22 +90,20 @@
   require_once('actions.php');
   require_once('ui.php');
 
-  set_default_config('enabled_extensions', array(
-    'MW_CoreSpecialUploadExtension',
-    'MW_CoreSpecialUploadsExtension',
-    'MW_CoreSpecialUserExtension',
-    'MW_CoreUsersManagerExtension',
-    'MW_CoreXMLImportExportExtension',
-    'MW_UserInfoExtension',
-    'MW_CoreFunctionsExtension',
-    'MW_CoreLayoutExtension',
-    'MW_CoreMySQLStorageExtension',
-    'MW_CoreObsoleteExtension',
-    'MW_CorePageExtension',
-    'MW_CoreRendererExtension',
-    'MW_CoreSpecialPageRedirectorExtension',
-#    'MW_CoreFilesystemStorageExtension',
-  ));
+  set_default_config('enabled_MW_CoreSpecialUploadExtension', true);
+  set_default_config('enabled_MW_CoreSpecialUploadsExtension', true);
+  set_default_config('enabled_MW_CoreSpecialUserExtension', true);
+  set_default_config('enabled_MW_CoreUsersManagerExtension', true);
+  set_default_config('enabled_MW_CoreXMLImportExportExtension', true);
+  set_default_config('enabled_MW_UserInfoExtension', true);
+  set_default_config('enabled_MW_CoreFunctionsExtension', true);
+  set_default_config('enabled_MW_CoreLayoutExtension', true);
+  set_default_config('enabled_MW_CoreMySQLStorageExtension', true);
+  set_default_config('enabled_MW_CoreObsoleteExtension', true);
+  set_default_config('enabled_MW_CorePageExtension', true);
+  set_default_config('enabled_MW_CoreRendererExtension', true);
+  set_default_config('enabled_MW_CoreSpecialPageRedirectorExtension', true);
+  set_default_config('enabled_MW_CoreFilesystemStorageExtension', false);
 
   /**
   * Initialize miniWiki infrastructure.

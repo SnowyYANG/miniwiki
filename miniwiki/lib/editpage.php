@@ -46,6 +46,7 @@
   generate_button('<span class="link-like">http:</span>', "[http:%]", 'e');
   generate_button('<span class="list-like">abc</span>', "*", 'l');
   generate_button('<span class="pre-like">PRE</span>', "\\n\\n<pre>\\n%\\n</pre>\\n\\n", 'p');
+  echo '<br/>', "\n";
   echo '<textarea id="editarea" name="', $link->get_content_param_name(), '" rows="20" cols="120">', "\n";
   if ($page->has_content) {
     echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
@@ -57,6 +58,7 @@
     echo htmlspecialchars($req->get_message(), ENT_QUOTES);
   }
   echo '"/>', "\n";
+  echo '<br/>', "\n";
   echo '<input type="submit" name="', $link->get_preview_param_name(), '" value="', _("Preview"), '"/>', "\n";
   echo '<input type="submit" value="', _('Update Page'), '"/>', "\n";
   echo '</form>', "\n";

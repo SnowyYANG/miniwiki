@@ -38,7 +38,7 @@
   
     function register(&$component, $role, $selector = null) {
       if (!$this->allow_overwrites && ($this->component !== null)) {
-        trigger_error("Component for role $role is already registered as ".$this->component.", ignoring $component ", E_USER_ERROR);
+        trigger_error("Component for role $role is already registered as ".to_string($this->component).", ignoring ".to_string($component), E_USER_ERROR);
       } else {
         $this->component =& $component;
       }

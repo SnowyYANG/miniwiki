@@ -118,10 +118,10 @@
         case MW_ACTION_EDIT:
         case MW_ACTION_DELETE:
         case MW_ACTION_RENAME:
-          if (strpos($page->name, MW_PAGE_NAME_PREFIX_MINIWIKI) === 0) {
+          if (stripos($page->name, MW_PAGE_NAME_PREFIX_MINIWIKI) === 0) {
             return $is_admin;
           }
-          if (strpos($page->name, MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI) === 0) {
+          if (stripos($page->name, MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI) === 0) {
             return $is_admin;
           }
           return (config('auth_write_admin_only') ? $is_admin : $is_logged);

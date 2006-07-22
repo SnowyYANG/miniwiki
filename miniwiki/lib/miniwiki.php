@@ -52,7 +52,7 @@
   /** internal miniWiki namespace prefix */
   define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW:");
   /** internal miniWiki namespace prefix for uploads */
-  define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "mw/");
+  define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "MW/");
 
   require_once('registry.php');
 

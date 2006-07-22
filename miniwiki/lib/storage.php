@@ -54,7 +54,7 @@
   class MW_Resource {
     var $data = array();
     function get($key) {
-      return $this->data[$key];
+      return (isset($this->data[$key]) ? $this->data[$key] : null);
     }
     function set($key, $value) {
       $this->data[$key] = $value;

@@ -8,15 +8,16 @@ TODO list:
 - layout page describing how everything looks (not just header and footer)
 - layout param to MW_PageLink (layout is MW:Layout:<layout>)
 - per-user access rights (includes moving MW_Auth into extension)
-- Wiki spaces (hierarchical page spaces)
+- Wiki spaces (hierarchical page spaces) - called clusters in storage
 - convert Special pages to MW:Special:*
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - search
 - wiki function _()
-- filesystem storage
 - Subversion storage (including support for Subversion-based users management)
   - unified pages and uploads hierarchies
-  - treat / and : equally as directory separator
+  - treat / and : equally as directory separator (based on filesystem storage)
+- remove all unnecessary is_a() calls
+- correct renaming of uploaded files
 
 $Id$

@@ -447,6 +447,8 @@
       $page =& get_current_page();
       $req =& get_request("MW_EditRequest");
       if ($req->is_update()) {
+        # prevent infinite loop
+        $req->clear_update();
         if (is_a($page, 'MW_SpecialUploadsPage')) {
           $uploaded = $page->upload($req->get_content(), $req->get_message(), $req->get_destname());
           set_current_page($uploaded);
@@ -648,6 +650,10 @@
 
     function is_update() {
       return $this->is_update;
+    }
+
+    function clear_update() {
+      $this->is_update = false;
     }
 
     function get_content() {

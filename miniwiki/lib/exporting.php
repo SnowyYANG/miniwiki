@@ -42,4 +42,24 @@
     
   }
 
+  define("MW_COMPONENT_ROLE_EXPORTING_HANDLER", "MW_ExportingHandler");
+  $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_EXPORTING_HANDLER);
+  
+  class MW_ExportingHandler {
+    function show_exporting_message($msg) {
+      die ("abstract: show_exporting_message");
+    }
+  }
+
+  function show_exporting_message($msg) {
+    global $registry;
+    $install_handler =& $registry->lookup(MW_COMPONENT_ROLE_EXPORTING_HANDLER);
+    $install_handler->show_exporting_message($msg);
+  }
+
+  function register_exporting_handler(&$handler) {
+    global $registry;
+    $registry->register($handler, MW_COMPONENT_ROLE_EXPORTING_HANDLER);
+  }
+  
 ?>

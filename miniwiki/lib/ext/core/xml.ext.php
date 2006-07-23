@@ -99,8 +99,8 @@
       if (empty($str)) {
         return null;
       }
-      if ($to_enc !== null) {
-        return iconv('utf-8', $to_enc, $str);
+      if ($this->to_enc !== null) {
+        return iconv('utf-8', $this->to_enc, $str);
       }
       return $str;
     }
@@ -108,14 +108,14 @@
     /** @private */
     function startElement($parser, $name, $attrs) {
       if ($name === 'RESOURCE') {
-        $resource_name = decode_str($attrs['NAME']);
+        $resource_name = $this->decode_str($attrs['NAME']);
         if (empty($resource_name)) {
           return;
         }
         if ($this->with_history || (($this->prev_resource !== null) && ($resource_name !== $this->prev_resource_name))) {
           $this->flush_prev_resource();
         }
-        $this->cur_dataspace = decode_str($attrs['DATASPACE']);
+        $this->cur_dataspace = $this->decode_str($attrs['DATASPACE']);
         $included = false;
         foreach ($this->dataspaces as $ds) {
           explode_dataspace_name($ds, $ds, $wanted_res);
@@ -133,7 +133,7 @@
         $this->cur_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
         $this->cur_key = null;
       } elseif ($name === 'KEY') {
-        $this->cur_key = decode_str($attrs['NAME']);
+        $this->cur_key = $this->decode_str($attrs['NAME']);
       }
     }
 
@@ -161,7 +161,10 @@
       $resource_name = $this->prev_resource->get(MW_RESOURCE_KEY_NAME);
       if (!$this->force_import && $storage->exists($this->cur_dataspace, $resource_name)) {
         $resource_name .= MW_IMPORTED_RESOURCE_NAME_POSTFIX;
+        show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME).' as '.$resource_name);
         $this->prev_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
+      } else {
+        show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
       }
       if (!$storage->exists($this->cur_dataspace, $resource_name)) {
         $storage->create_resource($this->cur_dataspace, $this->prev_resource);
@@ -179,7 +182,7 @@
       if (empty($this->cur_key)) {
         return;
       }
-      $data = decode_str($data);
+      $data = $this->decode_str($data);
       /** @todo follow import() which uses types_map */
       $storage =& get_storage();
       $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
@@ -279,6 +282,7 @@
             $resources = array( $storage->get_resource($ds, $res_name, null, true) );
           }
           foreach ($resources as $res) {
+            show_exporting_message('Exporting '.$res->get(MW_RESOURCE_KEY_NAME).' revision '.$res->get(MW_RESOURCE_KEY_REVISION));
             fwrite($out, '<resource dataspace="'.$ds.'" name="'.$this->convert_for_xml($conv_enc_from, $enc, $res_name).'">'."\n");
             foreach ($res->data as $key => $value) {
               $type = MW_XML_TYPE_TEXT;

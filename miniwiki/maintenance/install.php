@@ -62,6 +62,14 @@
     
   register_install_handler(new MW_WebInstallHandler());
   
+  class MW_WebExportingHandler extends MW_ExportingHandler {
+    function show_exporting_message($msg) {
+      echo(htmlspecialchars($msg, ENT_NOQUOTES).'<br>');
+    }
+  }
+    
+  register_exporting_handler(new MW_WebExportingHandler());
+  
   miniwiki_boot(true);
 
   $old_main_page = new_page("MainPage", MW_REVISION_HEAD);
@@ -97,6 +105,7 @@
   import_with_check('data/users.xml');
   import_with_check('data/pages.xml');
   import_with_check('data/layout.xml');
+  import_with_check('data/special.xml');
   
   echo('<p><b>Success</b></p>');
 ?>

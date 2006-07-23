@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<resource dataspace="pages" name="MW/Special/Info">
+<key name="content">#TITLE Wiki information
+#NOTOC
+This wiki is powered by '''[http://miniwiki.sf.net miniWiki]''', copyright (c)2005,2006 Stepan Roh.
+
+miniWiki is licensed under [http://opensource.org/licenses/artistic-license.php Artistic License]. In short: do whatever you want with the source, but keep copyrights. Redistribution of changed sources or packages is permitted as long
+as it is clearly stated that they were modified. Selling outside of any bigger package (or charging more
+than reasonable distribution fee) is prohibited.
+
+NO WARRANTY, USE AT YOUR OWN RISK.
+
+* [http://miniwiki.sf.net miniWiki]: {{&amp;mw_version}}
+* [http://www.php.net PHP]: {{&amp;php_version}}
+
+=== Enabled extensions ===
+{{&amp;call|exts|list_extensions}}
+
+#FOREACH exts ext
+{{$ext}}
+#ENDFOR
+</key>
+<key name="length">770</key>
+<key name="last_modified">20060723T190337Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Info</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/Pages">
+<key name="content">#TITLE All pages
+&lt;box special-pages&gt;
+{{&amp;call|reqns|req_param|ns}}
+{{&amp;call|namespaces|list_page_namespaces}}
+Namespace: 
+#IF {{$reqns}}
+[[{{$page}}|(Default)]]
+#ENDIF
+#IFEMPTY {{$reqns}}
+(Default)
+#ENDIF
+#FOREACH namespaces ns
+#IF {{&amp;is_eq|$reqns|$ns}}
+| {{$ns}}
+#ENDIF
+#IFEMPTY {{&amp;is_eq|$reqns|$ns}}
+| [{{&amp;action_link|view|head|$page||ns|$ns}} {{$ns}}]
+#ENDIF
+#ENDFOR
+{{&amp;call|pages|list_pages|$reqns}}
+
+#FOREACH pages p
+* [[{{$p}}]]
+#ENDFOR
+&lt;/box&gt;
+</key>
+<key name="length">473</key>
+<key name="last_modified">20060723T190242Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Pages</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/Rename">
+<key name="content">{{&amp;call|real_name|upload_name|$page}}
+&lt;form post {{&amp;action_link|rename}}&gt;
+  &lt;form-field new_name text {{$real_name}}&gt;
+  &lt;form-field # submit Rename&gt;
+&lt;/form&gt;
+</key>
+<key name="length">162</key>
+<key name="last_modified">20060723T190345Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Rename</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/SpecialPages">
+<key name="content">#TITLE Special pages
+&lt;box special-special-pages&gt;
+{{&amp;call|pages|special_pages}}
+
+#FOREACH pages p
+{{&amp;call|title|page_attr|$p|title}}
+#IF {{$title}}
+* [[{{$p}}|{{$title}}]]
+#ENDIF
+#ENDFOR
+
+&lt;/box&gt;
+</key>
+<key name="length">206</key>
+<key name="last_modified">20060723T190355Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/SpecialPages</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/Upload">
+<key name="content">''This page represents uploaded file named '''{{$filename}}''' (of type {{$mimetype}} and size {{$content_length}} B).''
+    
+[[{{$download_link}}|Download file {{$filename}}]]
+
+{{$revision_message}}
+    
+---
+
+#IF {{&amp;has_action|edit}}
+#IF {{&amp;is_action_permitted|edit}}
+[{{&amp;action_link|edit|head}} Upload new version]
+#ENDIF
+#ENDIF
+</key>
+<key name="length">344</key>
+<key name="last_modified">20060723T190403Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Upload</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/Uploads">
+<key name="content">#TITLE All uploads
+&lt;box special-uploads&gt;
+#IF {{&amp;is_action_permitted|edit}}
+&lt;form post {{&amp;action_link|edit}} multipart/form-data&gt;
+  Source filename: &lt;form-field sourcefile file|size=40&gt;&lt;br&gt;
+  Destination filename (may be empty): &lt;form-field destfile text|size=40&gt;&lt;br&gt;
+  Upload message: &lt;br&gt;
+  &lt;form-field message textarea|rows=10|cols=60&gt;&lt;br&gt;
+  &lt;form-field # submit Upload&gt;
+&lt;/form&gt;
+#ENDIF
+&lt;box special-uploads-list&gt;
+{{&amp;call|reqns|req_param|ns}}
+{{&amp;call|namespaces|list_upload_namespaces}}
+Namespace:
+#IF {{$reqns}}
+[[{{$page}}|(Default)]]
+#ENDIF
+#IFEMPTY {{$reqns}}
+(Default)
+#ENDIF
+#FOREACH namespaces ns
+#IF {{&amp;is_eq|$reqns|$ns}}
+| {{$ns}}
+#ENDIF
+#IFEMPTY {{&amp;is_eq|$reqns|$ns}}
+| [{{&amp;action_link|view|head|$page||ns|$ns}} {{$ns}}]
+#ENDIF
+#ENDFOR
+{{&amp;call|uploads|list_uploads|$reqns}}
+
+#FOREACH uploads u
+* [[Upload:{{$u}}]]
+#ENDFOR
+&lt;/box&gt;
+&lt;/box&gt;
+</key>
+<key name="length">883</key>
+<key name="last_modified">20060723T190407Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Uploads</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/User">
+<key name="content">#IF {{&amp;has_action|change_password}}
+#IF {{&amp;is_action_permitted|change_password}}
+&lt;form post {{&amp;action_link|change_password}}&gt;
+  &lt;form-field user hidden {{$related_user}}&gt;
+  &lt;form-field pass password|size=40&gt;
+  &lt;form-field # submit Change Password&gt;
+&lt;/form&gt;
+#ENDIF
+#ENDIF
+
+{{$user_page_content}}</key>
+<key name="length">303</key>
+<key name="last_modified">20060723T190413Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/User</key>
+</resource>
+<resource dataspace="pages" name="MW/Special/Users">
+<key name="content">#TITLE All users
+&lt;box special-users&gt;
+#IF {{&amp;is_action_permitted|create_user}}
+&lt;form post {{&amp;action_link|create_user}}&gt;
+  &lt;form-field user text|size=40&gt;
+  &lt;form-field # submit Create User&gt;
+&lt;/form&gt;
+#ENDIF
+&lt;box special-users-list&gt;
+{{&amp;call|users|list_users}}
+
+#FOREACH users u
+* [[User/{{$u}}]]
+#IF {{&amp;is_action_permitted|delete_user}}
+&lt;form post {{&amp;action_link|delete_user}}&gt;
+  &lt;form-field user hidden {{$u}}&gt;
+  &lt;form-field # submit Delete User&gt;
+&lt;/form&gt;
+#ENDIF
+#ENDFOR
+&lt;/box&gt;
+&lt;/box&gt;
+</key>
+<key name="length">502</key>
+<key name="last_modified">20060723T203152Z</key>
+<key name="message">miniWiki default</key>
+<key name="author">admin</key>
+<key name="revision">1</key>
+<key name="name">MW/Special/Users</key>
+</resource>
+</resources>

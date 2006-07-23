@@ -35,6 +35,15 @@
   
   include('../userdefs.php');
   include('miniwiki.php');
+  
+  class MW_CLIExportingHandler extends MW_ExportingHandler {
+    function show_exporting_message($msg) {
+      echo "...", $msg, "\n";
+    }
+  }
+    
+  register_exporting_handler(new MW_CLIExportingHandler());
+  
   miniwiki_boot();
     
   if ($argc < 2) {
@@ -65,14 +74,14 @@ Available formats:
   $file = array_shift($argv);
   $dataspaces = $argv;
   
-  echo "Importing from $file...";
+  echo "Importing from $file...\n";
   $status = import($file, $with_history, $dataspaces, $force_import);
   if ($status === null) {
-    echo "\nUnknown file format\n";
+    echo "Unknown file format\n";
   } else if ($status !== true) {
-    echo "\nError: ", $status, "\n";
+    echo "Error: ", $status, "\n";
   } else {
-    echo 'done', "\n";
+    echo '...done', "\n";
   }
     
 ?>

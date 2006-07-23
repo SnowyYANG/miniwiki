@@ -93,6 +93,8 @@
     var $cur_dataspace;
     /** @private */
     var $cur_key;
+    /** @private */
+    var $cur_cdata;
 
     /** @private */
     function decode_str($str) {
@@ -135,6 +137,7 @@
       } elseif ($name === 'KEY') {
         $this->cur_key = $this->decode_str($attrs['NAME']);
       }
+      $this->cur_cdata = null;
     }
 
     /** @private */
@@ -148,6 +151,25 @@
         $this->prev_resource_name = $this->cur_resource->get(MW_RESOURCE_KEY_NAME);
         $this->cur_resource = null;
       } elseif ($name === 'KEY') {
+        if ($this->cur_cdata !== null) {
+          $data = $this->decode_str($this->cur_cdata);
+          /** @todo follow import() which uses types_map */
+          $storage =& get_storage();
+          $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
+          if (($this->cur_key === MW_RESOURCE_KEY_CONTENT) && ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY)) {
+            echo $data, "<br>\n";
+            $data = base64_decode($data);
+            echo strlen($data), "<br>\n";
+          } elseif ($this->cur_key === MW_RESOURCE_KEY_LAST_MODIFIED) {
+            # is ignored by storage anyway
+            return;
+          } elseif ($this->cur_key === MW_RESOURCE_KEY_NAME) {
+            # already there
+            return;
+          }
+          $prev = $this->cur_resource->get($this->cur_key);
+          $this->cur_resource->set($this->cur_key, $prev . $data);
+        }
         $this->cur_key = null;
       }
     }
@@ -182,21 +204,7 @@
       if (empty($this->cur_key)) {
         return;
       }
-      $data = $this->decode_str($data);
-      /** @todo follow import() which uses types_map */
-      $storage =& get_storage();
-      $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
-      if (($this->cur_key === MW_RESOURCE_KEY_CONTENT) && ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY)) {
-        $data = base64_decode($data);
-      } elseif ($this->cur_key === MW_RESOURCE_KEY_LAST_MODIFIED) {
-        # is ignored by storage anyway
-        return;
-      } elseif ($this->cur_key === MW_RESOURCE_KEY_NAME) {
-        # already there
-        return;
-      }
-      $prev = $this->cur_resource->get($this->cur_key);
-      $this->cur_resource->set($this->cur_key, $prev . $data);
+      $this->cur_cdata .= $data;
     }
     
     function import($file, $with_history = true, $dataspaces = array(), $force_import = false) {

@@ -18,7 +18,12 @@
     }
 
     function get_description() {
-      return "MySQL storage.";
+      $version = '???';
+      $storage =& get_storage();
+      if (($storage !== null) && is_a($storage, 'MW_MySQLStorage')) {
+        $version = $storage->get_server_info();
+      }
+      return "[http://www.mysql.com MySQL]: $version";
     }
 
     function initialize() {
@@ -603,6 +608,11 @@
 
     function get_dataspace_definition($dataspace) {
       return $this->dataspace_defs[$dataspace];
+    }
+
+    function get_server_info() {
+      $this->init();
+      return mysql_get_server_info($this->conn);
     }
 
   }

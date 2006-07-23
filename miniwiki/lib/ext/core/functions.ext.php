@@ -54,6 +54,9 @@
       register_wiki_function('list_page_namespaces', array($this, 'wiki_fn_list_page_namespaces'));
       register_wiki_function('list_upload_namespaces', array($this, 'wiki_fn_list_upload_namespaces'));
       register_wiki_function('page_attr', array($this, 'wiki_fn_page_attr'));
+      register_wiki_function('list_extensions', array($this, 'wiki_fn_list_extensions'));
+      register_wiki_function('mw_version', array($this, 'wiki_fn_mw_version'));
+      register_wiki_function('php_version', array($this, 'wiki_fn_php_version'));
       return true;
     }
 
@@ -319,6 +322,26 @@
       $page = new_page($page_name, MW_REVISION_HEAD);
       $page->load();
       return $page->get_attr($attr_name);
+    }
+  
+    function wiki_fn_list_extensions($args, $renderer_state) {
+      $ret = array();
+      $exts = get_extensions();
+      foreach ($exts as $ext) {
+        /** @todo multiline bug strikes here */
+#        $ret[] = '===='.$ext->get_name()."====\n\nVersion: ".$ext->get_version()."\n\n".$ext->get_description();
+        $ret[] = '*'.$ext->get_name()."<br><br>Version: ".$ext->get_version()."<br><br>".$ext->get_description();
+      }
+      sort($ret);
+      return $ret;
+    }
+
+    function wiki_fn_mw_version($args, $renderer_state) {
+      return MW_VERSION;
+    }
+  
+    function wiki_fn_php_version($args, $renderer_state) {
+      return phpversion();
     }
   
   }

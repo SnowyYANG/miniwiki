@@ -41,7 +41,6 @@
     $req =& get_request("MW_ActionRequest");
     $auth =& get_auth();
     $vars = new MW_Variables(null);
-    $vars->set('version', MW_VERSION);
     $vars->set('user', ($auth->is_logged ? $auth->user : ''));
     $vars->set('main_page', MW_PAGE_NAME_MAIN);
     $action = $req->get_action();

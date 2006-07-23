@@ -42,6 +42,11 @@
     debug("Disabling extension ".$extension->get_name());
   }
 
+  function get_extensions() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_EXTENSION);
+  }
+
   function load_extensions($path, $recurse) {
     $d = dir($path);
     while (false !== ($entry = $d->read())) {

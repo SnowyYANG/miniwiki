@@ -1,7 +1,6 @@
 TODO list:
 
 - multi-line {{...}}
-- XML import
 - improve code docs
 - classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page

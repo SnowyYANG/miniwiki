@@ -1,7 +1,7 @@
 TODO list:
 
 release 0.3:
-- multi-line {{...}}
+- update User's Guide
 
 release 0.4:
 - Subversion storage (including support for Subversion-based users management)

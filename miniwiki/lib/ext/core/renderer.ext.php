@@ -139,34 +139,34 @@
     /** @private callback for preg_replace_callback in process_inline() */
     function process_inline_cb($matches) {
       $type = $matches[0];
-      if (preg_match("/^'''/", $type)) {
+      if (preg_match("/^'''/s", $type)) {
         return $this->process_inline_cb_strong($matches);
       }
-      if (preg_match("/^''/", $type)) {
+      if (preg_match("/^''/s", $type)) {
         return $this->process_inline_cb_em($matches);
       }
-      if (preg_match("/^\[\[/", $type)) {
+      if (preg_match("/^\[\[/s", $type)) {
         return $this->process_inline_cb_internal_link($matches);
       }
-      if (preg_match("/^\[/", $type)) {
+      if (preg_match("/^\[/s", $type)) {
         return $this->process_inline_cb_external_link($matches);
       }
-      if (preg_match("/^&lt;form-field/", $type)) {
+      if (preg_match("/^&lt;form-field/s", $type)) {
         return $this->process_inline_cb_form_field($matches);
       }
-      if (preg_match("/^&lt;form/", $type)) {
+      if (preg_match("/^&lt;form/s", $type)) {
         return $this->process_inline_cb_form($matches);
       }
-      if (preg_match(",^&lt;/form,", $type)) {
+      if (preg_match(",^&lt;/form,s", $type)) {
         return $this->process_inline_cb_form_end($matches);
       }
-      if (preg_match("/^&lt;box/", $type)) {
+      if (preg_match("/^&lt;box/s", $type)) {
         return $this->process_inline_cb_box($matches);
       }
-      if (preg_match(",^&lt;/box,", $type)) {
+      if (preg_match(",^&lt;/box,s", $type)) {
         return $this->process_inline_cb_box_end($matches);
       }
-      if (preg_match("/^&lt;/", $type)) {
+      if (preg_match("/^&lt;/s", $type)) {
         return $this->process_inline_cb_br($matches);
       }
     }
@@ -305,18 +305,18 @@
     function process_inline($text) {
       debug('MW_Page.process_inline(text='.$text. ')');
       $text = preg_replace_callback(
-        array("/'''(.*?)'''/",
-              "/''(.*?)''/",
-              '/\[\[([^\]]*?)\|(.*?)\]\]/',
-              '/\[\[([^\]]*?)\]\]/',
-              '/\[([^\]]*?)\s+([^\]].*?)\]/',
-              '/\[([^\]]*?)\]/',
-              '/&lt;[Bb][Rr]&gt;/',
-              '/&lt;form\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/',
-              '/&lt;form-field\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/',
-              ',&lt;/form.*?&gt;,',
-              '/&lt;box\s+(.+?)\s*&gt;/',
-              ',&lt;/box.*?&gt;,',
+        array("/'''(.*?)'''/s",
+              "/''(.*?)''/s",
+              '/\[\[([^\]]*?)\|(.*?)\]\]/s',
+              '/\[\[([^\]]*?)\]\]/s',
+              '/\[([^\]]*?)\s+([^\]].*?)\]/s',
+              '/\[([^\]]*?)\]/s',
+              '/&lt;[Bb][Rr]&gt;/s',
+              '/&lt;form\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/s',
+              '/&lt;form-field\s+(.+?)\s+(.+?)(?:\s+(.+?))?&gt;/s',
+              ',&lt;/form.*?&gt;,s',
+              '/&lt;box\s+(.+?)\s*&gt;/s',
+              ',&lt;/box.*?&gt;,s',
               ),
         array(&$this, 'process_inline_cb'),
         $text);
@@ -341,7 +341,7 @@
     function process_heading_block($block) {
       debug('MW_Page.process_heading_block(block='.$block.')');
       $block = preg_replace_callback(
-        '/^(=+)\s*(.*?)\s*=+\s*$/',
+        '/^(=+)\s*(.*?)\s*=+\s*$/s',
         array(&$this, 'process_heading_block_cb'),
         $block);
       return $block."\n";
@@ -473,12 +473,12 @@
         $inc_command = '&include|' . $inc_command;
       } elseif (strpos($inc_command, '|') === false) {
         # backwards compatible {{&func arg}} -> {{&func|arg}}
-        $inc_command = preg_replace('/\s+/', '|', $inc_command, 1);
+        $inc_command = preg_replace('/\s+/s', '|', $inc_command, 1);
       }
       $inc_command = substr($inc_command, 1);
       $wiki_func_args = explode('|', $inc_command);
       $wiki_func = array_shift($wiki_func_args);
-      $wiki_func_args = preg_replace('/\$(\S+)/e', '$this->wiki_variables->get("$1")', $wiki_func_args);
+      $wiki_func_args = preg_replace('/\$(\S+)/es', '$this->wiki_variables->get("$1")', $wiki_func_args);
       $wiki_func_ret = call_wiki_function($wiki_func, $wiki_func_args, $this);
       if ($wiki_func_ret !== null) {
         return $wiki_func_ret;
@@ -494,7 +494,7 @@
     function process_includes($line) {
       debug('MW_Page.process_includes(line='.$line. ')');
       $line = preg_replace_callback(
-        '/{{(.*?)}}/',
+        '/{{(.*?)}}/s',
         array(&$this, 'process_includes_cb'),
         $line);
       return $line;
@@ -545,7 +545,7 @@
             continue;
           }
         }
-        if (!$in_pre && preg_match('/^<pre>/i', $line)) {
+        if (!$in_pre && preg_match('/^<pre>/si', $line)) {
           $output .= $this->process_block_chain($current_chain);
           $current_chain = '';
           $in_pre = true;
@@ -553,7 +553,7 @@
           $output .= '<pre>';
         }
         if ($in_pre) {
-          if (preg_match(',^</pre>,i', $line)) {
+          if (preg_match(',^</pre>,si', $line)) {
             $in_pre = 0;
             $output .= "</pre>\n";
           } else {
@@ -646,11 +646,25 @@
         } elseif (strpos($line, '#') === 0) {
           # omit directives
         } elseif (strpos($line, '{{') !== false) {
-          /** @todo endless loop with multi-line includes */
-          $line = $this->process_includes($line);
-          # eat empty lines which resulted from {{...}} processing
-          if (!empty($line)) {
-            $lines = array_merge(explode("\n", $line), $lines);
+          $process = true;
+          if (strpos($line, '}}') === false) {
+            # multi-line include, must find the end
+            $proces = false;
+            while (count($lines) > 0) {
+              $next_line = array_shift($lines);
+              $line .= "\n" . $next_line;
+              if (strpos($next_line, '}}') !== false) {
+                $process = true;
+                break;
+              }
+            }
+          }
+          if ($process) {
+            $line = $this->process_includes($line);
+            # eat empty lines which resulted from {{...}} processing
+            if (!empty($line)) {
+              $lines = array_merge(explode("\n", $line), $lines);
+            }
           }
         } else {
           $current_chain .= $line . "\n";

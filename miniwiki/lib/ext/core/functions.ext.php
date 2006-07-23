@@ -347,9 +347,7 @@
       $ret = array();
       $exts = get_extensions();
       foreach ($exts as $ext) {
-        /** @todo multiline bug strikes here */
-#        $ret[] = '===='.$ext->get_name()."====\n\nVersion: ".$ext->get_version()."\n\n".$ext->get_description();
-        $ret[] = '*'.$ext->get_name()."<br><br>Version: ".$ext->get_version()."<br><br>".$ext->get_description();
+        $ret[] = "====".$ext->get_name().' '.$ext->get_version()."====\n\n".$ext->get_description()."\n\n";
       }
       sort($ret);
       return $ret;

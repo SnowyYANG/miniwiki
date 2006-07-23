@@ -65,6 +65,8 @@ Since version 0.3 all user settings are prefixed with mw_, that is $auth_read_lo
 and $auth_write_admin_only are now called $mw_auth_read_logged_only
 and $mw_auth_write_admin_only respectively.
 
+Pages and uploads which are already present will be stored with suffix "-Imported".
+
 Execution
 ---------
 

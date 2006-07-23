@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<resource dataspace="pages" name="MW:Layout:Footer">
+<resource dataspace="pages" name="MW/Layout/Default/Footer">
 <key name="content">&lt;box footer&gt;
 [[{{$main_page}}]] |
 #IF {{$user}}
-[{{&amp;action_link|relogin}} Logged as {{$user}}]
+[{{&amp;action_link|login}} Logged as {{$user}}]
 #ENDIF
 #IFEMPTY {{$user}}
 [{{&amp;action_link|login}} Login]
@@ -12,53 +12,63 @@
 #IF {{$has_content}}
 | Revision: {{$revision}}
 #IFEMPTY {{&amp;is_eq|$req_action|view_source}}
-{{MW:Layout:ShowAction|action|view_source|text|View Source}}
+{{&amp;layout|ShowAction|action|view_source|text|Source}}
 #ENDIF
 #IF {{&amp;is_eq|$req_action|view_source}}
-{{MW:Layout:ShowAction|action|view|text|View}}
+{{&amp;layout|ShowAction|action|view|text|View}}
 #ENDIF
 | {{$last_modified}}
 #ENDIF
-{{MW:Layout:ShowAction|action|view|text|View|revision|head}}
-{{MW:Layout:ShowAction|action|edit|text|Edit|revision|head}}
-{{MW:Layout:ShowAction|action|delete|text|Delete|revision|head}}
-{{MW:Layout:ShowAction|action|history|text|History|revision|head}}
+{{&amp;layout|ShowAction|action|view|text|View|revision|head}}
+#IFEMPTY {{&amp;is_special|$page}}
+{{&amp;layout|ShowAction|action|edit|text|Edit|revision|head}}
+{{&amp;layout|ShowAction|action|rename|text|Rename|revision|head}}
+{{&amp;layout|ShowAction|action|delete|text|Delete|revision|head}}
+{{&amp;layout|ShowAction|action|history|text|History|revision|head}}
+#ENDIF
+| {{&amp;process_time}} sec
 &lt;/box&gt;
 #ENDPAGE
 </key>
-<key name="length">733</key>
-<key name="last_modified">20050918T130147Z</key>
+<key name="length">843</key>
+<key name="last_modified">20060723T190506Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>
-<key name="name">MW:Layout:Footer</key>
+<key name="name">MW/Layout/Default/Footer</key>
 </resource>
-<resource dataspace="pages" name="MW:Layout:Header">
+<resource dataspace="pages" name="MW/Layout/Default/Header">
 <key name="content">#PAGE
 #HEADER
 #META title {{$title}}
-#IF {{&amp;exists|data/mw/layout/default.css}}
-#META stylesheet [[data/mw/layout/default.css]]
+{{&amp;call|css|layout_data|default.css}}
+#IF {{&amp;exists|$css}}
+#META stylesheet [[{{$css}}]]
 #ENDIF
-#IF {{&amp;exists|data/mw/layout/functions.js}}
-#META javascript [[data/mw/layout/functions.js]]
+{{&amp;call|js|layout_data|functions.js}}
+#IF {{&amp;exists|$js}}
+#META javascript [[{{$js}}]]
 #ENDIF
 #ENDHEADER
 
 = {{$title}} =
 
+#IF {{$redir_page}}
+&lt;box redirect-msg&gt;Redirected from [{{&amp;noredir_link|$redir_page}} {{$redir_page}}]&lt;/box&gt;
+#ENDIF
+
 #IF {{$info_text}}
 &lt;box info-text&gt;{{$info_text}}&lt;/box&gt;
 #ENDIF
 </key>
-<key name="length">313</key>
-<key name="last_modified">20060624T122616Z</key>
+<key name="length">455</key>
+<key name="last_modified">20060723T190515Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>
-<key name="name">MW:Layout:Header</key>
+<key name="name">MW/Layout/Default/Header</key>
 </resource>
-<resource dataspace="pages" name="MW:Layout:ShowAction">
+<resource dataspace="pages" name="MW/Layout/Default/ShowAction">
 <key name="content">#IF {{&amp;has_action|$action}}
 #IF {{&amp;is_action_permitted|$action}}
 | [{{&amp;action_link|$action|$revision}} {{$text}}]
@@ -68,28 +78,28 @@
 #ENDIF
 #ENDIF</key>
 <key name="length">195</key>
-<key name="last_modified">20050918T113109Z</key>
+<key name="last_modified">20060723T190524Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>
-<key name="name">MW:Layout:ShowAction</key>
+<key name="name">MW/Layout/Default/ShowAction</key>
 </resource>
-<resource dataspace="uploads" name="mw/layout/default.css">
-<key name="content">LyogJElkOiBkZWZhdWx0LmNzcyA0IDIwMDUtMDktMDIgMjE6NDc6MTVaIHNyYyAkCiAqIChjKTIwMDUgU3RlcGFuIFJvaCA8c3JjQHNybmV0LmN6PgogKiBGcmVlIHRvIGNvcHksIGZyZWUgdG8gbW9kaWZ5LCBOTyBXQVJSQU5UWQogKi8KCmgxIHsKICBmb250LXZhcmlhbnQ6IHNtYWxsLWNhcHMKfQphIHsKfQphOmxpbmsgewogIGNvbG9yOiAjMDAyYmI4CiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmUKfQphOnZpc2l0ZWQgewogIGNvbG9yOiAjNWEzNjk2Owp9CmE6aG92ZXIgewp9CmE6YWN0aXZlIHsKICBjb2xvcjogI0VFOUEwMAp9CmEuZWRpdC1saW5rIHsKICBjb2xvcjogcmVkCn0KcHJlIHsKICBib3JkZXI6IDFweCBzb2xpZDsKICBwYWRkaW5nOiAxZW07CiAgYmFja2dyb3VuZC1jb2xvcjogI0QzRDNEMzsKfQoqLmZvb3RlciB7CiAgYmFja2dyb3VuZC1jb2xvcjogeWVsbG93OwogIGZvbnQtZmFtaWx5OiBtb25vc3BhY2UKfQoqLmZvb3RlciBhIHsKICBjb2xvcjogYmx1ZQp9CioucGFnZS1lZGl0IHRleHRhcmVhIHsKICBtYXJnaW46IDFlbSAwCn0KKi5oaXN0b3J5IGxpIHsKICBsaXN0LXN0eWxlOiBub25lCn0KKi5oaXN0b3J5ICouaGlzdG9yeS1tZXNzYWdlIHsKICBmb250LXN0eWxlOiBvYmxpcXVlOwogIGNvbG9yOiAjOTE5MTkxCn0KKi5oaXN0b3J5ICouaGlzdG9yeS1jb250ZW50LWxlbmd0aCB7CiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZTsKICBjb2xvcjogIzkxOTE5MQp9CiouaGlzdG9yeSAqLmhpc3RvcnktdXNlciB7CiAgY29sb3I6ICM5MTkxOTEKfQoqLmluZm8tdGV4dCB7CiAgY29sb3I6IHJlZDsKICBib3JkZXItYm90dG9tOiAxcHggZG90dGVkIGJsYWNrOwp9CmJvZHkgaDEgewogIG1hcmdpbjogMDsKICBib3JkZXItYm90dG9tOiAxcHggZG90dGVkCn0KKi5zcGVjaWFsLXBhZ2VzIGxpIHsKICBsaXN0LXN0eWxlOiBub25lCn0KKi5zcGVjaWFsLXVzZXJzIGxpIHsKICBsaXN0LXN0eWxlOiBub25lCn0KZm9ybS5kZWxldGUtdXNlciB7CiAgZGlzcGxheTogaW5saW5lCn0KKi5saW5rLWxpa2UgewogIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lCn0KKi5wcmUtbGlrZSB7CiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZQp9CioubGlzdC1saWtlIHsKICBkaXNwbGF5OiBsaXN0LWl0ZW07CiAgLyogd29ya2Fyb3VuZCBmb3IgTW96aWxsYSBGaXJlZm94IChlbHNlIHRoZSBsaXN0IGJ1bGxldCBpcyBwYXJ0aWFsbHkgaGlkZGVuKSAqLwogIG1hcmdpbjogMCAwIDAgMWVtOwp9CioudG9jIHsKICBib3JkZXI6IDFweCBzb2xpZDsKICBtYXJnaW46IDFlbTsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjRDBEMEQwOwogIGZvbnQtc2l6ZTogeC1zbWFsbDsKfQoqLnRvYyB1bCBsaSB7CiAgbGlzdC1zdHlsZTogbm9uZTsKfQoqLnRvYy1sZXZlbC0yIHsKICBtYXJnaW46IDAgMCAwIDJlbTsKfQoqLnRvYy1sZXZlbC0zIHsKICBtYXJnaW46IDAgMCAwIDRlbTsKfQoqLnRvYy1sZXZlbC00IHsKICBtYXJnaW46IDAgMCAwIDZlbTsKfQoqLnRvYy1sZXZlbC01IHsKICBtYXJnaW46IDAgMCAwIDhlbTsKfQppbWcgewogIGJvcmRlcjogMDsKfQo=</key>
-<key name="length">1559</key>
-<key name="last_modified">20060624T122438Z</key>
+<resource dataspace="uploads" name="MW/Layout/Default/default.css">
+<key name="content">aDEgew0KICBmb250LXZhcmlhbnQ6IHNtYWxsLWNhcHMNCn0NCmEgew0KfQ0KYTpsaW5rIHsNCiAgY29sb3I6ICMwMDJiYjgNCiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmUNCn0NCmE6dmlzaXRlZCB7DQogIGNvbG9yOiAjNWEzNjk2Ow0KfQ0KYTpob3ZlciB7DQp9DQphOmFjdGl2ZSB7DQogIGNvbG9yOiAjRUU5QTAwDQp9DQphLmVkaXQtbGluayB7DQogIGNvbG9yOiByZWQNCn0NCnByZSB7DQogIGJvcmRlcjogMXB4IHNvbGlkOw0KICBwYWRkaW5nOiAxZW07DQogIGJhY2tncm91bmQtY29sb3I6ICNEM0QzRDM7DQp9DQoqLmZvb3RlciB7DQogIGJhY2tncm91bmQtY29sb3I6IHllbGxvdzsNCiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZQ0KfQ0KKi5mb290ZXIgYSB7DQogIGNvbG9yOiBibHVlDQp9DQoqLnBhZ2UtZWRpdCB0ZXh0YXJlYSB7DQogIG1hcmdpbjogMWVtIDANCn0NCiouaGlzdG9yeSBsaSB7DQogIGxpc3Qtc3R5bGU6IG5vbmUNCn0NCiouaGlzdG9yeSAqLmhpc3RvcnktbWVzc2FnZSB7DQogIGZvbnQtc3R5bGU6IG9ibGlxdWU7DQogIGNvbG9yOiAjOTE5MTkxDQp9DQoqLmhpc3RvcnkgKi5oaXN0b3J5LWNvbnRlbnQtbGVuZ3RoIHsNCiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZTsNCiAgY29sb3I6ICM5MTkxOTENCn0NCiouaGlzdG9yeSAqLmhpc3RvcnktdXNlciB7DQogIGNvbG9yOiAjOTE5MTkxDQp9DQoqLmluZm8tdGV4dCB7DQogIGNvbG9yOiByZWQ7DQogIGJvcmRlci1ib3R0b206IDFweCBkb3R0ZWQgYmxhY2s7DQp9DQpib2R5IGgxIHsNCiAgbWFyZ2luOiAwOw0KICBib3JkZXItYm90dG9tOiAxcHggZG90dGVkDQp9DQoqLnNwZWNpYWwtcGFnZXMgbGkgew0KICBsaXN0LXN0eWxlOiBub25lDQp9DQoqLnNwZWNpYWwtdXBsb2FkcyBsaSB7DQogIGxpc3Qtc3R5bGU6IG5vbmUNCn0NCiouc3BlY2lhbC11c2VycyBsaSB7DQogIGxpc3Qtc3R5bGU6IG5vbmUNCn0NCiouc3BlY2lhbC11c2Vycy1saXN0IGZvcm0gew0KICBkaXNwbGF5OiBpbmxpbmUNCn0NCioubGluay1saWtlIHsNCiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmUNCn0NCioucHJlLWxpa2Ugew0KICBmb250LWZhbWlseTogbW9ub3NwYWNlDQp9DQoqLmxpc3QtbGlrZSB7DQogIGRpc3BsYXk6IGxpc3QtaXRlbTsNCiAgLyogd29ya2Fyb3VuZCBmb3IgTW96aWxsYSBGaXJlZm94IChlbHNlIHRoZSBsaXN0IGJ1bGxldCBpcyBwYXJ0aWFsbHkgaGlkZGVuKSAqLw0KICBtYXJnaW46IDAgMCAwIDFlbTsNCn0NCioudG9jIHsNCiAgYm9yZGVyOiAxcHggc29saWQ7DQogIG1hcmdpbjogMWVtOw0KICBiYWNrZ3JvdW5kLWNvbG9yOiAjRDBEMEQwOw0KICBmb250LXNpemU6IHgtc21hbGw7DQp9DQoqLnRvYyB1bCBsaSB7DQogIGxpc3Qtc3R5bGU6IG5vbmU7DQp9DQoqLnRvYy1sZXZlbC0yIHsNCiAgbWFyZ2luOiAwIDAgMCAyZW07DQp9DQoqLnRvYy1sZXZlbC0zIHsNCiAgbWFyZ2luOiAwIDAgMCA0ZW07DQp9DQoqLnRvYy1sZXZlbC00IHsNCiAgbWFyZ2luOiAwIDAgMCA2ZW07DQp9DQoqLnRvYy1sZXZlbC01IHsNCiAgbWFyZ2luOiAwIDAgMCA4ZW07DQp9DQppbWcgew0KICBib3JkZXI6IDA7DQp9DQo=</key>
+<key name="length">1580</key>
+<key name="last_modified">20060723T181610Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>
-<key name="name">mw/layout/default.css</key>
+<key name="name">MW/Layout/Default/default.css</key>
 </resource>
-<resource dataspace="uploads" name="mw/layout/functions.js">
-<key name="content">LyogJElkOiBmdW5jdGlvbnMuanMgNCAyMDA1LTA5LTAyIDIxOjQ3OjE1WiBzcmMgJAogKiAoYykyMDA1IFN0ZXBhbiBSb2ggPHNyY0Bzcm5ldC5jej4KICogRnJlZSB0byBjb3B5LCBmcmVlIHRvIG1vZGlmeSwgTk8gV0FSUkFOVFkKICovCgovKgogKiBhZGRzIGdpdmVuIHRleHQgdG8gdGV4dGFyZWEgdG8gY3VycmVudCBjdXJzb3IgcG9zaXRpb24KICogaWYgdGV4dCBjb250YWlucyAlIGN1cnNvciB3aWxsIGJlIHBvc2l0aW9uZWQgdGhlcmUgYWZ0ZXIgYWRkCiAqIGlkOiB0ZXh0YXJlYSBJRAogKiB0ZXh0OiB0ZXh0IHRvIGFkZAogKi8KZnVuY3Rpb24gYWRkX3RvX3RleHRhcmVhKGlkLCB0ZXh0KSB7CiAgdGV4dGFyZWEgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChpZCk7CgogIC8vIGVuaGFuY2VkIGNvZGUgZnJvbSBodHRwOi8vd3d3LmFsZXhraW5nLm9yZy9ibG9nLzIwMDMvMDYvMDIvaW5zZXJ0aW5nLWF0LXRoZS1jdXJzb3ItdXNpbmctamF2YXNjcmlwdC8gYW5kIE1lZGlhV2lraQogIGlmIChkb2N1bWVudC5zZWxlY3Rpb24pIHsKICAgIC8vIElFCiAgICB0ZXh0YXJlYS5mb2N1cygpOwogICAgc2VsID0gZG9jdW1lbnQuc2VsZWN0aW9uLmNyZWF0ZVJhbmdlKCk7CiAgICBzZWwudGV4dCA9IHRleHQ7CiAgfSBlbHNlIGlmICh0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydCB8fCB0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydCA9PSAwKSB7CiAgICAvLyBNb3ppbGxhCiAgICB2YXIgc3RhcnQgPSB0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydDsKICAgIHZhciBlbmQgPSB0ZXh0YXJlYS5zZWxlY3Rpb25FbmQ7CiAgICB2YXIgc2Nyb2xsID0gdGV4dGFyZWEuc2Nyb2xsVG9wOwogICAgaSA9IHRleHQuaW5kZXhPZignJScpOwogICAgaWYgKGkgPiAtMSkgewogICAgICB0ZXh0ID0gdGV4dC5zdWJzdHJpbmcoMCwgaSkgKyB0ZXh0LnN1YnN0cmluZyhpICsgMSk7CiAgICB9CiAgICB0ZXh0YXJlYS52YWx1ZSA9IHRleHRhcmVhLnZhbHVlLnN1YnN0cmluZygwLCBzdGFydCkgKyB0ZXh0ICsgdGV4dGFyZWEudmFsdWUuc3Vic3RyaW5nKGVuZCk7CiAgICB0ZXh0YXJlYS5mb2N1cygpOwogICAgaWYgKGkgPiAtMSkgewogICAgICB0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydCA9IHN0YXJ0ICsgaTsKICAgICAgdGV4dGFyZWEuc2VsZWN0aW9uRW5kID0gZW5kICsgaTsKICAgIH0gZWxzZSB7CiAgICAgIHRleHRhcmVhLnNlbGVjdGlvblN0YXJ0ID0gc3RhcnQgKyB0ZXh0Lmxlbmd0aDsKICAgICAgdGV4dGFyZWEuc2VsZWN0aW9uRW5kID0gZW5kICsgdGV4dC5sZW5ndGg7CiAgICB9CiAgICB0ZXh0YXJlYS5zY3JvbGxUb3AgPSBzY3JvbGw7CiAgfSBlbHNlIHsKICAgIC8vIG90aGVycwogICAgdGV4dGFyZWEudmFsdWUgKz0gdGV4dDsKICB9Cn0K</key>
-<key name="length">1374</key>
-<key name="last_modified">20060624T122458Z</key>
+<resource dataspace="uploads" name="MW/Layout/Default/functions.js">
+<key name="content">LyoNCiAqIGFkZHMgZ2l2ZW4gdGV4dCB0byB0ZXh0YXJlYSB0byBjdXJyZW50IGN1cnNvciBwb3NpdGlvbg0KICogaWYgdGV4dCBjb250YWlucyAlIGN1cnNvciB3aWxsIGJlIHBvc2l0aW9uZWQgdGhlcmUgYWZ0ZXIgYWRkDQogKiBpZDogdGV4dGFyZWEgSUQNCiAqIHRleHQ6IHRleHQgdG8gYWRkDQogKi8NCmZ1bmN0aW9uIGFkZF90b190ZXh0YXJlYShpZCwgdGV4dCkgew0KICB0ZXh0YXJlYSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGlkKTsNCg0KICAvLyBlbmhhbmNlZCBjb2RlIGZyb20gaHR0cDovL3d3dy5hbGV4a2luZy5vcmcvYmxvZy8yMDAzLzA2LzAyL2luc2VydGluZy1hdC10aGUtY3Vyc29yLXVzaW5nLWphdmFzY3JpcHQvIGFuZCBNZWRpYVdpa2kNCiAgaWYgKGRvY3VtZW50LnNlbGVjdGlvbikgew0KICAgIC8vIElFDQogICAgdGV4dGFyZWEuZm9jdXMoKTsNCiAgICBzZWwgPSBkb2N1bWVudC5zZWxlY3Rpb24uY3JlYXRlUmFuZ2UoKTsNCiAgICBzZWwudGV4dCA9IHRleHQ7DQogIH0gZWxzZSBpZiAodGV4dGFyZWEuc2VsZWN0aW9uU3RhcnQgfHwgdGV4dGFyZWEuc2VsZWN0aW9uU3RhcnQgPT0gMCkgew0KICAgIC8vIE1vemlsbGENCiAgICB2YXIgc3RhcnQgPSB0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydDsNCiAgICB2YXIgZW5kID0gdGV4dGFyZWEuc2VsZWN0aW9uRW5kOw0KICAgIHZhciBzY3JvbGwgPSB0ZXh0YXJlYS5zY3JvbGxUb3A7DQogICAgaSA9IHRleHQuaW5kZXhPZignJScpOw0KICAgIGlmIChpID4gLTEpIHsNCiAgICAgIHRleHQgPSB0ZXh0LnN1YnN0cmluZygwLCBpKSArIHRleHQuc3Vic3RyaW5nKGkgKyAxKTsNCiAgICB9DQogICAgdGV4dGFyZWEudmFsdWUgPSB0ZXh0YXJlYS52YWx1ZS5zdWJzdHJpbmcoMCwgc3RhcnQpICsgdGV4dCArIHRleHRhcmVhLnZhbHVlLnN1YnN0cmluZyhlbmQpOw0KICAgIHRleHRhcmVhLmZvY3VzKCk7DQogICAgaWYgKGkgPiAtMSkgew0KICAgICAgdGV4dGFyZWEuc2VsZWN0aW9uU3RhcnQgPSBzdGFydCArIGk7DQogICAgICB0ZXh0YXJlYS5zZWxlY3Rpb25FbmQgPSBlbmQgKyBpOw0KICAgIH0gZWxzZSB7DQogICAgICB0ZXh0YXJlYS5zZWxlY3Rpb25TdGFydCA9IHN0YXJ0ICsgdGV4dC5sZW5ndGg7DQogICAgICB0ZXh0YXJlYS5zZWxlY3Rpb25FbmQgPSBlbmQgKyB0ZXh0Lmxlbmd0aDsNCiAgICB9DQogICAgdGV4dGFyZWEuc2Nyb2xsVG9wID0gc2Nyb2xsOw0KICB9IGVsc2Ugew0KICAgIC8vIG90aGVycw0KICAgIHRleHRhcmVhLnZhbHVlICs9IHRleHQ7DQogIH0NCn0NCg==</key>
+<key name="length">1276</key>
+<key name="last_modified">20060723T181553Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>
-<key name="name">mw/layout/functions.js</key>
+<key name="name">MW/Layout/Default/functions.js</key>
 </resource>
 </resources>

@@ -96,9 +96,14 @@
   }
   
   class MW_Storage {
-    # ordered by name
-    function get_resource_names($dataspace) {
+    # ordered by name, namespace can be of form XXX:YYY or XXX/YYY, empty string means pages without namespace, null all pages
+    function get_resource_names($dataspace, $namespace = null) {
       die("abstract: get_resource_names");
+    }
+
+    # ordered by name, will return only namespaces directly under given namespace (if any)
+    function get_namespaces($dataspace, $namespace = null) {
+      die("abstract: get_namespaces");
     }
     
     function exists($dataspace, $name) {

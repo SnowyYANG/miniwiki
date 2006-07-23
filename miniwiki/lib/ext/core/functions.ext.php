@@ -35,6 +35,7 @@
       register_wiki_function('push_vars', array($this, 'wiki_fn_push_vars'));
       register_wiki_function('pop_vars', array($this, 'wiki_fn_pop_vars'));
       register_wiki_function('action_link', array($this, 'wiki_fn_action_link'));
+      register_wiki_function('req_param', array($this, 'wiki_fn_req_param'));
       register_wiki_function('is_eq', array($this, 'wiki_fn_is_eq'));
       register_wiki_function('has_action', array($this, 'wiki_fn_has_action'));
       register_wiki_function('is_action_permitted', array($this, 'wiki_fn_is_action_permitted'));
@@ -49,6 +50,8 @@
       register_wiki_function('list_users', array($this, 'wiki_fn_list_users'));
       register_wiki_function('list_uploads', array($this, 'wiki_fn_list_uploads'));
       register_wiki_function('is_special', array($this, 'wiki_fn_is_special'));
+      register_wiki_function('list_page_namespaces', array($this, 'wiki_fn_list_page_namespaces'));
+      register_wiki_function('list_upload_namespaces', array($this, 'wiki_fn_list_upload_namespaces'));
       return true;
     }
 
@@ -126,11 +129,29 @@
       if ($page_name === null) {
         $page_name = $renderer_state->wiki_variables->get('page');
       }
+      $fragment = array_shift($args);
       if ($revision == 'head') {
         $revision = MW_REVISION_HEAD;
       }
       $page = new_page($page_name, $revision);
-      return url_for_page_action($page, $action_name);
+      $link = link_for_page_action($page, $action_name);
+      $link->set_page($page);
+      if (!empty($fragment)) {
+        $link->set_fragment($fragment);
+      }
+      while (count($args) > 0) {
+        $name = array_shift($args);
+        $value = array_shift($args);
+        $link->set_param($name, $value);
+      }
+      return $link->to_url(false);
+    }
+  
+    function wiki_fn_req_param($args, $renderer_state) {
+      $req_param = array_shift($args);
+      $default = array_shift($args);
+      $req =& get_request('MW_RawRequest');
+      return $req->get_raw_param($req_param, $default);
     }
   
     /** returns non-empty string if two values are equal (as strings), empty otherwise */
@@ -243,13 +264,27 @@
     }
 
     function wiki_fn_list_pages($args, $renderer_state) {
+      $namespace = array_shift($args);
       $storage =& get_storage();
-      return $storage->get_resource_names(MW_DS_PAGES);
+      return $storage->get_resource_names(MW_DS_PAGES, $namespace);
+    }
+
+    function wiki_fn_list_page_namespaces($args, $renderer_state) {
+      $namespace = array_shift($args);
+      $storage =& get_storage();
+      return $storage->get_namespaces(MW_DS_PAGES, $namespace);
     }
 
     function wiki_fn_list_uploads($args, $renderer_state) {
+      $namespace = array_shift($args);
       $storage =& get_storage();
-      return $storage->get_resource_names(MW_DS_UPLOADS);
+      return $storage->get_resource_names(MW_DS_UPLOADS, $namespace);
+    }
+
+    function wiki_fn_list_upload_namespaces($args, $renderer_state) {
+      $namespace = array_shift($args);
+      $storage =& get_storage();
+      return $storage->get_namespaces(MW_DS_UPLOADS, $namespace);
     }
 
     function wiki_fn_list_users($args, $renderer_state) {

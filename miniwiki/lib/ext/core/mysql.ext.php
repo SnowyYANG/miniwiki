@@ -97,9 +97,31 @@
       $this->dbname = config('db_name');
     }
 
+    /** @private */
+    function escape_like_arg($arg) {
+      return preg_replace('/[%_\\\\]/', '\$1', $arg);
+    }
+
+    /** @private */
+    function normalize_namespace($namespace, $for_upload = false) {
+      if (empty($namespace)) {
+        return $namespace;
+      }
+      if ($for_upload) {
+        return str_replace(':', '/', $namespace);
+      }
+      return str_replace('/', ':', $namespace);
+    }
+
     /** ordered by name */
-    function get_resource_names($dataspace) {
-      $query = $this->open_query('select distinct('.MW_RESOURCE_KEY_NAME.') from '.$dataspace. ' order by '. MW_RESOURCE_KEY_NAME);
+    function get_resource_names($dataspace, $namespace = null) {
+      # namespace has no spaces in it, so if we want non-namespace pages we must find those without XXX: or with X X: (space is OK)
+      $query = $this->open_query('select distinct('.MW_RESOURCE_KEY_NAME.') from '.$dataspace.
+        (!empty($namespace) ? ' where '.MW_RESOURCE_KEY_NAME.' like ? or '.MW_RESOURCE_KEY_NAME.' like ?' : '').
+        (($namespace === '') ? ' where '.MW_RESOURCE_KEY_NAME.' not regexp \'^([^ ]+[:/])+\'' : '').
+        ' order by '. MW_RESOURCE_KEY_NAME,
+        (!empty($namespace) ? $this->escape_like_arg($this->normalize_namespace($namespace).':').'%' : null),
+        (!empty($namespace) ? $this->escape_like_arg($this->normalize_namespace($namespace, true).'/').'%' : null));
       $ret = array();
       while (($result = $this->fetch_query_result($query))) {
         $name = $result[MW_RESOURCE_KEY_NAME];
@@ -107,6 +129,43 @@
       }
       $this->close_query($query);
       return $ret;
+    }
+
+    /** @private */
+    function get_namespace($resname, $for_upload = false) {
+      if (preg_match('/^((\S+[:\/])*\S+)[:\/]/', $resname, $matches)) {
+        return $this->normalize_namespace($matches[1], $for_upload);
+      }
+      return '';
+    }
+    
+    function get_namespaces($dataspace, $namespace = null) {
+      /** @todo sub-optimal */
+      $ds_def = $this->dataspace_defs[$dataspace];
+      $for_upload = ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY);
+      $namespace = $this->normalize_namespace($namespace, $for_upload);
+      if (empty($namespace)) {
+        # empty namespace has special meaning in get_resource_names()
+        $namespace = null;
+      }
+      $resnames = $this->get_resource_names($dataspace, $namespace);
+      $namespaces = array();
+      foreach ($resnames as $resname) {
+        $ns = $this->get_namespace($resname, $for_upload);
+        if (!empty($ns)) {
+          $offset = 0;
+          if (!empty($namespace)) {
+            $offset = strlen($namespace) + 1;
+          }
+          if (($i = strpos($ns, ($for_upload ? '/' : ':'), $offset)) !== false) {
+            $ns = substr($ns, 0, $i);
+          }
+          if (!empty($ns) && !in_array($ns, $namespaces)) {
+            $namespaces[] = $ns;
+          }
+        }
+      }
+      return $namespaces;
     }
     
     function exists($dataspace, $name) {

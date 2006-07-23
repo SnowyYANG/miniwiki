@@ -12,6 +12,7 @@
   * - no support for more than one binary and one text dataspace
   * - flock() is used for locking - see PHP documentation for potential problems
   * - pretty unusable in safe_mode
+  * - pretty much untested
   * - generally it is not recommended for daily usage
   */
 
@@ -116,7 +117,7 @@
         $root = $this->get_ds_dirname_url($dataspace);
       }
       $ds_def = $this->dataspace_defs[$dataspace];
-      $path = $root.'/'.preg_replace('/(\S):(\S)/', '$1/$2', $resname);
+      $path = $root.'/'.preg_replace('/(^(?=\S+[:\/])*\S+):/', '$1/', $resname);
       if ($ds_def->get_content_type() === MW_RESOURCE_CONTENT_TYPE_TEXT) {
         $path .= MW_WIKI_FILE_SUFFIX;
       }
@@ -138,7 +139,7 @@
     }
     
     /** @private */
-    function get_resource_names_from_dir($dirname, $parent_path, $type, &$resnames) {
+    function get_resource_names_from_dir($dirname, $recurse, $parent_path, $type, &$resnames) {
       $dir = dir($dirname);
       while (false !== ($entry = $dir->read())) {
         if ($entry[0] == '.') {
@@ -146,9 +147,12 @@
         }
         $fullentry = $dirname."/".$entry;
         if (is_dir($fullentry)) {
+          if (!$recurse) {
+            continue;
+          }
           $dir_path = $parent_path;
           $dir_path[] = $entry;
-          $this->get_resource_names_from_dir($fullentry, $dir_path, $type, $resnames);
+          $this->get_resource_names_from_dir($fullentry, $recurse, $dir_path, $type, $resnames);
           continue;
         }
         if (!is_file($fullentry)) {
@@ -170,8 +174,19 @@
       }
     }
 
+    /** @private */
+    function append_namespace($dirname, $namespace) {
+      if (empty($namespace)) {
+        return $dirname;
+      }
+      # to disable .dir access (a bit dumb, I know)
+      $namespace = str_replace('.', '_', $namespace);
+      $namespace = str_replace(':', '/', $namespace);
+      return $dirname.'/'.$namespace;
+    }
+
     /** ordered by name */
-    function get_resource_names($dataspace) {
+    function get_resource_names($dataspace, $namespace = null) {
       $ds_def = $this->dataspace_defs[$dataspace];
       if ($this->binary_dataspace === $dataspace) {
         $dirname = $this->get_ds_dirname_url($this->text_dataspace);
@@ -179,9 +194,50 @@
         $dirname = $this->get_ds_dirname_url($dataspace);
       }
       $resnames = array();
-      $this->get_resource_names_from_dir($dirname, array(), $ds_def->get_content_type(), $resnames);
+      $dirname = $this->append_namespace($dirname);
+      $this->get_resource_names_from_dir($dirname, ($namespace !== ''), $prefix, array(), $ds_def->get_content_type(), $resnames);
       sort($resnames);
       return $resnames;
+    }
+    
+    /** @private */
+    function normalize_namespace($namespace, $for_upload = false) {
+      if (empty($namespace)) {
+        return $namespace;
+      }
+      if ($for_upload) {
+        return str_replace(':', '/', $namespace);
+      }
+      return str_replace('/', ':', $namespace);
+    }
+    
+    function get_namespaces($dataspace, $namespace = null) {
+      $for_upload = false;
+      if ($this->binary_dataspace === $dataspace) {
+        $dirname = $this->get_ds_dirname_url($this->text_dataspace);
+        $for_upload = true;
+      } else {
+        $dirname = $this->get_ds_dirname_url($dataspace);
+      }
+      $namespace = $this->normalize_namespace($namespace, $for_upload);
+      $dirname = $this->append_namespace($dirname);
+      $dir = dir($dirname);
+      $namespaces = array();
+      while (false !== ($entry = $dir->read())) {
+        if ($entry[0] == '.') {
+          continue;
+        }
+        $fullentry = $dirname."/".$entry;
+        if (is_dir($fullentry)) {
+          $ns = $entry;
+          if (!empty($namespace)) {
+            $ns = $namespace.($for_upload ? '/' : ':').$ns;
+            $namespaces[] = $ns;
+          }
+        }
+      }
+      sort($namespaces);
+      return $namespaces;
     }
     
     function exists($dataspace, $name) {

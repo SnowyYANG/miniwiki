@@ -7,8 +7,13 @@ Changes from 0.2 to 0.3:
 - conditional directives #IF and #IFEMPTY
 - UI header and footer are stored in Wiki
   including CSS and JS files
-- install/upgrade script
+- fully automated install/upgrade script
 - XML export/import
+- pages can be renamed with old page redirecting to the new one
+- uploaded text files can be edited inside the browser
+- visible support for namespaces (e.g. in list of all pages)
+- experimental filesystem storage
+- bugfixes
 - ... and more
 
 Changes from 0.1 to 0.2:

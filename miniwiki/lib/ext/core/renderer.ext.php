@@ -645,10 +645,13 @@
           }
         } elseif (strpos($line, '#') === 0) {
           # omit directives
-        } elseif (!(strpos($line, '{{') === false)) {
+        } elseif (strpos($line, '{{') !== false) {
           /** @todo endless loop with multi-line includes */
           $line = $this->process_includes($line);
-          $lines = array_merge(explode("\n", $line), $lines);
+          # eat empty lines which resulted from {{...}} processing
+          if (!empty($line)) {
+            $lines = array_merge(explode("\n", $line), $lines);
+          }
         } else {
           $current_chain .= $line . "\n";
         }

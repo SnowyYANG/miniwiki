@@ -99,7 +99,7 @@
     * logged user can edit, delete and update
     * only admin or same user can change password
     * only admin can create or delete user
-    * only admin can edit pages from internal miniWiki namespace (MW:)
+    * only admin can edit pages from internal miniWiki namespace (MW)
     * @param action action name
     * @param page MW_Page
     */
@@ -119,9 +119,6 @@
         case MW_ACTION_DELETE:
         case MW_ACTION_RENAME:
           if (stripos($page->name, MW_PAGE_NAME_PREFIX_MINIWIKI) === 0) {
-            return $is_admin;
-          }
-          if (stripos($page->name, MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI) === 0) {
             return $is_admin;
           }
           return (config('auth_write_admin_only') ? $is_admin : $is_logged);

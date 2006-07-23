@@ -8,7 +8,7 @@
   */
 
   /** user page name prefix */
-  define("MW_PAGE_NAME_PREFIX_USER", "User:");
+  define("MW_PAGE_NAME_PREFIX_USER", "User/");
   define("MW_SPECIAL_PAGE_USER", "User");
   
   class MW_CoreSpecialUserExtension extends MW_Extension {

@@ -50,7 +50,7 @@
   /** callback which will return location of file with information about user (for use by user_info wiki function; default is null) */
   $mw_user_info_file_callback = 'get_user_info_file';
 
-  /** name of UI layout to use (stored in MW:Layout:LAYOUT:*; default is Default) */
+  /** name of UI layout to use (stored in MW/Layout/LAYOUT/*; default is Default) */
 #  $mw_layout = '';
 
 ?>

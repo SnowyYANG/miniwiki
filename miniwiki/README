@@ -31,6 +31,13 @@ from inside the script (stored in variables $install_user and $install_pass).
 Script will then fill the storage with initial data. Do not forget to close access
 to install.php in maintenance/.htaccess.
 
+Upgrade from development snapshots
+----------------------------------
+
+Upgrade from development snapshots (or SVN HEAD) may result in nonfunctional
+user interface. In that case try to identify what change caused that and repair
+it manually in the storage.
+
 Upgrade from previous versions
 ------------------------------
 

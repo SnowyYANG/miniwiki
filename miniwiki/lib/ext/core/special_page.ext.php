@@ -7,7 +7,7 @@
   * extension Core Special Page Redirector (bundled)
   */
 
-  define("MW_PAGE_NAME_PREFIX_SPECIAL", "Special:");
+  define("MW_PAGE_NAME_PREFIX_SPECIAL", "Special/");
 
   class MW_CoreSpecialPageRedirectorExtension extends MW_Extension {
 
@@ -20,7 +20,7 @@
     }
 
     function get_description() {
-      return "Redirects Special:* to MW:Special:* if no specific page is found.";
+      return "Redirects Special/* to MW/Special/* if no specific page is found.";
     }
 
     function initialize() {

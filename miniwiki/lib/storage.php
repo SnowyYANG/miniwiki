@@ -96,7 +96,7 @@
   }
   
   class MW_Storage {
-    # ordered by name, namespace can be of form XXX:YYY or XXX/YYY, empty string means pages without namespace, null all pages
+    # ordered by name, namespace of form XXX/YYY, empty string means pages without namespace, null all pages
     function get_resource_names($dataspace, $namespace = null) {
       die("abstract: get_resource_names");
     }

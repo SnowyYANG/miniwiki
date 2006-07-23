@@ -117,7 +117,7 @@
         $root = $this->get_ds_dirname_url($dataspace);
       }
       $ds_def = $this->dataspace_defs[$dataspace];
-      $path = $root.'/'.preg_replace('/(^(?=\S+[:\/])*\S+):/', '$1/', $resname);
+      $path = $root.'/'.$resname;
       if ($ds_def->get_content_type() === MW_RESOURCE_CONTENT_TYPE_TEXT) {
         $path .= MW_WIKI_FILE_SUFFIX;
       }
@@ -162,7 +162,7 @@
         if (($type === MW_RESOURCE_CONTENT_TYPE_TEXT) && ($ext === MW_WIKI_FILE_EXT)) {
           $entry = basename($entry, MW_WIKI_FILE_SUFFIX);
           if (sizeof($parent_path) > 0) {
-            $entry = join(':', $parent_path).':'.$entry;
+            $entry = join('/', $parent_path).'/'.$entry;
           }
           $resnames[] = $entry;
         } elseif (($type === MW_RESOURCE_CONTENT_TYPE_NONE) || (($type === MW_RESOURCE_CONTENT_TYPE_BINARY) && ($ext !== MW_WIKI_FILE_EXT))) {
@@ -181,7 +181,6 @@
       }
       # to disable .dir access (a bit dumb, I know)
       $namespace = str_replace('.', '_', $namespace);
-      $namespace = str_replace(':', '/', $namespace);
       return $dirname.'/'.$namespace;
     }
 
@@ -201,26 +200,21 @@
     }
     
     /** @private */
-    function normalize_namespace($namespace, $for_upload = false) {
+    function normalize_namespace($namespace) {
       if (empty($namespace)) {
         return $namespace;
       }
-      $namespace = preg_replace('/[\/:]+$/', '', $namespace);
-      if ($for_upload) {
-        return str_replace(':', '/', $namespace);
-      }
-      return str_replace('/', ':', $namespace);
+      $namespace = preg_replace('/\/+$/', '', $namespace);
+      return $namespace;
     }
     
     function get_namespaces($dataspace, $namespace = null) {
-      $for_upload = false;
       if ($this->binary_dataspace === $dataspace) {
         $dirname = $this->get_ds_dirname_url($this->text_dataspace);
-        $for_upload = true;
       } else {
         $dirname = $this->get_ds_dirname_url($dataspace);
       }
-      $namespace = $this->normalize_namespace($namespace, $for_upload);
+      $namespace = $this->normalize_namespace($namespace);
       $dirname = $this->append_namespace($dirname);
       $dir = dir($dirname);
       $namespaces = array();
@@ -232,7 +226,7 @@
         if (is_dir($fullentry)) {
           $ns = $entry;
           if (!empty($namespace)) {
-            $ns = $namespace.($for_upload ? '/' : ':').$ns;
+            $ns = $namespace.'/'.$ns;
             $namespaces[] = $ns;
           }
         }

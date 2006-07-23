@@ -50,9 +50,7 @@
   /** image link page prefix (will render image directly) */
   define("MW_LINK_NAME_PREFIX_IMAGE", "Image:");
   /** internal miniWiki namespace prefix */
-  define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW:");
-  /** internal miniWiki namespace prefix for uploads */
-  define("MW_PAGE_NAME_PREFIX_UPLOAD_MINIWIKI", MW_PAGE_NAME_PREFIX_UPLOAD . "MW/");
+  define("MW_PAGE_NAME_PREFIX_MINIWIKI", "MW/");
 
   require_once('registry.php');
 

@@ -9,6 +9,9 @@
 
   /** data page prefix (raw uploaded file) from miniWiki 0.2 */
   define("MW_PAGE_NAME_PREFIX_DATA_0_2", "Data:");
+  define("MW_PAGE_NAME_PREFIX_USER_0_2", "User:");
+  define("MW_PAGE_NAME_UPLOADS_0_2", "Special:Uploads");
+  define("MW_PAGE_NAME_PREFIX_SPECIAL_0_2", "Special:");
   
   class MW_CoreObsoleteExtension extends MW_Extension {
 
@@ -40,6 +43,15 @@
     function get_page($tag, $name, $revision) {
       if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_DATA_0_2) === 0)) {
         $name = str_replace(MW_PAGE_NAME_PREFIX_DATA_0_2, MW_PAGE_NAME_PREFIX_DATA, $name);
+      }
+      if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_USER_0_2) === 0)) {
+        $name = str_replace(MW_PAGE_NAME_PREFIX_USER_0_2, MW_PAGE_NAME_PREFIX_USER, $name);
+      }
+      if (($tag === null) && (strpos($name, MW_PAGE_NAME_UPLOADS_0_2) === 0)) {
+        $name = str_replace(MW_PAGE_NAME_UPLOADS_0_2, MW_PAGE_NAME_UPLOADS, $name);
+      }
+      if (($tag === null) && (strpos($name, MW_PAGE_NAME_PREFIX_SPECIAL_0_2) === 0)) {
+        $name = str_replace(MW_PAGE_NAME_PREFIX_SPECIAL_0_2, MW_PAGE_NAME_PREFIX_SPECIAL, $name);
       }
       return $this->next->get_page($tag, $name, $revision);
     }

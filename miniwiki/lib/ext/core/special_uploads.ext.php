@@ -8,12 +8,12 @@
   */
 
   /** uploads list special page name */
-  define("MW_PAGE_NAME_UPLOADS", "Special:Uploads");
+  define("MW_PAGE_NAME_UPLOADS", "Special/Uploads");
   
   class MW_CoreSpecialUploadsExtension extends MW_Extension {
 
     function get_name() {
-      return "Core Special:Uploads";
+      return "Core Special/Uploads";
     }
 
     function get_version() {
@@ -21,7 +21,7 @@
     }
 
     function get_description() {
-      return "Special:Uploads page.";
+      return "Special/Uploads page.";
     }
 
     function initialize() {

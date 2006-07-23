@@ -78,19 +78,26 @@
       if ($this->has_content) {
         /** @todo will happily process directives inside &lt;pre&gt; blocks */
         if (preg_match_all("/(?:^|\n)#TITLE\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
-          $this->title = $matches[1][count($matches[1]) - 1];
-          $this->title = str_replace("\r", '', $this->title);
-          $this->attrs[MW_PAGE_ATTR_TITLE] = $this->title;
+          $title = $matches[1][count($matches[1]) - 1];
+          $title = str_replace("\r", '', $title);
+          $this->title = $title;
+          $this->attrs[MW_PAGE_ATTR_TITLE] = $title;
         }
         if (preg_match_all("/(?:^|\n)#REDIRECT\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $redir_name = $matches[1][count($matches[1]) - 1];
           $redir_name = str_replace("\r", '', $redir_name);
-          $this->redirected_page = new_page($redir_name, MW_REVISION_HEAD);
+          $this->redirected_page = new_page($this->attrs[MW_PAGE_ATTR_REDIRECT], MW_REVISION_HEAD);
           $this->attrs[MW_PAGE_ATTR_REDIRECT] = $redir_name;
         }
         if (preg_match_all("/(?:^|\n)#ATTR\s+(.+?)\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           foreach ($matches[1] as $attr_name) {
+            if (($attr_name === MW_PAGE_ATTR_TITLE) || ($attr_name === MW_PAGE_ATTR_REDIRECT)) {
+              # these attributes can not be set by #ATTR
+              continue;
+            }
             $attr_value = array_shift($matches[2]);
+            $attr_name = str_replace("\r", '', $attr_name);
+            $attr_value = str_replace("\r", '', $attr_value);
             $this->attrs[$attr_value] = $attr_name;
           }
         }

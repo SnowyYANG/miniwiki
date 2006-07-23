@@ -43,9 +43,10 @@
         } elseif (strpos($name, MW_PAGE_NAME_PREFIX_DATA) === 0) {
           return new MW_SpecialUploadPage($name, $revision);
         }
-      }
-      if ($tag == MW_PAGE_TAG_UPLOAD) {
+      } elseif ($tag == MW_PAGE_TAG_UPLOAD) {
         return new MW_SpecialUploadPage(MW_PAGE_NAME_PREFIX_UPLOAD.$name, $revision);
+      } elseif ($tag == MW_PAGE_TAG_DATA) {
+        return new MW_SpecialUploadPage(MW_PAGE_NAME_PREFIX_DATA.$name, $revision);
       }
       return $this->next->get_page($tag, $name, $revision);
     }

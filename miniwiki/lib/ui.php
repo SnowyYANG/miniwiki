@@ -16,6 +16,7 @@
   define("MW_LAYOUT_HEADER", "Header");
   
   define("MW_PAGE_TAG_LAYOUT", "layout");
+  define("MW_PAGE_TAG_LAYOUT_DATA", "layout_data");
 
   define("MW_LAYOUT_DEFAULT", "Default");
 
@@ -25,6 +26,14 @@
     $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT, config('layout').':'.$name, MW_REVISION_HEAD);
     if (!$page->exists()) {
       $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT, MW_LAYOUT_DEFAULT.':'.$name, MW_REVISION_HEAD);
+    }
+    return $page;
+  }
+
+  function new_layout_data_page($name) {
+    $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT_DATA, config('layout').'/'.$name, MW_REVISION_HEAD);
+    if (!$page->exists()) {
+      $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT_DATA, MW_LAYOUT_DEFAULT.'/'.$name, MW_REVISION_HEAD);
     }
     return $page;
   }

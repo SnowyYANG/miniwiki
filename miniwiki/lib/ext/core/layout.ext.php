@@ -38,6 +38,9 @@
       if ($tag == MW_PAGE_TAG_LAYOUT) {
         $name = MW_PAGE_NAME_PREFIX_LAYOUT.$name;
         $tag = null;
+      } elseif ($tag == MW_PAGE_TAG_LAYOUT_DATA) {
+        $name = str_replace(':', '/', MW_PAGE_NAME_PREFIX_DATA.MW_PAGE_NAME_PREFIX_LAYOUT).$name;
+        $tag = null;
       }
       return $this->next->get_page($tag, $name, $revision);
     }

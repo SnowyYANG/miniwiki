@@ -76,6 +76,8 @@
     }
 
     /** @private */
+    var $to_enc;
+    /** @private */
     var $dataspaces;
     /** @private */
     var $with_history;
@@ -93,16 +95,27 @@
     var $cur_key;
 
     /** @private */
+    function decode_str($str) {
+      if (empty($str)) {
+        return null;
+      }
+      if ($to_enc !== null) {
+        return iconv('utf-8', $to_enc, $str);
+      }
+      return $str;
+    }
+
+    /** @private */
     function startElement($parser, $name, $attrs) {
       if ($name === 'RESOURCE') {
-        $resource_name = $attrs['NAME'];
+        $resource_name = decode_str($attrs['NAME']);
         if (empty($resource_name)) {
           return;
         }
         if ($this->with_history || (($this->prev_resource !== null) && ($resource_name !== $this->prev_resource_name))) {
           $this->flush_prev_resource();
         }
-        $this->cur_dataspace = $attrs['DATASPACE'];
+        $this->cur_dataspace = decode_str($attrs['DATASPACE']);
         $included = false;
         foreach ($this->dataspaces as $ds) {
           explode_dataspace_name($ds, $ds, $wanted_res);
@@ -120,7 +133,7 @@
         $this->cur_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
         $this->cur_key = null;
       } elseif ($name === 'KEY') {
-        $this->cur_key = $attrs['NAME'];
+        $this->cur_key = decode_str($attrs['NAME']);
       }
     }
 
@@ -166,6 +179,7 @@
       if (empty($this->cur_key)) {
         return;
       }
+      $data = decode_str($data);
       /** @todo follow import() which uses types_map */
       $storage =& get_storage();
       $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
@@ -186,11 +200,13 @@
       if (pathinfo($file, PATHINFO_EXTENSION) !== MW_XML_EXTENSION) {
         return null;
       }
+      $this->to_enc = null;
       $enc = config('encoding');
       if (strcasecmp($enc, "utf-8") != 0) {
         if (!function_exists("iconv")) {
           return "iconv() not available, but needed for conversion from $enc to UTF-8";
         }
+        $this->to_enc = $enc;
       }
       # in some PHP versions utf-8 will be used always (cause they can not autodetect)), in others it will be ignored,
       # hopefully every version will return utf-8

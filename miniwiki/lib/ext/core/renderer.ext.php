@@ -299,7 +299,7 @@
 
     /** @private
     * returns HTML code for inline Wiki markup:
-    *   '''BOLD''', ''ITALIC'', [[PAGE_NAME:LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br>, forms, boxes
+    *   '''BOLD''', ''ITALIC'', [[PAGE_NAME|LINK_TITLE]], [[PAGE_NAME]], [URL LINK_TITLE], [URL], <br>, forms, boxes
     * @param text text to process
     */
     function process_inline($text) {

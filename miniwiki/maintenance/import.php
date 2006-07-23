@@ -62,7 +62,6 @@ Available formats:
     $force_import = true;
     array_shift($argv);
   }
-  $format = array_shift($argv);
   $file = array_shift($argv);
   $dataspaces = $argv;
   

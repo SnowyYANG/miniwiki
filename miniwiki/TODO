@@ -1,6 +1,12 @@
 TODO list:
 
+release 0.3:
 - multi-line {{...}}
+
+release 0.4:
+- Subversion storage (including support for Subversion-based users management)
+
+release 0.5:
 - improve code docs
 - classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page
@@ -14,7 +20,5 @@ TODO list:
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - search
 - wiki function _()
-- Subversion storage (including support for Subversion-based users management)
-  - unified pages and uploads hierarchies
 
 $Id$

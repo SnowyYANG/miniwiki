@@ -16,6 +16,7 @@
   $registry->add_registry(new MW_PageHandlerComponentRegistry(), MW_COMPONENT_ROLE_PAGE_HANDLER);
   define("MW_COMPONENT_ROLE_REDIRECTED_PAGE", "MW_Page:redirected_page");
   $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_REDIRECTED_PAGE);
+  define("MW_COMPONENT_ROLE_SPECIAL_PAGE", "_special_page");
 
   function set_current_page(&$page) {
     global $registry;
@@ -35,6 +36,16 @@
   function &get_redirected_page() {
     global $registry;
     return $registry->lookup(MW_COMPONENT_ROLE_REDIRECTED_PAGE);
+  }
+  
+  function register_special_page($name) {
+    global $registry;
+    $registry->register($name, MW_COMPONENT_ROLE_SPECIAL_PAGE);
+  }
+
+  function get_special_pages() {
+    global $registry;
+    return $registry->lookup(MW_COMPONENT_ROLE_SPECIAL_PAGE);
   }
   
   /** main page name */
@@ -188,6 +199,8 @@
     }
     return $special_page;
   }
+
+  define("MW_PAGE_ATTR_TITLE", "title");
   
   /**
   * [abstract] Wiki page
@@ -212,6 +225,8 @@
     var $title;
     /** raw content length in bytes - maybe valid before load(), but may be set to null after load() if still not known */
     var $raw_content_length;
+    /** page attributes */
+    var $attrs;
 
     /** constructor */
     function MW_Page($name) {
@@ -224,6 +239,7 @@
       $this->user = '';
       $this->title = '';
       $this->raw_content_length = null;
+      $this->attrs = array();
     }
     
     /**
@@ -245,7 +261,12 @@
     */
     function load() {
       $this->title = $this->name;
+      $this->attrs[MW_PAGE_ATTR_TITLE] = $this->title;
       return false;
+    }
+
+    function get_attr($name) {
+      return (isset($this->attrs[$name]) ? $this->attrs[$name] : null);
     }
     
     /** [override] delete page (including all revisions) */

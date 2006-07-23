@@ -26,6 +26,7 @@
 
     function initialize() {
       register_page_handler(new MW_SpecialUploadsPageHandler());
+      register_special_page(MW_PAGE_NAME_UPLOADS);
       return true;
     }
 
@@ -45,9 +46,14 @@
   /** special page with list of all uploads (MW_PAGE_NAME_UPLOADS) */
   class MW_SpecialUploadsPage extends MW_SpecialPage {
 
+    /** @private */
+    var $wrapped;
+
     /** @protected constructor (do not use directly, use new_page()) */
     function MW_SpecialUploadsPage($name) {
       parent::MW_SpecialPage($name);
+      # can not use load_special_page() because of infinite loop
+      $this->wrapped = new_page(MW_PAGE_NAME_PREFIX_MINIWIKI.$this->name, MW_REVISION_HEAD);
     }
 
     function has_action($action) {
@@ -57,14 +63,18 @@
       return parent::has_action($action);
     }
 
+    function load() {
+      $ret = $this->wrapped->load();
+      $this->title = $this->wrapped->title;
+      return $ret;
+    }
+
     function get_wiki_content() {
-      # can not use load_special_page() because of infinite loop
-      $special_page = new_page(MW_PAGE_NAME_PREFIX_MINIWIKI.$this->name, MW_REVISION_HEAD);
-      if (!$special_page->load()) {
-        trigger_error(_("Required special page %0% is missing", $special_page->name), E_USER_ERROR);
-        return null;
-      }
-      return $special_page->get_wiki_content();
+      return $this->wrapped->get_wiki_content();
+    }
+
+    function get_attr($name) {
+      return $this->wrapped->get_attr($name);
     }
     
     /**

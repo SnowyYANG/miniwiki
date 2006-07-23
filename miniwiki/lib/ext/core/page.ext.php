@@ -46,6 +46,8 @@
     }
   }
 
+  define("MW_PAGE_ATTR_REDIRECT", "redirect");
+  
   /** regular Wiki page */
   class MW_DBPage extends MW_Page {
 
@@ -78,10 +80,19 @@
         if (preg_match_all("/(?:^|\n)#TITLE\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $this->title = $matches[1][count($matches[1]) - 1];
           $this->title = str_replace("\r", '', $this->title);
-        } elseif (preg_match_all("/(?:^|\n)#REDIRECT\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
+          $this->attrs[MW_PAGE_ATTR_TITLE] = $this->title;
+        }
+        if (preg_match_all("/(?:^|\n)#REDIRECT\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $redir_name = $matches[1][count($matches[1]) - 1];
           $redir_name = str_replace("\r", '', $redir_name);
           $this->redirected_page = new_page($redir_name, MW_REVISION_HEAD);
+          $this->attrs[MW_PAGE_ATTR_REDIRECT] = $redir_name;
+        }
+        if (preg_match_all("/(?:^|\n)#ATTR\s+(.+?)\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
+          foreach ($matches[1] as $attr_name) {
+            $attr_value = array_shift($matches[2]);
+            $this->attrs[$attr_value] = $attr_name;
+          }
         }
       }
     }

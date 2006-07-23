@@ -80,11 +80,17 @@
     }
 
     function load() {
-      return $this->wrapped->load();
+      $ret = $this->wrapped->load();
+      $this->title = $this->wrapped->title;
+      return $ret;
     }
 
     function get_wiki_content() {
       return $this->wrapped->get_wiki_content();
+    }
+
+    function get_attr($name) {
+      return $this->wrapped->get_attr($name);
     }
     
   }

@@ -47,11 +47,13 @@
       register_wiki_function('set_item', array($this, 'wiki_fn_set_item'));
       register_wiki_function('import', array($this, 'wiki_fn_import'));
       register_wiki_function('list_pages', array($this, 'wiki_fn_list_pages'));
+      register_wiki_function('special_pages', array($this, 'wiki_fn_special_pages'));
       register_wiki_function('list_users', array($this, 'wiki_fn_list_users'));
       register_wiki_function('list_uploads', array($this, 'wiki_fn_list_uploads'));
       register_wiki_function('is_special', array($this, 'wiki_fn_is_special'));
       register_wiki_function('list_page_namespaces', array($this, 'wiki_fn_list_page_namespaces'));
       register_wiki_function('list_upload_namespaces', array($this, 'wiki_fn_list_upload_namespaces'));
+      register_wiki_function('page_attr', array($this, 'wiki_fn_page_attr'));
       return true;
     }
 
@@ -269,6 +271,20 @@
       return $storage->get_resource_names(MW_DS_PAGES, $namespace);
     }
 
+    function wiki_fn_special_pages($args, $renderer_state) {
+      $namespace = array_shift($args);
+      $storage =& get_storage();
+      $special_pages = $storage->get_resource_names(MW_DS_PAGES, MW_PAGE_NAME_PREFIX_MINIWIKI . MW_PAGE_NAME_PREFIX_SPECIAL);
+      for ($i = 0; $i < count($special_pages); $i++) {
+        $special_pages[$i] = substr($special_pages[$i], strlen(MW_PAGE_NAME_PREFIX_MINIWIKI));
+      }
+      $coded_special_pages = get_special_pages();
+      $special_pages = array_merge($special_pages, $coded_special_pages);
+      $special_pages = array_unique($special_pages);
+      sort($special_pages);
+      return $special_pages;
+    }
+
     function wiki_fn_list_page_namespaces($args, $renderer_state) {
       $namespace = array_shift($args);
       $storage =& get_storage();
@@ -295,6 +311,14 @@
     function wiki_fn_is_special($args, $renderer_state) {
       $page_name = array_shift($args);
       return (strpos($page_name, MW_PAGE_NAME_PREFIX_SPECIAL) === 0 ? 'true' : '');
+    }
+  
+    function wiki_fn_page_attr($args, $renderer_state) {
+      $page_name = array_shift($args);
+      $attr_name = array_shift($args);
+      $page = new_page($page_name, MW_REVISION_HEAD);
+      $page->load();
+      return $page->get_attr($attr_name);
     }
   
   }

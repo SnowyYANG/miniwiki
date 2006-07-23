@@ -5,7 +5,6 @@ TODO list:
 - classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page
 - layout page describing how everything looks (not just header and footer)
-- layout param to MW_PageLink (layout is MW:Layout:<layout>)
 - per-user access rights (includes moving MW_Auth into extension)
 - Wiki spaces (hierarchical page spaces) - called clusters in storage
 - convert Special pages to MW:Special:*

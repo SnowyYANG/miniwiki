@@ -16,9 +16,17 @@
   define("MW_LAYOUT_HEADER", "Header");
   
   define("MW_PAGE_TAG_LAYOUT", "layout");
+
+  define("MW_LAYOUT_DEFAULT", "Default");
+
+  set_default_config('layout', MW_LAYOUT_DEFAULT);
   
   function new_layout_page($name) {
-    return new_page_with_tag(MW_PAGE_TAG_LAYOUT, $name, MW_REVISION_HEAD);
+    $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT, config('layout').':'.$name, MW_REVISION_HEAD);
+    if (!$page->exists()) {
+      $page = new_page_with_tag(MW_PAGE_TAG_LAYOUT, MW_LAYOUT_DEFAULT.':'.$name, MW_REVISION_HEAD);
+    }
+    return $page;
   }
 
   function load_layout_page($name) {

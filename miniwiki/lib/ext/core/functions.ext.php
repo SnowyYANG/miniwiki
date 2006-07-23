@@ -41,7 +41,7 @@
       register_wiki_function('is_action_permitted', array($this, 'wiki_fn_is_action_permitted'));
       register_wiki_function('exists', array($this, 'wiki_fn_exists'));
       register_wiki_function('process_time', array($this, 'wiki_fn_process_time'));
-      register_wiki_function('include_layout', array($this, 'wiki_fn_include_layout'));
+      register_wiki_function('layout', array($this, 'wiki_fn_layout'));
       register_wiki_function('noredir_link', array($this, 'wiki_fn_noredir_link'));
       register_wiki_function('item', array($this, 'wiki_fn_item'));
       register_wiki_function('set_item', array($this, 'wiki_fn_set_item'));
@@ -100,7 +100,7 @@
     }
 
     /** returns raw content of layout page specified by first argument */
-    function wiki_fn_include_layout($args, $renderer_state) {
+    function wiki_fn_layout($args, $renderer_state) {
       $inc_page_name = array_shift($args);
       $inc_page = load_layout_page($inc_page_name);
       if ($inc_page !== null) {

@@ -51,6 +51,7 @@
       register_wiki_function('list_users', array($this, 'wiki_fn_list_users'));
       register_wiki_function('list_uploads', array($this, 'wiki_fn_list_uploads'));
       register_wiki_function('is_special', array($this, 'wiki_fn_is_special'));
+      register_wiki_function('upload_name', array($this, 'wiki_fn_upload_name'));
       register_wiki_function('list_page_namespaces', array($this, 'wiki_fn_list_page_namespaces'));
       register_wiki_function('list_upload_namespaces', array($this, 'wiki_fn_list_upload_namespaces'));
       register_wiki_function('page_attr', array($this, 'wiki_fn_page_attr'));
@@ -314,6 +315,17 @@
     function wiki_fn_is_special($args, $renderer_state) {
       $page_name = array_shift($args);
       return (strpos($page_name, MW_PAGE_NAME_PREFIX_SPECIAL) === 0 ? 'true' : '');
+    }
+  
+    function wiki_fn_upload_name($args, $renderer_state) {
+      $name = array_shift($args);
+      if (strpos($name, MW_PAGE_NAME_PREFIX_UPLOAD) === 0) {
+        return substr($name, strlen(MW_PAGE_NAME_PREFIX_UPLOAD));
+      }
+      if (strpos($name, MW_PAGE_NAME_PREFIX_DATA) === 0) {
+        return substr($name, strlen(MW_PAGE_NAME_PREFIX_DATA));
+      }
+      return $name;
     }
   
     function wiki_fn_page_attr($args, $renderer_state) {

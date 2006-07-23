@@ -564,6 +564,11 @@
       } else {
         $success = $page->rename($new_name);
         add_info_text($success ? _("Page renamed.") : _("Page not renamed."));
+        # will not redirect itself
+        if ($success && is_a($page, "MW_SpecialUploadPage")) {
+          $new_page = new_upload_page($new_name, MW_REVISION_HEAD);
+          set_current_page($new_page);
+        }
       }
       return get_default_action();
     }

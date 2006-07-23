@@ -227,6 +227,15 @@
       return $ret;
     }
 
+    # redirection not supported
+    function rename($new_name, $with_redirect = true) {
+      if (empty($new_name) || ($this->upload_name === $new_name)) {
+        return false;
+      }
+      $storage =& get_storage();
+      return $storage->rename_resource(MW_DS_UPLOADS, $this->upload_name, $new_name);
+    }
+    
   }
 
 ?>

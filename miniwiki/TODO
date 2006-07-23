@@ -17,6 +17,5 @@ TODO list:
   - unified pages and uploads hierarchies
   - treat / and : equally as directory separator (based on filesystem storage)
 - remove all unnecessary is_a() calls
-- correct renaming of uploaded files
 
 $Id$

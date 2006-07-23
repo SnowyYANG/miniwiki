@@ -40,6 +40,7 @@
   }
 
   include('../userdefs.php');
+  $mw_enabled_MW_CoreObsoleteExtension = false;
   include('miniwiki.php');
 
   $real_user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
@@ -69,6 +70,17 @@
     if (!$main_page->exists()) {
       show_install_message('Renaming old main page '.$old_main_page->name.' to '.$main_page->name);
       $old_main_page->rename($main_page->name);
+    }
+  }
+
+  $storage =& get_storage();
+  $old_user_pages = $storage->get_resource_names(MW_DS_PAGES);
+  foreach ($old_user_pages as $name) {
+    if (strpos($name, 'User:') === 0) {
+      $old_page = new_page($name, MW_REVISION_HEAD);
+      $new_name = str_replace("User:", "User/", $name);
+      show_install_message('Renaming user page '.$old_name->name.' to '.$new_name);
+      $old_page->rename($new_name);
     }
   }
 

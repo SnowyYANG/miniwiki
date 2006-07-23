@@ -54,9 +54,12 @@ to install.php in maintenance/.htaccess.
 Since version 0.3 main page name is Main Page and not MainPage. It will get renamed
 during upgrade and MainPage will be redirected to new page.
 
-Since version 0.3 UI layout is stored in Wiki pages MW:Layout:* including
+Since version 0.3 UI layout is stored in Wiki pages MW/Layout/* including
 CSS and JS files which were previously in data directory and now are
-stored as uploaded files MW/Layout/*.
+stored as uploaded files.
+
+Since version 0.3 namespace separator is / and not :. Because in pre-0.3 versions
+namespaces were not official, only user pages (User:*) will be renamed (to User/*).
 
 Since version 0.3 all user settings are prefixed with mw_, that is $auth_read_logged_only
 and $auth_write_admin_only are now called $mw_auth_read_logged_only

@@ -50,6 +50,20 @@
     
   }
 
+  class MW_RawRequest extends MW_Request {
+    /** @private */
+    var $http_request;
+
+    function MW_RawRequest($http_request) {
+      $this->http_request = $http_request;
+    }
+  
+    function get_raw_param($name, $default = null) {
+      return $this->http_request->get_param($name, $default);
+    }
+    
+  }
+
   /**
   * HTTP request class
   */

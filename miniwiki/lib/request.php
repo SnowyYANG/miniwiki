@@ -92,8 +92,10 @@
 
     /** @protected constructor (do not use directly, use get_request()) */
     function MW_HTTPRequest() {
-      
-      $this->method = $_SERVER["REQUEST_METHOD"];
+
+      if (isset($_SERVER["REQUEST_METHOD"])) {
+        $this->method = $_SERVER["REQUEST_METHOD"];
+      }
       
       $this->path_info = '';
       if (isset($_SERVER['FILEPATH_INFO'])) {

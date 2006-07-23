@@ -86,7 +86,7 @@
         if (preg_match_all("/(?:^|\n)#REDIRECT\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {
           $redir_name = $matches[1][count($matches[1]) - 1];
           $redir_name = str_replace("\r", '', $redir_name);
-          $this->redirected_page = new_page($this->attrs[MW_PAGE_ATTR_REDIRECT], MW_REVISION_HEAD);
+          $this->redirected_page = new_page($redir_name, MW_REVISION_HEAD);
           $this->attrs[MW_PAGE_ATTR_REDIRECT] = $redir_name;
         }
         if (preg_match_all("/(?:^|\n)#ATTR\s+(.+?)\s+(.*?)(?:$|\n)/", $this->raw_content, $matches)) {

@@ -111,6 +111,16 @@
       return MW_DEFAULT_MIME_TYPE;
     }
 
+    function is_text_content() {
+        if (strpos($this->mime_type, "text/") === 0) {
+          return true;
+        }
+        if ($this->mime_type === "application/x-javascript") {
+          return true;
+        }
+        return false;
+    }
+
     function has_action($action) {
       switch ($action->get_name()) {
         case MW_ACTION_VIEW_SOURCE:

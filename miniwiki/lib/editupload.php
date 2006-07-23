@@ -19,6 +19,24 @@
   echo '<textarea name="', $link->get_message_param_name(), '" rows="10" cols="60"></textarea><br/>', "\n";
   echo '<input type="submit" value="', htmlspecialchars(_("Upload"), ENT_QUOTES),'"/><br/>', "\n";
   echo '</form>', "\n";
+  if ($page->is_text_content()) {
+    echo '<form method="post" action="', $link->to_url(true), '">', "\n";
+    echo '<textarea id="editarea" name="', $link->get_content_param_name(), '" rows="20" cols="120">', "\n";
+    $page->load_with_raw_content();
+    if ($page->has_content) {
+      echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
+    }
+    echo '</textarea><br/>', "\n";
+    echo _('Edit message'), ': ';
+    echo '<input name="', $link->get_message_param_name(), '" type="text" size="90" value="';
+    if ($req->get_message() !== null) {
+      echo htmlspecialchars($req->get_message(), ENT_QUOTES);
+    }
+    echo '"/>', "\n";
+    echo '<br/>', "\n";
+    echo '<input type="submit" value="', _('Update'), '"/>', "\n";
+    echo '</form>', "\n";
+  }
   echo '</div>', "\n";
   render_ui(MW_LAYOUT_FOOTER);
 ?>

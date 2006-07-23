@@ -805,7 +805,7 @@
   function url_for_page_action($page, $action_name, $in_attr = false, $fragment = null) {
     $link = link_for_page_action($page, $action_name);
     $link->set_page($page);
-    if ($fragment !== null) {
+    if (!empty($fragment)) {
       $link->set_fragment($fragment);
     }
     return $link->to_url($in_attr);

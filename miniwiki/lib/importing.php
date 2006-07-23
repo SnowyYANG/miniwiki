@@ -9,6 +9,8 @@
 
   require_once('registry.php');
 
+  define('MW_IMPORTED_RESOURCE_NAME_POSTFIX', '-Imported');
+  
   define("MW_COMPONENT_ROLE_IMPORTER", "MW_Importer");
 
   function register_importer(&$importer) {

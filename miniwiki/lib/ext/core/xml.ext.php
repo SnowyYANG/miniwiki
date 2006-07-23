@@ -35,6 +35,7 @@
   define('MW_XML_TYPE_TEXT', 'text');
   define('MW_XML_TYPE_BINARY', 'binary');
   define('MW_XML_TYPE_DATETIME', 'datetime');
+  define('MW_XML_EXTENSION', 'xml');
 
   /*
     XML format (if miniWiki's encoding is not UTF-8 and iconv() is not available, internal encoding is used):
@@ -52,6 +53,8 @@
       text - RESOURCE_KEY_VALUE is plain text
       binary - RESOURCE_KEY_VALUE is encoded with base64
       datetime - RESOURCE_KEY_VALUE is YYYY-MM-DDTHH:MM:SSZ (corresponds to XSD dateTime with UTC timezone)
+
+    Resources with the same name must be grouped (no other resources between them) and newest resource must be last.
   */
         
   function explode_dataspace_name($name, &$ds_name, &$res_name) {
@@ -70,6 +73,152 @@
 
     function get_format() {
       return MW_XML_FORMAT;
+    }
+
+    /** @private */
+    var $dataspaces;
+    /** @private */
+    var $with_history;
+    /** @private */
+    var $force_import;
+    /** @private */
+    var $cur_resource;
+    /** @private */
+    var $prev_resource;
+    /** @private */
+    var $prev_resource_name;
+    /** @private */
+    var $cur_dataspace;
+    /** @private */
+    var $cur_key;
+
+    /** @private */
+    function startElement($parser, $name, $attrs) {
+      if ($name === 'RESOURCE') {
+        $resource_name = $attrs['NAME'];
+        if (empty($resource_name)) {
+          return;
+        }
+        if ($this->with_history || (($this->prev_resource !== null) && ($resource_name !== $this->prev_resource_name))) {
+          $this->flush_prev_resource();
+        }
+        $this->cur_dataspace = $attrs['DATASPACE'];
+        $included = false;
+        foreach ($this->dataspaces as $ds) {
+          explode_dataspace_name($ds, $ds, $wanted_res);
+          if ($this->cur_dataspace === $ds) {
+            if (($wanted_res === null) || (strpos($resource_name, $wanted_res) === 0)) {
+              $included = true;
+              break;
+            }
+          }
+        }
+        if (!$included) {
+          return;
+        }
+        $this->cur_resource = new MW_Resource();
+        $this->cur_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
+        $this->cur_key = null;
+      } elseif ($name === 'KEY') {
+        $this->cur_key = $attrs['NAME'];
+      }
+    }
+
+    /** @private */
+    function endElement($parser, $name) {
+      if ($this->cur_resource === null) {
+        return;
+      }
+      if ($name === 'RESOURCE') {
+        $storage =& get_storage();
+        $this->prev_resource = $this->cur_resource;
+        $this->prev_resource_name = $this->cur_resource->get(MW_RESOURCE_KEY_NAME);
+        $this->cur_resource = null;
+      } elseif ($name === 'KEY') {
+        $this->cur_key = null;
+      }
+    }
+
+    /** @private */
+    function flush_prev_resource() {
+      if ($this->prev_resource === null) {
+        return;
+      }
+      $storage =& get_storage();
+      $resource_name = $this->prev_resource->get(MW_RESOURCE_KEY_NAME);
+      if (!$this->force_import && $storage->exists($this->cur_dataspace, $resource_name)) {
+        $resource_name .= MW_IMPORTED_RESOURCE_NAME_POSTFIX;
+        $this->prev_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
+      }
+      if (!$storage->exists($this->cur_dataspace, $resource_name)) {
+        $storage->create_resource($this->cur_dataspace, $this->prev_resource);
+      } else {
+        $storage->update_resource($this->cur_dataspace, $this->prev_resource);
+      }
+      $this->prev_resource = null;
+    }
+
+    /** @private */
+    function cdataHandler($parser, $data) {
+      if ($this->cur_resource === null) {
+        return;
+      }
+      if (empty($this->cur_key)) {
+        return;
+      }
+      /** @todo follow import() which uses types_map */
+      $storage =& get_storage();
+      $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
+      if (($this->cur_key === MW_RESOURCE_KEY_CONTENT) && ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY)) {
+        $data = base64_decode($data);
+      } elseif ($this->cur_key === MW_RESOURCE_KEY_LAST_MODIFIED) {
+        # is ignored by storage anyway
+        return;
+      } elseif ($this->cur_key === MW_RESOURCE_KEY_NAME) {
+        # already there
+        return;
+      }
+      $prev = $this->cur_resource->get($this->cur_key);
+      $this->cur_resource->set($this->cur_key, $prev . $data);
+    }
+    
+    function import($file, $with_history = true, $dataspaces = array(), $force_import = false) {
+      if (pathinfo($file, PATHINFO_EXTENSION) !== MW_XML_EXTENSION) {
+        return null;
+      }
+      $enc = config('encoding');
+      if (strcasecmp($enc, "utf-8") != 0) {
+        if (!function_exists("iconv")) {
+          return "iconv() not available, but needed for conversion from $enc to UTF-8";
+        }
+      }
+      # in some PHP versions utf-8 will be used always (cause they can not autodetect)), in others it will be ignored,
+      # hopefully every version will return utf-8
+      $xml_parser = xml_parser_create("utf-8");
+      $storage =& get_storage();
+      if (sizeof($dataspaces) == 0) {
+        $dataspaces = $storage->get_dataspace_names();
+      }
+      $this->dataspaces = $dataspaces;
+      $this->with_history = $with_history;
+      $this->force_import = $force_import;
+      $this->cur_resource = null;
+      $this->prev_resource = null;
+      $this->prev_resource_name = null;
+      xml_set_element_handler($xml_parser, array(&$this, "startElement"), array(&$this, "endElement"));
+      xml_set_character_data_handler($xml_parser, array(&$this, "cdataHandler"));
+      if (!($fp = fopen($file, "r"))) {
+        return "Unable to open $file";
+      }
+      while ($data = fread($fp, 4096)) {
+        if (!xml_parse($xml_parser, $data, feof($fp))) {
+          return "XML error: ".xml_error_string(xml_get_error_code($xml_parser))." at line ".xml_get_current_line_number($xml_parser);
+        }
+      }
+      fclose($fp);
+      xml_parser_free($xml_parser);
+      $this->flush_prev_resource();
+      return true;
     }
     
   }
@@ -108,7 +257,8 @@
             continue;
           }
           if ($with_history) {
-            $resources = $storage->get_resource_history($ds, $res_name, true);
+            # we need it ordered from oldest to newest
+            $resources = array_reverse($storage->get_resource_history($ds, $res_name, true));
           } else {
             $resources = array( $storage->get_resource($ds, $res_name, null, true) );
           }

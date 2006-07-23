@@ -205,6 +205,7 @@
       if (empty($namespace)) {
         return $namespace;
       }
+      $namespace = preg_replace('/[\/:]+$/', '', $namespace);
       if ($for_upload) {
         return str_replace(':', '/', $namespace);
       }

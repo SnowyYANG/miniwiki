@@ -10,7 +10,7 @@
   /** miniWiki product name */
   define("MW_NAME", "miniWiki");
   /** miniWiki version as X.Y string */
-  define("MW_VERSION", "0.3-svn");
+  define("MW_VERSION", "0.4-svn");
 
   if (!function_exists('stripos')) {
     function stripos($haystack,$needle,$offset = 0) {

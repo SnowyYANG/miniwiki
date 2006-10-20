@@ -522,7 +522,7 @@
     */
     function render() {
       if (strlen($this->raw) == 0) {
-        echo _('(empty)'), "\n";
+        echo _t('(empty)'), "\n";
         return;
       }
       $src = str_replace("\r", '', $this->raw);

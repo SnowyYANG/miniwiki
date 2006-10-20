@@ -36,20 +36,20 @@
   set_current_page($page);
   $auth =& get_auth();
   if ($auth->is_invalid()) {
-    add_info_text(_('Invalid login.'));
+    add_info_text(_t('Invalid login.'));
   }
 
   $req =& get_request("MW_ActionRequest");
   $action = $req->get_action();
   if ($action === null) {
-    trigger_error(_("Unknown action."), E_USER_ERROR);
+    trigger_error(_t("Unknown action."), E_USER_ERROR);
   }
   while ($action !== null) {
     if (!$action->is_valid()) {
-      trigger_error(_("Unknown action."), E_USER_ERROR);
+      trigger_error(_t("Unknown action."), E_USER_ERROR);
       break;
     } elseif (!$action->is_permitted()) {
-      add_info_text(_('Insufficient user rights. Access denied to action: %0%', _($action->get_name())));
+      add_info_text(_t('Insufficient user rights. Access denied to action: %0%', _t($action->get_name())));
       render_ui(MW_LAYOUT_HEADER);
       render_ui(MW_LAYOUT_FOOTER);
       break;

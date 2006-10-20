@@ -181,7 +181,7 @@
         header('HTTP/1.0 401 Unauthorized');
         $auth->is_logged = false;
       } else {
-        add_info_text(_('Logged as %0%', $auth->user));
+        add_info_text(_t('Logged as %0%', $auth->user));
       }
       return get_default_action();
     }
@@ -226,7 +226,7 @@
       $req =& get_request("MW_AuthRequest");
       $user_page = new_user_page($req->get_user());
       $user_page->change_password($req->get_pass());
-      add_info_text(_('Password was changed'));
+      add_info_text(_t('Password was changed'));
       return get_default_action();
     }
 
@@ -254,7 +254,7 @@
       $req =& get_request("MW_AuthRequest");
       $user_page = new_user_page($req->get_user());
       $user_page->create_user();
-      add_info_text(_('User was created.'));
+      add_info_text(_t('User was created.'));
       return get_default_action();
     }
 
@@ -282,7 +282,7 @@
       $req =& get_request("MW_AuthRequest");
       $user_page = new_user_page($req->get_user());
       $user_page->delete_user();
-      add_info_text(_('User was deleted.'));
+      add_info_text(_t('User was deleted.'));
       return get_default_action();
     }
 

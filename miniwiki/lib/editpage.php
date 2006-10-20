@@ -10,7 +10,7 @@
   $page =& get_current_page();
   $req =& get_request("MW_EditRequest");
   
-  render_ui(MW_LAYOUT_HEADER, _("Editing %0%", $page->name));
+  render_ui(MW_LAYOUT_HEADER, _t("Editing %0%", $page->name));
   if ($req->is_preview() && $page->has_content) {
     echo '<div class="page-content">';
     $page->render();
@@ -52,15 +52,15 @@
     echo htmlspecialchars($page->raw_content, ENT_NOQUOTES);
   }
   echo '</textarea><br/>', "\n";
-  echo _('Edit message'), ': ';
+  echo _t('Edit message'), ': ';
   echo '<input name="', $link->get_message_param_name(), '" type="text" size="90" value="';
   if ($req->get_message() !== null) {
     echo htmlspecialchars($req->get_message(), ENT_QUOTES);
   }
   echo '"/>', "\n";
   echo '<br/>', "\n";
-  echo '<input type="submit" name="', $link->get_preview_param_name(), '" value="', _("Preview"), '"/>', "\n";
-  echo '<input type="submit" value="', _('Update Page'), '"/>', "\n";
+  echo '<input type="submit" name="', $link->get_preview_param_name(), '" value="', _t("Preview"), '"/>', "\n";
+  echo '<input type="submit" value="', _t('Update Page'), '"/>', "\n";
   echo '</form>', "\n";
   echo '</div>', "\n";
   render_ui(MW_LAYOUT_FOOTER);

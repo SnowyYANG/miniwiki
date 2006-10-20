@@ -199,7 +199,7 @@
   function load_special_page($name) {
     $special_page = new_special_page($name);
     if (!$special_page->load()) {
-      trigger_error(_("Required special page %0% is missing", $special_page->name), E_USER_ERROR);
+      trigger_error(_t("Required special page %0% is missing", $special_page->name), E_USER_ERROR);
       return null;
     }
     return $special_page;
@@ -331,7 +331,7 @@
       }
       $success = $this->_rename($new_name);
       if ($success && $with_redirect) {
-        $this->update("#REDIRECT $new_name\n", _("Renamed to ".$new_name));
+        $this->update("#REDIRECT $new_name\n", _t("Renamed to ".$new_name));
       }
       return $success;
     }
@@ -481,7 +481,7 @@
         if (is_a($page, 'MW_SpecialUploadsPage')) {
           $uploaded = $page->upload($req->get_content(), $req->get_message(), $req->get_destname());
           set_current_page($uploaded);
-          add_info_text(_("File uploaded."));
+          add_info_text(_t("File uploaded."));
           return get_default_action();
         } elseif ($req->is_preview()) {
           $page->update_for_preview($req->get_content());
@@ -489,9 +489,9 @@
         } else {
           $changed = $page->update($req->get_content(), $req->get_message());
           if (is_a($page, 'MW_SpecialUploadPage')) {
-            add_info_text($changed ? _("File uploaded.") : _("No changes. File was not uploaded."));
+            add_info_text($changed ? _t("File uploaded.") : _t("No changes. File was not uploaded."));
           } else {
-            add_info_text($changed ? _("Page updated.") : _("No edits. Page was not updated."));
+            add_info_text($changed ? _t("Page updated.") : _t("No edits. Page was not updated."));
           }
           return get_default_action();
         }
@@ -526,7 +526,7 @@
     function &handle() {
       $page =& get_current_page();
       $page->delete();
-      add_info_text(_("Page deleted."));
+      add_info_text(_t("Page deleted."));
       return get_default_action();
     }
     
@@ -564,14 +564,14 @@
       if ($new_name === null) {
         $special_page = load_special_page(MW_SPECIAL_PAGE_RENAME);
         if ($special_page !== null) {
-          render_ui(MW_LAYOUT_HEADER, _("Renaming %0%", $page->name));
+          render_ui(MW_LAYOUT_HEADER, _t("Renaming %0%", $page->name));
           $special_page->render();
           render_ui(MW_LAYOUT_FOOTER);
           return null_ref();
         }
       } else {
         $success = $page->rename($new_name);
-        add_info_text($success ? _("Page renamed.") : _("Page not renamed."));
+        add_info_text($success ? _t("Page renamed.") : _t("Page not renamed."));
         # will not redirect itself
         if ($success && is_a($page, "MW_SpecialUploadPage")) {
           $new_page = new_upload_page($new_name, MW_REVISION_HEAD);

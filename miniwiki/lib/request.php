@@ -131,7 +131,7 @@
       $this->files = array();
       foreach ($_FILES as $name => $file) {
         if (!is_uploaded_file($file['tmp_name'])) {
-          trigger_error(_('Possible upload attack'), E_USER_ERROR);
+          trigger_error(_t('Possible upload attack'), E_USER_ERROR);
         } else {
           $this->files[$name] = $file;
         }

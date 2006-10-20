@@ -41,7 +41,7 @@
   function load_layout_page($name) {
     $layout_page = new_layout_page($name);
     if (!$layout_page->load()) {
-      trigger_error(_("Required layout page %0% is missing", $layout_page->name), E_USER_ERROR);
+      trigger_error(_t("Required layout page %0% is missing", $layout_page->name), E_USER_ERROR);
       return null;
     }
     return $layout_page;

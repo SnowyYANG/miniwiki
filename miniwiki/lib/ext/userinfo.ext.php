@@ -32,7 +32,7 @@
       if ($auth->is_logged) {
         $cb = config('user_info_file_callback');
         if ($cb === null) {
-          trigger_error(_("Config value user_info_file_callback not set"), E_USER_ERROR);
+          trigger_error(_t("Config value user_info_file_callback not set"), E_USER_ERROR);
         }
         $f = call_user_func($cb, $auth->user);
         if (!file_exists($f)) {

@@ -73,7 +73,7 @@
   
   }
 
-  function _($message) {
+  function _t($message) {
     global $registry;
     $messages = $registry->lookup(MW_COMPONENT_ROLE_MESSAGES);
     $data = null;

@@ -116,6 +116,7 @@
         $this->last_modified = $res->get(MW_RESOURCE_KEY_LAST_MODIFIED);
         $this->message = $res->get(MW_RESOURCE_KEY_MESSAGE);
         $this->user = $res->get(MW_RESOURCE_KEY_AUTHOR);
+        $this->storage_revision = $res->get(MW_RESOURCE_KEY_REVISION);
       }
       $this->title = $this->name;
       $this->process_content();

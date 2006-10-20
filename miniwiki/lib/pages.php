@@ -214,8 +214,10 @@
     # [read-only] attributes
     /** page name */
     var $name;
-    /** page revision */
+    /** page revision (revision as requested by user) */
     var $revision;
+    /** storage revision (revision as reported by storage) - valid after load() */
+    var $storage_revision;
     /** is some content loaded? */
     var $has_content;
     /** raw content (may be empty even if has_content is true) - valid after load() */
@@ -237,6 +239,7 @@
     function MW_Page($name) {
       $this->name = $name;
       $this->revision = MW_REVISION_HEAD;
+      $this->storage_revision = null;
       $this->has_content = false;
       $this->raw_content = '';
       $this->last_modified = null;

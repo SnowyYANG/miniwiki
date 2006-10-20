@@ -87,6 +87,7 @@
       $this->user = $this->page->user;
       $this->title = $this->page->title;
       $this->raw_content_length = $this->page->raw_content_length;
+      $this->storage_revision = $this->page->storage_revision;
     }
 
     function has_action($action) {

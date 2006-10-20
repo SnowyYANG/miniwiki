@@ -129,6 +129,9 @@
         $this->wiki_variables->set('page', $page->name);
         $this->wiki_variables->set('curpage', $curpage->name);
         $this->wiki_variables->set('revision', $page->revision);
+        if ($page->storage_revision !== null) {
+          $this->wiki_variables->set('storage_revision', $page->storage_revision);
+        }
         if ($page->last_modified !== null) {
           $this->wiki_variables->set('last_modified', format_datetime($page->last_modified));
         }

@@ -11,11 +11,8 @@
   require_once('actions.php');
 
   define("MW_COMPONENT_ROLE_PAGE", "MW_Page");
-  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
   define("MW_COMPONENT_ROLE_PAGE_HANDLER", "MW_PageHandler");
-  $registry->add_registry(new MW_PageHandlerComponentRegistry(), MW_COMPONENT_ROLE_PAGE_HANDLER);
   define("MW_COMPONENT_ROLE_REDIRECTED_PAGE", "MW_Page:redirected_page");
-  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_REDIRECTED_PAGE);
   define("MW_COMPONENT_ROLE_SPECIAL_PAGE", "_special_page");
 
   function set_current_page(&$page) {
@@ -844,5 +841,9 @@
     }
     return $link->to_url($in_attr);
   }
+
+  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_PAGE);
+  $registry->add_registry(new MW_PageHandlerComponentRegistry(), MW_COMPONENT_ROLE_PAGE_HANDLER);
+  $registry->add_registry(new MW_SingletonComponentRegistry(true), MW_COMPONENT_ROLE_REDIRECTED_PAGE);
 
 ?>

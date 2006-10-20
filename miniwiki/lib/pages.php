@@ -239,7 +239,7 @@
     function MW_Page($name) {
       $this->name = $name;
       $this->revision = MW_REVISION_HEAD;
-      $this->storage_revision = null;
+      $this->storage_revision = MW_REVISION_HEAD;
       $this->has_content = false;
       $this->raw_content = '';
       $this->last_modified = null;

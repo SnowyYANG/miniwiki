@@ -68,7 +68,6 @@
     }
   }
 
-  /** @todo XML import */
   class MW_XMLImporter extends MW_Importer {
 
     function get_format() {

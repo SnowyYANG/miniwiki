@@ -87,7 +87,7 @@
     if (strpos($name, 'User:') === 0) {
       $old_page = new_page($name, MW_REVISION_HEAD);
       $new_name = str_replace("User:", "User/", $name);
-      show_install_message('Renaming user page '.$old_name->name.' to '.$new_name);
+      show_install_message('Renaming user page '.$old_page->name.' to '.$new_name);
       $old_page->rename($new_name);
     }
   }

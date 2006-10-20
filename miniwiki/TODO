@@ -5,8 +5,37 @@ release 0.3:
 
 release 0.4:
 - Subversion storage (including support for Subversion-based users management)
-
-release 0.5:
+  
+planned:
+- tags:
+  dataspace definition says whether it wants tags support
+  resource have "tags" key with MW_Tags
+  dataspace definition provides callback which is able to determine tags from a resource (i.e. from Wiki content's #TAG directives)
+  it is up to the storage whether it always takes tags from callback or if it stores them elsewhere too
+  client (e.g. MW_DBPage) must ensure that tag changes are reflected in the value from which tags callback reads them (if there is a callback)
+  = storage ignores the "tags" key on update if callback is present, it always provides "tags" key on get (either provided by callback or taken
+    from some store, callback has precedence, but may fail if e.g. content is not loaded in which case tags are read from elsewhere)
+  page.get_tags() = MW_Tags (reflecting changes in content, if possible)
+  MW_Tags.get_tags(namespace = null), has_tag(tag), add_tag(tag), remove_tag(tag), clear()
+  tags have namespaces
+  storage.search_by_tags(ds, MW_Tags, resource_namespace = null)
+  wiki functions to operate with tags (has_tag(tag), tagged_pages(namespace), tagged_uploads(namespace), tags(namespace))
+  page inclusion has no effect on tags (#TAG is in the same class as #TITLE, #REDIRECT and #ATTR)
+- more wiki formatting (definition lists and others from wiki matrix)
+- Wiki pages with settings do not allow inclusion (or they do, but it does not affect settings - includes are not processed)
+  - format is definition lists with term starting $set (e.g. $set Update Page)
+  - whatever class parses it has support for multiple ordered options (XX, YY, ZZ)
+- messages customizable in MW/Messages/LANGUAGE, config key mw_language
+- wiki function _() and use it in layouts and special pages
+- per user settings User/NAME/Settings (layout, language, date format ...)
+  - what and how could be changed is in MW/Settings/User with first option to be default value (value of ~ means to use global default if not set)
+  - global default in MW/Settings/Global (not defined means to use builtin/userdefs default)
+  - accessible by user_config() which
+    1. determines if it can be user setting and what are the default and available values by reading MW/Settings/User
+    2. reads from User/NAME/Settings (auto-linked from User/NAME by Special/User) if it can be user setting
+    3. returns the setting if it is from permitted range or returns the default if it is not or is not defined
+    4. if value is unknown or global default is wanted MW/Settings/Global is read
+    4. if value is still unknown config() is called
 - improve code docs
 - classify standalone pages (use layout pages and for now fake them with PHP code)
 - recent changes page
@@ -19,6 +48,9 @@ release 0.5:
 - unified way of indicating what pages produce (by specifying MIME type of
   output) and allow rendering into different formats ((X)HTML, PDF, text...)
 - search
-- wiki function _()
+- bookmarks extension (simple addition of bookmark, hierarchies - maybe organized in namespaces?)
+- performance monitoring (MW_PerformanceMonitor.start/stop/count/duration/average, get_performance_monitor(name) with auto-create and
+  get_performace_monitors()) including wiki function to dump it formatted, controlled by config 'enable_perfmonitors' (default false)
+- conflict detection or page locking
 
 $Id$

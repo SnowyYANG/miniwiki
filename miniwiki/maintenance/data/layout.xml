@@ -11,6 +11,9 @@
 #ENDIF
 #IF {{$has_content}}
 | Revision: {{$revision}}
+#IFEMPTY {{&amp;is_eq|$revision|$storage_revision}}
+ ({{$storage_revision}})
+#ENDIF
 #IFEMPTY {{&amp;is_eq|$req_action|view_source}}
 {{&amp;layout|ShowAction|action|view_source|text|Source}}
 #ENDIF
@@ -30,8 +33,8 @@
 &lt;/box&gt;
 #ENDPAGE
 </key>
-<key name="length">843</key>
-<key name="last_modified">20060723T190506Z</key>
+<key name="length">926</key>
+<key name="last_modified">20061020T112212Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>

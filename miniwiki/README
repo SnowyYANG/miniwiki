@@ -17,7 +17,7 @@ Requirements
 ------------
 
 Web server (e.g. Apache HTTP server)
-PHP 4.3.x or newer (may work on older 4.x versions)
+PHP 4.3.x or newer (may work on older 4.x versions, will give a lot of warnings on 5.x)
 MySQL 4.0.x or newer (may work on older 3.x versions)
 
 Installation

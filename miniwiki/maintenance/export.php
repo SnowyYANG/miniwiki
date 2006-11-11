@@ -16,6 +16,7 @@
     echo "OOPS! Something is wrong: $errstr(error code $errno, file $errfile, line $errline)\n";
   }
   set_error_handler("error_handler");
+  error_reporting(E_ALL);
   
   /**
   * echo debug message (if MW_DEBUG is true)

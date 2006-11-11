@@ -73,6 +73,10 @@
     }
   }
   
+  require_once('settings.php');
+  
+  set_default_config('wiki_name', 'miniWiki');
+
   require_once('extensions.php');
   require_once('exporting.php');
   require_once('importing.php');
@@ -84,7 +88,6 @@
   require_once('installation.php');
   require_once('wiki_functions.php');
   require_once('messages.php');
-  require_once('settings.php');
   require_once('actions.php');
   require_once('ui.php');
 

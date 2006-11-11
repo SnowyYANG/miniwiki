@@ -19,7 +19,7 @@
   define("MW_COMPONENT_ROLE_USERS_MANAGER", "MW_UsersManager");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_USERS_MANAGER);
   
-  set_default_config('auth_realm', 'miniWiki');
+  set_default_config('auth_realm', config('wiki_name'));
   set_default_config('auth_read_logged_only', false);
   set_default_config('auth_write_admin_only', false);
   

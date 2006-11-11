@@ -43,7 +43,7 @@
 <resource dataspace="pages" name="MW/Layout/Default/Header">
 <key name="content">#PAGE
 #HEADER
-#META title {{$title}}
+#META title {{$title}} - {{$wiki_name}}
 {{&amp;call|css|layout_data|default.css}}
 #IF {{&amp;exists|$css}}
 #META stylesheet [[{{$css}}]]
@@ -64,8 +64,8 @@
 &lt;box info-text&gt;{{$info_text}}&lt;/box&gt;
 #ENDIF
 </key>
-<key name="length">455</key>
-<key name="last_modified">20060723T190515Z</key>
+<key name="length">472</key>
+<key name="last_modified">20061111T131740Z</key>
 <key name="message">miniWiki default</key>
 <key name="author">admin</key>
 <key name="revision">1</key>

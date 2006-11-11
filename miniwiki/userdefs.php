@@ -7,6 +7,9 @@
    * user definitions
    */
   
+  /** name of this Wiki (will be shown in page title etc.; default is miniWiki) */
+  $mw_wiki_name = 'miniWiki';
+  
   /** database settings for MySQL storage (extension MW_CoreMySQLStorageExtension, enabled by default) */
   /** database host name (default is localhost) */
   $mw_db_host = 'localhost';
@@ -16,8 +19,8 @@
   $mw_db_pass = 'miniwiki';
   /** database name (default is miniwiki) */
   $mw_db_name = 'miniwiki';
-  /** HTTP Basic Auth realm name (default is miniWiki) */
-  $mw_auth_realm = 'miniWiki';
+  /** HTTP Basic Auth realm name (default is the same as mw_wiki_name) */
+  $mw_auth_realm = $mw_wiki_name;
   /** HTML output encoding (default is utf-8) */
   $mw_encoding = 'iso-8859-2';
   /** database encoding (must represent the same encoding as mw_encoding; default is utf8) */

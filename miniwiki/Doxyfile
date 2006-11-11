@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = miniWiki
-PROJECT_NUMBER         = 0.3-svn
+PROJECT_NUMBER         = 0.4-svn
 OUTPUT_DIRECTORY       = gendoc
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English

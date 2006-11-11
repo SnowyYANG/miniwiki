@@ -1,4 +1,4 @@
-miniWiki 0.3 (c)2005,2006 Stepan Roh
+miniWiki 0.4-svn (c)2005,2006 Stepan Roh
 ------------------------------------
 
 miniWiki is simple-yet-extensible Wiki written in PHP which uses MySQL or filesystem as its storage.

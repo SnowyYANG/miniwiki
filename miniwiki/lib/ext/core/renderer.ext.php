@@ -593,7 +593,7 @@
         } elseif (strpos($line, '#META') === 0) {
           $output .= $this->process_block_chain($current_chain);
           $current_chain = '';
-          $tokens = explode(' ', $line);
+          $tokens = explode(' ', $line, 3);
           $meta_name = $tokens[1];
           $meta_value = $this->process_includes($tokens[2]);
           if ($meta_name == 'title') {

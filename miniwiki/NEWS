@@ -1,3 +1,10 @@
+Changes from 0.3 to current development state:
+
+- silence warnings produced by PHP 5
+- added userdef mw_wiki_name and show it in page title
+- bugfixes
+- ... and more
+
 Changes from 0.2 to 0.3:
 
 - heavily restructualized source

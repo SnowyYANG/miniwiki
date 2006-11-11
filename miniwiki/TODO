@@ -4,7 +4,7 @@ release 0.4:
 - Subversion storage (including support for Subversion-based users management)
   
 planned:
-- make it PHP 5-compatible while still working on PHP 4
+- get rid of all PHP 5-related warnings (now they are just silenced)
 - tags:
   dataspace definition says whether it wants tags support
   resource have "tags" key with MW_Tags

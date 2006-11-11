@@ -50,5 +50,6 @@ planned:
 - performance monitoring (MW_PerformanceMonitor.start/stop/count/duration/average, get_performance_monitor(name) with auto-create and
   get_performace_monitors()) including wiki function to dump it formatted, controlled by config 'enable_perfmonitors' (default false)
 - conflict detection or page locking
+- do not import resources which did not change (that way *-Imported will be created only if something changed)
 
 $Id$

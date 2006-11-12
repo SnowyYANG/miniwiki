@@ -96,7 +96,7 @@
   set_default_config('enabled_MW_CoreSpecialUserExtension', true);
   set_default_config('enabled_MW_CoreUsersManagerExtension', true);
   set_default_config('enabled_MW_CoreXMLImportExportExtension', true);
-  set_default_config('enabled_MW_UserInfoExtension', true);
+  set_default_config('enabled_MW_UserInfoExtension', false);
   set_default_config('enabled_MW_CoreFunctionsExtension', true);
   set_default_config('enabled_MW_CoreLayoutExtension', true);
   set_default_config('enabled_MW_CoreMySQLStorageExtension', true);

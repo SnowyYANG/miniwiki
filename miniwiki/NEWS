@@ -1,4 +1,4 @@
-Changes from 0.3 to current development state:
+Changes from 0.3 to 0.3.1:
 
 - silence warnings produced by PHP 5
 - added userdef mw_wiki_name and show it in page title

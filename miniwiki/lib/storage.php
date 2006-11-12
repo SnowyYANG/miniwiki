@@ -52,7 +52,13 @@
   }
 
   class MW_Resource {
+    var $dataspace;
     var $data = array();
+    
+    function MW_Resource($dataspace) {
+      $this->dataspace = $dataspace;
+    }
+    
     function get($key) {
       return (isset($this->data[$key]) ? $this->data[$key] : null);
     }

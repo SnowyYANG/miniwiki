@@ -138,7 +138,7 @@
       $auth =& get_auth();
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
-      $res = new MW_Resource();
+      $res = new MW_Resource(MW_DS_PAGES);
       $res->set(MW_RESOURCE_KEY_NAME, $this->name);
       $res->set(MW_RESOURCE_KEY_CONTENT, $content);
       $res->set(MW_RESOURCE_KEY_MESSAGE, $message);

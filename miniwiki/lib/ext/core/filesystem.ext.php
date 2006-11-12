@@ -254,7 +254,7 @@
       $ds_def = $this->dataspace_defs[$dataspace];
       $has_content = ($ds_def->get_content_type() != MW_RESOURCE_CONTENT_TYPE_NONE);
       $is_versioned = ($ds_def->is_versioned());
-      $res = new MW_Resource();
+      $res = new MW_Resource($dataspace);
       $this->lock_read();
       # custom keys are only for non-content dataspaces
       if (!$has_content) {

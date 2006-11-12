@@ -183,7 +183,7 @@
       $auth =& get_auth();
       $this->user = $auth->user;
       $this->revision = MW_REVISION_HEAD;
-      $res = new MW_Resource();
+      $res = new MW_Resource(MW_DS_UPLOADS);
       $res->set(MW_RESOURCE_KEY_NAME, $this->upload_name);
       $res->set(MW_RESOURCE_KEY_CONTENT, $content);
       $res->set(MW_RESOURCE_KEY_MESSAGE, $message);

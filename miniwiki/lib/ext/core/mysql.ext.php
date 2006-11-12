@@ -206,8 +206,8 @@
     }
 
     /** @private */
-    function &create_resource_object_from_result(&$result) {
-        $res = new MW_Resource();
+    function &create_resource_object_from_result($dataspace, &$result) {
+        $res = new MW_Resource($dataspace);
         foreach ($result as $key => $value) {
           if (!is_int($key)) {
             if ($key === MW_RESOURCE_KEY_LAST_MODIFIED) {
@@ -223,7 +223,7 @@
       $query = $this->get_resource_internal($dataspace, $name, $revision, $with_data);
       $res = null;
       if (($result = $this->fetch_query_result($query))) {
-        $res =& $this->create_resource_object_from_result($result);
+        $res =& $this->create_resource_object_from_result($dataspace, $result);
       }
       $this->close_query($query);
       return $res;
@@ -288,7 +288,7 @@
       $query = $this->get_resource_internal($dataspace, $name, null, $with_data);
       $ret = array();
       while (($result = $this->fetch_query_result($query))) {
-        $res =& $this->create_resource_object_from_result($result);
+        $res =& $this->create_resource_object_from_result($dataspace, $result);
         array_push ($ret, $res);
       }
       $this->close_query($query);

@@ -130,7 +130,7 @@
         if (!$included) {
           return;
         }
-        $this->cur_resource = new MW_Resource();
+        $this->cur_resource = new MW_Resource($this->cur_dataspace);
         $this->cur_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
         $this->cur_key = null;
       } elseif ($name === 'KEY') {
@@ -156,9 +156,7 @@
           $storage =& get_storage();
           $ds_def = $storage->get_dataspace_definition($this->cur_dataspace);
           if (($this->cur_key === MW_RESOURCE_KEY_CONTENT) && ($ds_def->get_content_type() == MW_RESOURCE_CONTENT_TYPE_BINARY)) {
-            echo $data, "<br>\n";
             $data = base64_decode($data);
-            echo strlen($data), "<br>\n";
           } elseif ($this->cur_key === MW_RESOURCE_KEY_LAST_MODIFIED) {
             # is ignored by storage anyway
             return;
@@ -173,6 +171,30 @@
       }
     }
 
+    /** @private
+        @return true if content and all custom keys are the same (differences in author, message etc. are ignored)
+    */
+    function is_same_content($res1, $res2) {
+      $content1 = $res1->get(MW_RESOURCE_KEY_CONTENT);
+      $content2 = $res2->get(MW_RESOURCE_KEY_CONTENT);
+      $storage =& get_storage();
+      $ds_def = $storage->get_dataspace_definition($res1->dataspace);
+      if ($ds_def->get_content_type() === MW_RESOURCE_CONTENT_TYPE_TEXT) {
+        # strip CR before comparison
+        $content1 = str_replace("\r", "", $content1);
+        $content2 = str_replace("\r", "", $content2);
+      }
+      if ($content1 !== $content2) {
+        return false;
+      }
+      foreach ($ds_def->get_custom_keys() as $custom_key) {
+        if ($res1->get($custom_key) !== $res2->get($custom_key)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     /** @private */
     function flush_prev_resource() {
       if ($this->prev_resource === null) {
@@ -181,9 +203,14 @@
       $storage =& get_storage();
       $resource_name = $this->prev_resource->get(MW_RESOURCE_KEY_NAME);
       if (!$this->force_import && $storage->exists($this->cur_dataspace, $resource_name)) {
-        $resource_name .= MW_IMPORTED_RESOURCE_NAME_POSTFIX;
-        show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME).' as '.$resource_name);
-        $this->prev_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
+        $existing_res = $storage->get_resource($this->cur_dataspace, $resource_name, MW_REVISION_HEAD, true);
+        if ($this->is_same_content($existing_res, $this->prev_resource)) {
+          show_exporting_message('NOT importing unchanged '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
+        } else {
+          $resource_name .= MW_IMPORTED_RESOURCE_NAME_POSTFIX;
+          show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME).' as '.$resource_name);
+          $this->prev_resource->set(MW_RESOURCE_KEY_NAME, $resource_name);
+        }
       } else {
         show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
       }

@@ -45,7 +45,7 @@
 
     function create_user($user) {
       $storage =& get_storage();
-      $res = new MW_Resource();
+      $res = new MW_Resource(MW_DS_USERS);
       $res->set(MW_RESOURCE_KEY_NAME, $user);
       $storage->create_resource(MW_DS_USERS, $res);
     }
@@ -57,7 +57,7 @@
 
     function change_password($user, $pass) {
       $storage =& get_storage();
-      $res = new MW_Resource();
+      $res = new MW_Resource(MW_DS_USERS);
       $res->set(MW_RESOURCE_KEY_NAME, $user);
       $md5_pass = md5($pass);
       $res->set(MW_RESOURCE_KEY_PASSWORD, $md5_pass);

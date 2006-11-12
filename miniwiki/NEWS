@@ -3,6 +3,7 @@ Changes from 0.3 to current development state:
 - silence warnings produced by PHP 5
 - added userdef mw_wiki_name and show it in page title
 - do not import/update unchanged data
+- User Info extension was disabled by default
 - bugfixes
 - ... and more
 

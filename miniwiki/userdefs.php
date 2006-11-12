@@ -14,7 +14,7 @@
   /** HTTP Basic Auth realm name (default is the same as mw_wiki_name) */
   $mw_auth_realm = $mw_wiki_name;
   /** HTML output encoding (default is utf-8) */
-  $mw_encoding = 'iso-8859-2';
+  $mw_encoding = 'utf-8';
   /** date/time format string (default is %Y/%m/%d %H:%M:%S) */
   $mw_datetime_format = "%Y/%m/%d %H:%M:%S";
   /** whether reading is allowed only for logged users (default is false) */
@@ -36,8 +36,8 @@
   $mw_db_pass = 'miniwiki';
   /** database name (default is miniwiki) */
   $mw_db_name = 'miniwiki';
-  /** database encoding (must represent the same encoding as mw_encoding; default is utf8) */
-  $mw_db_encoding = 'latin2';
+  /** database encoding (must represent the same encoding as mw_encoding; starting with MySQL 4.1 database will reencode between charsets if necessary; default is utf8) */
+  $mw_db_encoding = 'utf8';
   /** whether to let database sort strings according to its settings or according to wanted mw_db_encoding (default is true) */
   $mw_db_use_server_collation = true;
   

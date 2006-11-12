@@ -187,7 +187,7 @@
       if ($content1 !== $content2) {
         return false;
       }
-      foreach ($ds_def->get_custom_keys() as $custom_key) {
+      foreach (array_keys($ds_def->get_custom_keys()) as $custom_key) {
         if ($res1->get($custom_key) !== $res2->get($custom_key)) {
           return false;
         }
@@ -200,12 +200,14 @@
       if ($this->prev_resource === null) {
         return;
       }
+      $do_import = true;
       $storage =& get_storage();
       $resource_name = $this->prev_resource->get(MW_RESOURCE_KEY_NAME);
       if (!$this->force_import && $storage->exists($this->cur_dataspace, $resource_name)) {
         $existing_res = $storage->get_resource($this->cur_dataspace, $resource_name, MW_REVISION_HEAD, true);
         if ($this->is_same_content($existing_res, $this->prev_resource)) {
           show_exporting_message('NOT importing unchanged '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
+          $do_import = false;
         } else {
           $resource_name .= MW_IMPORTED_RESOURCE_NAME_POSTFIX;
           show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME).' as '.$resource_name);
@@ -214,10 +216,12 @@
       } else {
         show_exporting_message('Importing '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
       }
-      if (!$storage->exists($this->cur_dataspace, $resource_name)) {
-        $storage->create_resource($this->cur_dataspace, $this->prev_resource);
-      } else {
-        $storage->update_resource($this->cur_dataspace, $this->prev_resource);
+      if ($do_import) {
+        if (!$storage->exists($this->cur_dataspace, $resource_name)) {
+          $storage->create_resource($this->cur_dataspace, $this->prev_resource);
+        } else {
+          $storage->update_resource($this->cur_dataspace, $this->prev_resource);
+        }
       }
       $this->prev_resource = null;
     }

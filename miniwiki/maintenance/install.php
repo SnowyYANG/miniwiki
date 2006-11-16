@@ -99,7 +99,14 @@
     }
   }
 
-  function import_with_check($file) {
+  function import_with_check($file, $page_name = null) {
+    if ($page_name !== null) {
+      $page = new_page($page_name, MW_REVISION_HEAD);
+      if ($page->exists()) {
+        show_install_message('NOT importing data from '.$file.', because '.$page_name.' exists');
+        return;
+      }
+    }
     show_install_message('Importing data from '.$file);
     $status = import($file);
     if ($status === null) {
@@ -109,8 +116,8 @@
     }
   }
   
-  import_with_check('data/users.xml');
-  import_with_check('data/pages.xml');
+  import_with_check('data/users.xml', 'User/admin');
+  import_with_check('data/pages.xml', MW_PAGE_NAME_MAIN);
   import_with_check('data/layout.xml');
   import_with_check('data/special.xml');
   

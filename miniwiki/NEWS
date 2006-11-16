@@ -1,3 +1,9 @@
+Changes from 0.3.1 to current development state:
+
+- when upgrading from older version do not install normal pages and users,
+  just layout and special pages
+- ... and more
+
 Changes from 0.3 to 0.3.1:
 
 - silence warnings produced by PHP 5

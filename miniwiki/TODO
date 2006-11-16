@@ -52,5 +52,9 @@ planned:
 - conflict detection or page locking
 - do not import resources which did not change (that way *-Imported will be created only if something changed)
 - (optionally) redirect included pages
+- modularized renderer with dialects:
+  register_wiki_markup(DIRECTIVE, title_markup_cb, "TITLE", 2)
+  register_wiki_markup(LINE_TAG, hr_markup_cb, "---")
+  register_wiki_markup(PAIR_TAG, strong_text_markup_cb, "'''", "'''")
 
 $Id$

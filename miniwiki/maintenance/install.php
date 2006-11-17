@@ -1,3 +1,8 @@
+<html>
+<head>
+<title>Install/Upgrade - miniWiki</title>
+</head>
+<body>
 <?php
   # $Id$
   # (c)2005,2006 Stepan Roh <src@srnet.cz>
@@ -12,6 +17,10 @@
   /** password which allows access to this script - MUST BE SET BEFORE USE */
   $install_pass = null;
 #  $install_pass = 'something';
+  
+  /** default install user and password (used by some storages) */
+#  $mw_default_install_user = '';
+#  $mw_default_install_pass = '';
   
   define("MW_DEBUG", false);
   
@@ -99,27 +108,34 @@
     }
   }
 
-  function import_with_check($file, $page_name = null) {
-    if ($page_name !== null) {
-      $page = new_page($page_name, MW_REVISION_HEAD);
-      if ($page->exists()) {
+  $import_with_errors = false;
+  
+  function import_with_check($file, $ds_name = null, $res_name = null) {
+    if ($ds_name !== null) {
+      $storage =& get_storage();
+      if ($storage->exists($ds_name, $res_name)) {
         show_install_message('NOT importing data from '.$file.', because '.$page_name.' exists');
         return;
       }
     }
     show_install_message('Importing data from '.$file);
     $status = import($file);
+    global $import_with_errors;
     if ($status === null) {
       trigger_error("Unable to import $file - is required extension missing?", E_USER_ERROR);
+      $import_with_errors = true;
     } else if ($status !== true) {
-      trigger_error("Error occurred while importing $file: ", $status, E_USER_ERROR);
+      trigger_error("Error occurred while importing $file: $status", E_USER_ERROR);
+      $import_with_errors = true;
     }
   }
   
-  import_with_check('data/users.xml', 'User/admin');
-  import_with_check('data/pages.xml', MW_PAGE_NAME_MAIN);
+  import_with_check('data/users.xml', MW_DS_USERS, 'admin');
+  import_with_check('data/pages.xml', MW_DS_PAGES, MW_PAGE_NAME_MAIN);
   import_with_check('data/layout.xml');
   import_with_check('data/special.xml');
   
-  echo('<p><b>Success</b></p>');
+  echo('<p><b>'.($import_with_errors ? 'Errors were reported' : 'Success').'</b></p>');
 ?>
+</body>
+</html>

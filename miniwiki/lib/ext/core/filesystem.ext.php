@@ -60,9 +60,6 @@
     
   }
 
-  define("MW_WIKI_FILE_EXT", "wiki");
-  define("MW_WIKI_FILE_SUFFIX", "." . MW_WIKI_FILE_EXT);
-  
   class MW_FilesystemStorage extends MW_Storage {
     /** @private */
     var $root_dir;
@@ -193,8 +190,8 @@
         $dirname = $this->get_ds_dirname_url($dataspace);
       }
       $resnames = array();
-      $dirname = $this->append_namespace($dirname);
-      $this->get_resource_names_from_dir($dirname, ($namespace !== ''), $prefix, array(), $ds_def->get_content_type(), $resnames);
+      $dirname = $this->append_namespace($dirname, $namespace);
+      $this->get_resource_names_from_dir($dirname, ($namespace !== ''), array(), $ds_def->get_content_type(), $resnames);
       sort($resnames);
       return $resnames;
     }
@@ -215,7 +212,7 @@
         $dirname = $this->get_ds_dirname_url($dataspace);
       }
       $namespace = $this->normalize_namespace($namespace);
-      $dirname = $this->append_namespace($dirname);
+      $dirname = $this->append_namespace($dirname, $namespace);
       $dir = dir($dirname);
       $namespaces = array();
       while (false !== ($entry = $dir->read())) {

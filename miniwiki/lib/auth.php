@@ -52,6 +52,8 @@
     var $has_credentials;
     /** current user name */
     var $user;
+    /** current password */
+    var $pass;
     /** is user logged in? */
     var $is_logged;
 
@@ -65,11 +67,17 @@
     /** @private */
     function init() {
       if (!$this->initialized) {
-        $this->has_credentials = isset($_SERVER['PHP_AUTH_USER']);
-        $this->user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
-        $pass = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : NULL);
+        if (config('install_mode')) {
+	      $this->user = config('default_install_user');
+	      $this->pass = config('default_install_pass');
+	      $this->has_credentials = ($this->user !== null);
+        } else {
+	      $this->has_credentials = isset($_SERVER['PHP_AUTH_USER']);
+	      $this->user = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : NULL);
+	      $this->pass = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : NULL);
+        }
         if ($this->has_credentials) {
-          $this->validate($pass);
+          $this->validate($this->pass);
         } else {
           $this->is_logged = false;
         }
@@ -108,6 +116,8 @@
       $is_logged = $this->is_logged;
       $is_admin = $this->is_logged && ($this->user == MW_USER_NAME_ADMIN);
       $is_related = isset($page->related_user) && $this->is_logged && ($this->user == $page->related_user);
+      $users_mgr =& get_users_manager();
+      $is_users_maintenance_allowed = $users_mgr->allows_maintenance();
       switch ($action->get_name()) {
         case MW_ACTION_LOGIN:
           return true;
@@ -123,10 +133,10 @@
           }
           return (config('auth_write_admin_only') ? $is_admin : $is_logged);
         case MW_ACTION_CHANGE_PASSWORD:
-          return $is_related || $is_admin;
+          return $is_users_maintenance_allowed && ($is_related || $is_admin);
         case MW_ACTION_CREATE_USER:
         case MW_ACTION_DELETE_USER:
-          return $is_admin;
+          return $is_users_maintenance_allowed && $is_admin;
         default:
           return false;
       }
@@ -139,6 +149,10 @@
       die("abstract: get_all_usernames");
     }
 
+    function allows_maintenance() {
+      return true;
+    }
+    
     function create_user($user) {
       die("abstract: create_user");
     }

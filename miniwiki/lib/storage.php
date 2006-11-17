@@ -22,6 +22,9 @@
   define("MW_RESOURCE_CONTENT_TYPE_TEXT", "text");
   define("MW_RESOURCE_CONTENT_TYPE_BINARY", "binary");
   define("MW_RESOURCE_CUSTOM_KEY_TYPE_TEXT", "text:");
+
+  define("MW_WIKI_FILE_EXT", "wiki");
+  define("MW_WIKI_FILE_SUFFIX", "." . MW_WIKI_FILE_EXT);
   
   define("MW_COMPONENT_ROLE_STORAGE", "MW_Storage");
   $registry->add_registry(new MW_SingletonComponentRegistry(), MW_COMPONENT_ROLE_STORAGE);

@@ -94,6 +94,8 @@
     var $cur_key;
     /** @private */
     var $cur_cdata;
+    /** @private */
+    var $resource_error;
 
     /** @private */
     function decode_str($str) {
@@ -218,9 +220,13 @@
       }
       if ($do_import) {
         if (!$storage->exists($this->cur_dataspace, $resource_name)) {
-          $storage->create_resource($this->cur_dataspace, $this->prev_resource);
+          $success = $storage->create_resource($this->cur_dataspace, $this->prev_resource);
         } else {
-          $storage->update_resource($this->cur_dataspace, $this->prev_resource);
+          $success = $storage->update_resource($this->cur_dataspace, $this->prev_resource);
+        }
+        if (!$success) {
+          show_exporting_message('Failed to import '.$this->prev_resource->get(MW_RESOURCE_KEY_NAME));
+          $this->resource_error = true;
         }
       }
       $this->prev_resource = null;
@@ -262,6 +268,7 @@
       $this->cur_resource = null;
       $this->prev_resource = null;
       $this->prev_resource_name = null;
+      $this->resource_error = false;
       xml_set_element_handler($xml_parser, array(&$this, "startElement"), array(&$this, "endElement"));
       xml_set_character_data_handler($xml_parser, array(&$this, "cdataHandler"));
       if (!($fp = fopen($file, "r"))) {
@@ -275,6 +282,9 @@
       fclose($fp);
       xml_parser_free($xml_parser);
       $this->flush_prev_resource();
+      if ($this->resource_error) {
+        return "Failed to import resources";
+      }
       return true;
     }
     

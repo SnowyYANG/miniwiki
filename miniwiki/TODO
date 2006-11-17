@@ -1,7 +1,7 @@
 TODO list:
 
 release 0.4:
-- Subversion storage (including support for Subversion-based users management)
+- Subversion/WebDAV storage
   
 planned:
 - get rid of all PHP 5-related warnings (now they are just silenced)

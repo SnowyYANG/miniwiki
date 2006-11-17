@@ -26,7 +26,7 @@
   
   /* Storage - exactly one storage must be enabled */
   
-  /* MySQL storage (enabled by default) */
+  /** MySQL storage (enabled by default) */
   $mw_enabled_MW_CoreMySQLStorageExtension = true;
   /** database host name (default is localhost) */
   $mw_db_host = 'localhost';
@@ -41,14 +41,20 @@
   /** whether to let database sort strings according to its settings or according to wanted mw_db_encoding (default is true) */
   $mw_db_use_server_collation = true;
   
-  /* Filesystem storage (disabled by default) */
+  /** Filesystem storage (disabled by default) */
   $mw_enabled_MW_CoreFilesystemStorageExtension = false;
   /** root directory (default is not set) */
 #  $mw_fs_root_dir = '';
 
+  /** WebDAV storage (disabled by default; disable Core Users Manager if enabling this) */
+  $mw_enabled_MW_WebDAVStorageExtension = false;
+#  $mw_enabled_MW_CoreUsersManagerExtension = false;
+  /** root URL (default is not set) */
+#  $mw_webdav_root_url = '';
+  
   /* Extensions */
 
-  /* User Info extension (disabled by default) */
+  /** User Info extension (disabled by default) */
   $mw_enabled_MW_UserInfoExtension = false;
   /**
   * returns information file name for given user (for use by user_info wiki function)

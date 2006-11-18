@@ -1329,7 +1329,9 @@ class webdav_client {
 		$this->_header_add(sprintf('Host: %s', $this->_server));
 		// $request .= sprintf('Connection: Keep-Alive');
 		$this->_header_add(sprintf('User-Agent: %s', $this->_user_agent));
-		$this->_header_add(sprintf('Authorization: Basic %s', base64_encode("$this->_user:$this->_pass")));
+		if ($this->_user !== null) {
+		  $this->_header_add(sprintf('Authorization: Basic %s', base64_encode("$this->_user:$this->_pass")));
+		}
 	}
 
  /**

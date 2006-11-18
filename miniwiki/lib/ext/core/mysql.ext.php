@@ -239,11 +239,11 @@
     }
     
     function create_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, true);
+      return $this->update_resource_internal($dataspace, $resource, true);
     }
     
     function update_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, false);
+      return $this->update_resource_internal($dataspace, $resource, false);
     }
     
     function update_resource_internal($dataspace, $resource, $should_create) {

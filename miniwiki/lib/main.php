@@ -42,7 +42,11 @@
   if ($auth->is_invalid()) {
     add_info_text(_t('Invalid login.'));
   }
-
+  $storage =& get_storage();
+  if (!$auth->is_logged && $storage->requires_login()) {
+    $action = get_action(MW_ACTION_LOGIN);
+    $action->handle();
+  }
   $req =& get_request("MW_ActionRequest");
   $action = $req->get_action();
   if ($action === null) {

@@ -156,6 +156,10 @@
     function get_dataspace_definition($dataspace) {
       die("abstract: get_dataspace_definition");
     }
+    
+    function requires_login() {
+      return false;
+    }
   }
 
   define("MW_COMPONENT_ROLE_DATETIME", "MW_DateTime");

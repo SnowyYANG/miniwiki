@@ -114,7 +114,7 @@
     if ($ds_name !== null) {
       $storage =& get_storage();
       if ($storage->exists($ds_name, $res_name)) {
-        show_install_message('NOT importing data from '.$file.', because '.$page_name.' exists');
+        show_install_message('NOT importing data from '.$file.', because '.$res_name.' exists');
         return;
       }
     }

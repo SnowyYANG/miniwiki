@@ -25,7 +25,18 @@
     }
 
     function get_description() {
-      return "WebDAV storage.";
+      $storage =& get_storage();
+      $server = '???';
+      if (($storage !== null) && is_a($storage, 'MW_WebDAVStorage')) {
+        $client =& $storage->get_current_webdav_client();
+        $resp = $client->options($storage->root_path);
+        if (isset($resp['header']['Server'])) {
+          $server = $resp['header']['Server'];
+        } elseif (isset($resp['header']['server'])) {
+          $server = $resp['header']['server'];
+        }
+      }
+      return "WebDAV: $server";
     }
 
     function initialize() {

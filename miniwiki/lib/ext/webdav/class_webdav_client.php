@@ -227,8 +227,8 @@ class webdav_client {
 	* schema 1,2 is supported.
 	* @return bool true if server is webdav server. Otherwise false.
 	*/
-	function check_webdav() {
-		$resp = $this->options();
+	function check_webdav($path = '/') {
+		$resp = $this->options($path);
 		if (!$resp) {
 			return false;
 		}
@@ -246,8 +246,9 @@ class webdav_client {
 	* Get options from webdav server.
 	* @return array with all header fields returned from webdav server. false if server does not speak http.
 	*/
-	function options() {
-		$this->_header_unset();
+	function options($path = '/') {
+		$this->_path = $this->_translate_uri($path);
+	    $this->_header_unset();
 		$this->_create_basic_request('OPTIONS');
 		$this->_send_request();
 		$this->_get_respond();
@@ -350,9 +351,6 @@ class webdav_client {
 		$this->_get_respond();
 		$response = $this->_process_respond();
 
-		print_r($this);
-		print_r($response);
-		
 		// validate the response
 		// check http-version
 		if ($response['status']['http-version'] == 'HTTP/1.1' ||
@@ -659,7 +657,7 @@ class webdav_client {
 						$this->_parser = xml_parser_create_ns();
 						// forget old data...
 						unset($this->_lock[$this->_parser]);
-						unset($this->_xmltree[$this->_parser]);
+						$this->_xmltree[$this->_parser] = '';
 						xml_parser_set_option($this->_parser,XML_OPTION_SKIP_WHITE,0);
 						xml_parser_set_option($this->_parser,XML_OPTION_CASE_FOLDING,0);
 						xml_set_object($this->_parser, $this);
@@ -756,7 +754,7 @@ class webdav_client {
 						$this->_parser = xml_parser_create_ns();
 						// forget old data...
 						unset($this->_delete[$this->_parser]);
-						unset($this->_xmltree[$this->_parser]);
+						$this->_xmltree[$this->_parser] = '';
 						xml_parser_set_option($this->_parser,XML_OPTION_SKIP_WHITE,0);
 						xml_parser_set_option($this->_parser,XML_OPTION_CASE_FOLDING,0);
 						xml_set_object($this->_parser, $this);
@@ -843,7 +841,7 @@ class webdav_client {
 					$this->_parser = xml_parser_create_ns('UTF-8');
 					// forget old data...
 					unset($this->_ls[$this->_parser]);
-					unset($this->_xmltree[$this->_parser]);
+					$this->_xmltree[$this->_parser] = '';
 					xml_parser_set_option($this->_parser,XML_OPTION_SKIP_WHITE,0);
 					xml_parser_set_option($this->_parser,XML_OPTION_CASE_FOLDING,0);
 					// xml_parser_set_option($this->_parser,XML_OPTION_TARGET_ENCODING,'UTF-8');
@@ -890,10 +888,11 @@ class webdav_client {
 		// split path by last "/"
 		$path = rtrim($path, "/");
 		$item = basename($path);
-		$dir  = dirname($path);
+		# appending '/' to avoid Apache DAV to return 301 instead of 207 from PROPFIND
+		$dir  = dirname($path).'/';
 
 		$list = $this->ls($dir);
-
+		
 		// be sure it is an array
 		if (is_array($list)) {
 			foreach($list as $e) {

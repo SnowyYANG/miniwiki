@@ -155,7 +155,7 @@
       foreach ($dirinfo as $item) {
 		$entry = basename(urldecode($item['href']));
         $fullentry = $dirname."/".$entry;
-        if ($item['resourcetype'] == 'collection') {
+        if (isset($item['resourcetype']) && ($item['resourcetype'] == 'collection')) {
           if (!$recurse) {
             continue;
           }
@@ -414,7 +414,7 @@
     function is_password_valid($user, $pass) {
       $storage =& get_storage();
       $client =& $storage->get_webdav_client($user, $pass);
-      return $client->check_webdav();
+      return $client->check_webdav($storage->root_path);
     }
     
   }

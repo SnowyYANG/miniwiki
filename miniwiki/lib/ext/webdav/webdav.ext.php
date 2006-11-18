@@ -8,6 +8,7 @@
   *
   * WebDAV storage has several disadvantages:
   * - supports at most two dataspaces, one of them with binary content and the other with text content
+  * - supprots only HTTP Basic Authorization
   * - pretty much untested
   * - generally it is not recommended for daily usage
   * - @todo no history (yet)
@@ -262,7 +263,7 @@
       if ($item === false) {
         return null;
       }
-	  if ($item['resourcetype'] == 'collection') {
+	  if (isset($item['resourcetype']) && ($item['resourcetype'] == 'collection')){
         return null;
       }
       $ds_def = $this->get_dataspace_definition($dataspace);
@@ -272,7 +273,11 @@
       $is_versioned = ($ds_def->is_versioned());
       $res = new MW_Resource($dataspace);
       if ($with_data) {
-        $res->set(MW_RESOURCE_KEY_CONTENT, file_get_contents($path));
+        $data = '';
+        if (!$this->is_success($client->get($path, $data))) {
+          return null;
+        }
+        $res->set(MW_RESOURCE_KEY_CONTENT, $data);
       }
       $res->set(MW_RESOURCE_KEY_CONTENT_LENGTH, $item['getcontentlength']);
       $res->set(MW_RESOURCE_KEY_LAST_MODIFIED, new MW_WebDAVDateTime($item['lastmodified']));
@@ -316,11 +321,11 @@
     }
     
     function create_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, true);
+      return $this->update_resource_internal($dataspace, $resource, true);
     }
     
     function update_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, false);
+      return $this->update_resource_internal($dataspace, $resource, false);
     }
     
     function update_resource_internal($dataspace, $resource, $should_create) {
@@ -334,19 +339,23 @@
       }
       $path = $this->get_path_for_resource_name($dataspace, $name);
       $content = $resource->get(MW_RESOURCE_KEY_CONTENT);
-#      $this->mkdirs_for_path($path);
+      $this->mkdirs_for_path($path);
       $client =& $this->get_current_webdav_client();
       return $this->is_success($client->put($path, $content));
     }
 
     /** @private */
     function mkdirs_for_path($path) {
-      $dir = dirname($path);
-      if (!is_dir($dir)) {
-        if (!$this->mkdirs_for_path($dir)) {
-          return false;
-        }
-        return mkdir($dir);
+      $client =& $this->get_current_webdav_client();
+      $dirs = explode('/', dirname($path));
+      $dir = '';
+      foreach ($dirs as $part) {
+        $dir .= $part.'/';
+        # must start at root path
+		if ((strpos($dir, $this->root_path) === 0) && ($dir !== $this->root_path)
+		&& !$client->is_dir($dir) && !$this->is_success($client->mkcol($dir))) {
+		  return false;
+		}
       }
       return true;
     }
@@ -397,6 +406,12 @@
 
     function get_dataspace_definition($dataspace) {
       return isset($this->dataspace_defs[$dataspace]) ? $this->dataspace_defs[$dataspace] : null;
+    }
+    
+    function requires_login() {
+      $client = $this->get_webdav_client(null, null);
+      # should work under most WebDAV security configurations (covers OPTIONS and PROPFIND)
+      return !($client->check_webdav($this->root_path) && is_array($client->ls($this->root_path)));
     }
 
   }

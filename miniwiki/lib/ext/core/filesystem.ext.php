@@ -328,11 +328,11 @@
     }
     
     function create_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, true);
+      return $this->update_resource_internal($dataspace, $resource, true);
     }
     
     function update_resource($dataspace, $resource) {
-      $this->update_resource_internal($dataspace, $resource, false);
+      return $this->update_resource_internal($dataspace, $resource, false);
     }
     
     function update_resource_internal($dataspace, $resource, $should_create) {
@@ -374,12 +374,13 @@
 
     /** @private */
     function mkdirs_for_path($path) {
-      $dir = dirname($path);
-      if (!is_dir($dir)) {
-        if (!$this->mkdirs_for_path($dir)) {
-          return false;
-        }
-        return mkdir($dir);
+      $dirs = explode('/', dirname($path));
+      $dir = '';
+      foreach ($dirs as $part) {
+        $dir .= $part.'/';
+		if (!is_dir($dir) && !mkdir($dir)) {
+		  return false;
+		}
       }
       return true;
     }

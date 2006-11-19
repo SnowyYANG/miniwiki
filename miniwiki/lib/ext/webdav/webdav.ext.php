@@ -54,19 +54,19 @@
 
   class MW_WebDAVDateTime extends MW_DateTime {
 
-    var $iso8601_time;
+    var $rfc1123_time;
 
-    function MW_WebDAVDateTime($iso8601_time) {
-      $this->iso8601_time = $iso8601_time;
+    function MW_WebDAVDateTime($rfc1123_time) {
+      $this->rfc1123_time = $rfc1123_time;
     }
   
     function as_unix_timestamp() {
-      return webdav_client::iso8601totime($this->iso8601_time);
+      return strtotime($this->rfc1123_time);
     }
 
     /** [static] */
     function &from_unix_timestamp($ts) {
-      $datetime = new MW_WebDAVDateTime(gmstrftime("%Y-%m-%dT%H:%M:%SZ", $ts));
+      $datetime = new MW_WebDAVDateTime(gmdate('D, d M Y H:i:s O', $ts));
       return $datetime;
     }
     

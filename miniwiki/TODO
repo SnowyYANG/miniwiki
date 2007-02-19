@@ -1,5 +1,8 @@
 TODO list:
 
+bugfix release:
+- binary uploads in utf-8 mode do not work (files are corrupted)
+
 release 0.4:
 - Subversion/WebDAV storage
   
